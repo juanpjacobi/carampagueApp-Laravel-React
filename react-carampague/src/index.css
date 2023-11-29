@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.pattern {
+    min-height: 100vh;
+    background: radial-gradient(circle, #e4e3f7 10%, transparent 11%);
+    background-size: 1em 1em;
+    background-color: #ffffff;
+    opacity: 1
+        
+}
