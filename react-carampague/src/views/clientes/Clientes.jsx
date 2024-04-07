@@ -1,22 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getClientes } from "../../functions/Cliente/clientes";
 import { ClientesList } from "../../components/clientes/ClientesList";
+import { useDispatch } from "react-redux";
+import { getClientes } from "../../store/slices/thunks/ClientesThunks";
 
 export const Clientes = () => {
-  const [clientes, setClientes] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
+  const dispatch = useDispatch()
   useEffect(() => {
-    loadclientes();
-  }, []);
+    dispatch(getClientes());
+  }, [dispatch]);
 
-  const loadclientes = async () => {
-    const { data } = await getClientes();
-    console.log(data);
-    setClientes(data.data);
-    setIsLoading(false)
-  };
+ 
   return (
     <>
       <div className="flex flex-col md:flex-row justify-between items-center">
@@ -30,7 +24,7 @@ export const Clientes = () => {
         </Link>
       </div>
 
-    <ClientesList clientes={clientes} isLoading={isLoading}/>
+    <ClientesList/>
     </>
   );
 };

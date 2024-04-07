@@ -20,7 +20,7 @@ class ClientesController extends Controller
         $clientes = new ClienteCollection(Cliente::with(
             ['direccion.localidad', 'telefono.tipoTelefono'])->get()
         );
-        return $clientes;
+        return ["clientes" => $clientes];
     }
 
     public function store(ClienteRequest $request)
@@ -46,7 +46,6 @@ class ClientesController extends Controller
             $razonSocial, $cuitCliente, $email, $estadoId, $condicionIvaId, $calle, $numeracion,
             $barrio, $piso, $departamento, $localidadId, $tipoTelefonoId, $numeroTelefono
         ]);
-
         return ["cliente" => $data];
     }
 
@@ -55,18 +54,47 @@ class ClientesController extends Controller
      */
     public function show(Cliente $cliente)
     {
-        return new ClienteResource(Cliente::with(
+        $cliente = new ClienteResource(Cliente::with(
             ['direccion.localidad', 'telefono.tipoTelefono']
             )->find($cliente->id));
+            return ["cliente" => $cliente];
+
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Cliente $clientes)
+    public function update(ClienteRequest $request, Cliente $cliente)
     {
-        //
-    }
+        $data = $request->validated();
+
+ // Obtén los datos del formulario
+ $razonSocial = $request->input('razon_social');
+ $cuitCliente = $request->input('cuit_cliente');
+ $email = $request->input('email');
+ $estadoId = $request->input('estado_id');
+ $condicionIvaId = $request->input('condicion_iva_id');
+ $calle = $request->input('calle');
+ $numeracion = $request->input('numeracion');
+ $barrio = $request->input('barrio');
+ $piso = $request->input('piso');
+ $departamento = $request->input('departamento');
+ $localidadId = $request->input('localidad_id');
+ $tipoTelefonoId = $request->input('tipo_telefono_id');
+ $numeroTelefono = $request->input('numero_telefono');
+
+ // Llama al procedimiento almacenado
+ DB::statement("CALL ActualizarCliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [
+     $cliente->id, $razonSocial, $cuitCliente, $email, $estadoId, $condicionIvaId, $calle, $numeracion,
+     $barrio, $piso, $departamento, $localidadId, $tipoTelefonoId, $numeroTelefono
+ ]);
+
+ $cliente = new ClienteResource(Cliente::with(
+    ['direccion.localidad', 'telefono.tipoTelefono']
+    )->find($cliente->id));
+    return ["cliente" => $cliente];
+}
 
     /**
      * Remove the specified resource from storage.

@@ -16,7 +16,7 @@ export const CrearCliente = () => {
         </Link>
       </div>
       <div className="bg-white shadow-2xl shadow-gray-700 rounded-md mt-5 px-5 py-10">
-        <ClienteForm />
+        <ClienteForm editMode={false}/>
       </div>
     </div>
   );

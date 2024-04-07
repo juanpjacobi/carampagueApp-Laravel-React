@@ -5,25 +5,29 @@ import { getCondicionesIva } from "../../functions/CondicionIva/condicionIva";
 import { getProvincias } from "../../functions/Provincia/provincia";
 import { getLocalidades } from "../../functions/Localidad/localidad";
 import { getEstados } from "../../functions/Estado/estado";
-import { createCliente } from "../../functions/Cliente/clientes";
-import Swal from 'sweetalert2'
+import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { createCliente, updateCliente } from "../../store/slices/thunks/ClientesThunks";
+import { clienteSchema } from "../utilities/validator/cliente/clienteSchema";
+import { Alerta } from "../Alerta";
 
-
-export const ClienteForm = () => {
+export const ClienteForm = ({editMode}) => {
+  const {selectedCliente} = useSelector((state) => state.clientes)
   const initialState = {
-    razon_social: "",
-    cuit_cliente: null,
-    email: "",
-    condicion_iva_id: null,
-    numero_telefono: "",
-    tipo_telefono_id: null,
-    estado_id: null,
-    calle: "",
-    numeracion: "",
-    barrio: "",
-    piso: "",
-    localidad_id: null,
+    razon_social: selectedCliente ? selectedCliente.razon_social : "",
+    cuit_cliente: selectedCliente ? selectedCliente.cuit_cliente : null,
+    email: selectedCliente ? selectedCliente.email : "",
+    condicion_iva_id:selectedCliente ? selectedCliente.condicion_iva.id : null,
+    numero_telefono: selectedCliente ? selectedCliente.telefono.numero_telefono : "",
+    tipo_telefono_id: selectedCliente ? selectedCliente.telefono.tipo_telefono_id : null,
+    estado_id: selectedCliente ? selectedCliente.estado.id : null,
+    calle: selectedCliente ? selectedCliente.direccion.calle : "",
+    numeracion: selectedCliente ? selectedCliente.direccion.numeracion : "",
+    barrio:selectedCliente ? selectedCliente.direccion.barrio : "",
+    piso: selectedCliente ? selectedCliente.direccion.piso :"",
+    departamento:selectedCliente ? selectedCliente.direccion.departamento : "",
+    localidad_id: selectedCliente ? selectedCliente.direccion.localidad_id : null,
   };
 
   const [tiposTelefono, setTiposTelefono] = useState([]);
@@ -31,14 +35,14 @@ export const ClienteForm = () => {
   const [provincias, setProvincias] = useState([]);
   const [localidades, setLocalidades] = useState([]);
   const [estados, setEstados] = useState([]);
-  const [values, setValues] = useState(initialState);
-  const [errores, setErrores] = useState([]);
   const [showModal, setShowModal] = useState(false);
+const navigate = useNavigate();
 
-  const navigate = useNavigate();
-  
-
+  const dispatch = useDispatch();
   useEffect(() => {
+    if (!selectedCliente && editMode) {
+      navigate('/clientes');
+    }
     loadTiposTelefonos();
     loadCondicionesIva();
     loadProvincias();
@@ -73,37 +77,44 @@ export const ClienteForm = () => {
 
     setEstados(data.data);
   };
-  const handleChange = (e) => {
-    setValues({ ...values, [e.target.name]: e.target.value });
-  };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const {data} = await createCliente(values);
-    if (data.cliente) {
-      
-      Swal.fire({
-        position: 'top-end',
-        icon: 'success',
-        title: 'Your work has been saved',
-        showConfirmButton: true,
-      }).then(res => navigate('/clientes'))}
-    console.log(values);
+
+  const handleSubmit = () => {
+    if (editMode) {
+      console.log(selectedCliente.id)
+      dispatch(updateCliente(selectedCliente.id, formik.values, navigate))
+      return;
+    }
+    dispatch(createCliente(formik.values, navigate));
+    
   };
 
+  const formik = useFormik({
+    initialValues: initialState ,
+    validationSchema: clienteSchema,
+    validateOnChange:false,
+     validateOnBlur:false,
+    onSubmit: handleSubmit
+  });
+
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={formik.handleSubmit} noValidate>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="razon_social">
           Razon social
         </label>
+
         <input
           type="text"
           id="razon_social"
           className="mt-2 w-full p-3 bg-gray-200"
           name="razon_social"
           placeholder="Ingresa la razon social del cliente"
-          onChange={handleChange}
+          onChange={formik.handleChange}
+          value={formik.values.razon_social ?? ""}
         />
+        { formik.errors.razon_social ? (
+          <Alerta error={formik.errors.razon_social} />
+        ) : null}
       </div>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="cuit_cliente">
@@ -115,21 +126,27 @@ export const ClienteForm = () => {
           className="mt-2 w-full p-3 bg-gray-200"
           name="cuit_cliente"
           placeholder="Ingresa el cuit del cliente"
-          onChange={handleChange}
+          onChange={formik.handleChange}
+          value={formik.values.cuit_cliente ?? ""}
         />
+        { formik.errors.cuit_cliente ? (
+          <Alerta error={formik.errors.cuit_cliente} />
+        ) : null}
       </div>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="email">
           Email
         </label>
         <input
-          type="text"
+          type="email"
           id="email"
           className="mt-2 w-full p-3 bg-gray-200"
           name="email"
-          placeholder="Ingresa el email del cliente"
-          onChange={handleChange}
+          placeholder="Ingresa el cuit del cliente"
+          onChange={formik.handleChange}
+          value={formik.values.email ?? ""}
         />
+        {  formik.errors.email ? <Alerta error={formik.errors.email} /> : null}
       </div>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="condicion_iva_id">
@@ -139,7 +156,8 @@ export const ClienteForm = () => {
           name="condicion_iva_id"
           id="condicion_iva_id"
           className="mt-2 w-full p-3 bg-gray-200"
-          onChange={handleChange}
+          onChange={formik.handleChange}
+          value={formik.values.condicion_iva_id ?? ""}
         >
           <option value=""> Seleccione uno</option>
           {condicionesIva?.map((c) => (
@@ -148,19 +166,26 @@ export const ClienteForm = () => {
             </option>
           ))}
         </select>
+        { formik.errors.condicion_iva_id ? (
+          <Alerta error={formik.errors.condicion_iva_id} />
+        ) : null}
       </div>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="numero_telefono">
           Numero de telefono
         </label>
         <input
-          type="text"
+          type="number"
           id="numero_telefono"
           className="mt-2 w-full p-3 bg-gray-200"
           name="numero_telefono"
-          placeholder="Ingresa el numero_telefono del cliente"
-          onChange={handleChange}
+          placeholder="Ingresa el numero de telefono del cliente"
+          onChange={formik.handleChange}
+          value={formik.values.numero_telefono ?? ""}
         />
+        { formik.errors.numero_telefono ? (
+          <Alerta error={formik.errors.numero_telefono} />
+        ) : null}
       </div>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="tipo_telefono_id">
@@ -170,7 +195,8 @@ export const ClienteForm = () => {
           name="tipo_telefono_id"
           id="tipo_telefono_id"
           className="mt-2 w-full p-3 bg-gray-200"
-          onChange={handleChange}
+          onChange={formik.handleChange}
+          value={formik.values.tipo_telefono_id ?? ""}
         >
           <option value="">Seleccione uno</option>
           {tiposTelefono?.map((t) => (
@@ -179,6 +205,9 @@ export const ClienteForm = () => {
             </option>
           ))}
         </select>
+        {  formik.errors.tipo_telefono_id ? (
+          <Alerta error={formik.errors.tipo_telefono_id} />
+        ) : null}
       </div>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="estado_id">
@@ -188,7 +217,8 @@ export const ClienteForm = () => {
           name="estado_id"
           id="estado_id"
           className="mt-2 w-full p-3 bg-gray-200"
-          onChange={handleChange}
+          onChange={formik.handleChange}
+          value={formik.values.estado_id ?? ""}
         >
           <option value="">Seleccione uno</option>
           {estados?.map((e) => (
@@ -197,6 +227,9 @@ export const ClienteForm = () => {
             </option>
           ))}
         </select>
+        { formik.errors.estado_id ? (
+          <Alerta error={formik.errors.estado_id} />
+        ) : null}
       </div>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="calle">
@@ -208,8 +241,10 @@ export const ClienteForm = () => {
           className="mt-2 w-full p-3 bg-gray-200"
           name="calle"
           placeholder="Ingresa la calle del cliente"
-          onChange={handleChange}
+          onChange={formik.handleChange}
+          value={formik.values.calle ?? ""}
         />
+        { formik.errors.calle ? <Alerta error={formik.errors.calle} /> : null}
       </div>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="numeracion">
@@ -221,8 +256,12 @@ export const ClienteForm = () => {
           className="mt-2 w-full p-3 bg-gray-200"
           name="numeracion"
           placeholder="Ingresa la numeracion del cliente"
-          onChange={handleChange}
+          onChange={formik.handleChange}
+          value={formik.values.numeracion ?? ""}
         />
+        { formik.errors.numeracion ? (
+          <Alerta error={formik.errors.numeracion} />
+        ) : null}
       </div>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="barrio">
@@ -234,8 +273,10 @@ export const ClienteForm = () => {
           className="mt-2 w-full p-3 bg-gray-200"
           name="barrio"
           placeholder="Ingresa el barrio del cliente"
-          onChange={handleChange}
+          onChange={formik.handleChange}
+          value={formik.values.barrio ?? ""}
         />
+        { formik.errors.barrio ? <Alerta error={formik.errors.barrio} /> : null}
       </div>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="piso">
@@ -247,8 +288,11 @@ export const ClienteForm = () => {
           className="mt-2 w-full p-3 bg-gray-200"
           name="piso"
           placeholder="Ingresa el piso del cliente"
-          onChange={handleChange}
+          onChange={formik.handleChange}
+          value={formik.values.piso ?? ""}
         />
+
+        { formik.errors.piso ? <Alerta error={formik.errors.piso} /> : null}
       </div>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="departamento">
@@ -260,8 +304,13 @@ export const ClienteForm = () => {
           className="mt-2 w-full p-3 bg-gray-200"
           name="departamento"
           placeholder="Ingresa el departamento del cliente"
-          onChange={handleChange}
+          onChange={formik.handleChange}
+          value={formik.values.departamento ?? ""}
         />
+
+        { formik.errors.departamento ? (
+          <Alerta error={formik.errors.departamento} />
+        ) : null}
       </div>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="localidad_id">
@@ -271,7 +320,8 @@ export const ClienteForm = () => {
           name="localidad_id"
           id="localidad_id"
           className="mt-2 w-full p-3 bg-gray-200"
-          onChange={handleChange}
+          onChange={formik.handleChange}
+          value={formik.values.localidad_id ?? ""}
         >
           <option value=""> Seleccione uno</option>
           {localidades?.map((l, i) => (
@@ -280,6 +330,9 @@ export const ClienteForm = () => {
             </option>
           ))}
         </select>
+        { formik.errors.localidad_id ? (
+          <Alerta error={formik.errors.localidad_id} />
+        ) : null}
         <p className="mt-2 text-slate-600">
           Si la localidad no existe puedes crear una clickeando{" "}
           <button
@@ -294,8 +347,6 @@ export const ClienteForm = () => {
         <ModalLocalidad
           setShowModal={setShowModal}
           showModal={showModal}
-          values={values}
-          setValues={setValues}
           setLocalidades={setLocalidades}
           loadLocalidades={loadLocalidades}
           localidades={localidades}
@@ -304,7 +355,7 @@ export const ClienteForm = () => {
       </div>
       <input
         type="submit"
-        value="Crear cliente"
+        value={editMode ? "Actualizar cliente" : "Crear cliente"}
         className="bg-sky-800 hover:bg-sky-950 text-white w-full mt-5 p-3
         uppercase font-bold cursor-pointer"
       />

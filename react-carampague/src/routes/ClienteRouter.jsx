@@ -1,7 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
-import { Clientes } from '../views/clientes/Clientes';
-import { CrearCliente } from '../views/clientes/CrearCliente';
-import { VerCliente } from '../views/clientes/VerCliente';
+import { ActualizarCliente, Clientes, CrearCliente, VerCliente } from '../views';
+
 
 export const ClienteRouter = () => {
     return (
@@ -9,7 +8,7 @@ export const ClienteRouter = () => {
           <Route path="/" element={<Clientes />} />
           <Route path="/crear" element={<CrearCliente />} />
           <Route path="/:id" element={<VerCliente />} />
-
+          <Route path="/edit/:id" element={<ActualizarCliente />} />
         </Routes>
       );
 }

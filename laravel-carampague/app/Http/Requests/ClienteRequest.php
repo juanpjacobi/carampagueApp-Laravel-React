@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ClienteRequest extends FormRequest
 {
@@ -22,7 +23,7 @@ class ClienteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'razon_social' => ['required','unique:clientes', 'string'],
+            'razon_social' => ['required',Rule::unique('clientes')->ignore($this->cliente), 'string'],
             'cuit_cliente' => ['required', 'integer'],
             'email' => ['required', 'email'],
             'estado_id' => ['required'],
@@ -54,7 +55,7 @@ class ClienteRequest extends FormRequest
             'calle.required'=> 'La calle es requerida',
             'calle.string'=> 'La calle debe ser una cadena de caracteres',
             'numeracion.required'=> 'La numeracion es requerida',
-            'barrio.required'=> 'El barrio es requerida',
+            'barrio.required'=> 'El barrio es requerido',
             'localidad_id.required'=> 'La localidad es requerida',
         ];
     }

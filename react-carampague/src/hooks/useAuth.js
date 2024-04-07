@@ -11,7 +11,6 @@ export const useAuth = ({ middleware, url }) => {
       },
     })
       .then((res) => {
-        console.log(res.data);
         return res.data;
       })
       .catch((error) => {
