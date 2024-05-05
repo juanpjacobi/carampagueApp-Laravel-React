@@ -1,16 +1,16 @@
+import React from "react";
 import { Link } from "react-router-dom";
 
-export const ClienteCard = ({selectedCliente}) => {
-
+export const ObjetivoCard = ({ selectedObjetivo }) => {
   return (
     <div className="max-w-2xl m-auto">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl underline-offset-8 uppercase text-sky-700 font-semibold text-center">
-          {selectedCliente?.razon_social}
+          {selectedObjetivo?.nombre}
         </h1>
 
         <Link
-          to={"/clientes/"}
+          to={"/objetivos/"}
           className="p-2 w-28 text-center bg-sky-800 hover:bg-sky-950 text-white rounded"
         >
           Atras
@@ -20,71 +20,68 @@ export const ClienteCard = ({selectedCliente}) => {
         <div className="w-3/4 border-r">
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
-              Cuit:
+              Cliente:
             </span>
-            {selectedCliente?.cuit_cliente}
-          </p>
-          <p className="text-sm mb-2 text-slate-800">
-            <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
-              Email:
-            </span>
-            {selectedCliente?.email}
-          </p>
-          <p className="text-sm mb-2 text-slate-800">
-            <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
-              Telefono:
-            </span>
-            {selectedCliente?.telefono?.numero_telefono} (
-            {selectedCliente?.telefono?.tipo_telefono.nombre_tipo_telefono})
-          </p>
-          <p className="text-sm mb-2 text-slate-800">
-            <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
-              Email:
-            </span>
-            {selectedCliente?.email}
+            {selectedObjetivo?.cliente.razon_social}
           </p>
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Estado:
             </span>
-            {selectedCliente?.estado?.nombre_estado}
+            {selectedObjetivo?.estado.nombre_estado}
+          </p>
+
+          <p className="text-sm mb-2 text-slate-800">
+            <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
+              Valor cliente:
+            </span>
+            ${selectedObjetivo?.valor.valor_cliente}
           </p>
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
-              Condicion frente al iva:
+              Valor Asociado:
             </span>
-            {selectedCliente?.condicion_iva?.nombre_condicion_iva}
+            ${selectedObjetivo?.valor.valor_vigilador}
           </p>
+          <p className="text-sm mb-2 text-slate-800">
+            <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
+              Estado:
+            </span>
+            {selectedObjetivo?.estado.nombre_estado}
+          </p>
+
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Direccion
             </span>
-            {selectedCliente?.direccion?.calle}
-            {selectedCliente?.direccion?.numeracion}
+            {selectedObjetivo?.direccion.calle}
+            {selectedObjetivo?.direccion.numeracion}
           </p>
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Piso
             </span>
-            {selectedCliente?.direccion?.piso}
+
+            {selectedObjetivo?.direccion.piso}
           </p>
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Departamento
             </span>
-            {selectedCliente?.direccion?.departamento}
+
+            {selectedObjetivo?.direccion.departamento}
           </p>
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Barrio
             </span>
-            {selectedCliente?.direccion?.barrio}
+            {selectedObjetivo?.direccion.barrio}
           </p>
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Localidad
             </span>
-            {selectedCliente?.direccion?.localidad.nombre_localidad}
+            {selectedObjetivo?.direccion.localidad.nombre_localidad}
           </p>
         </div>
         <div className="flex flex-col gap-8 text-center">
@@ -92,7 +89,7 @@ export const ClienteCard = ({selectedCliente}) => {
             Acciones
           </span>
           <Link
-            to={`/clientes/edit/${selectedCliente?.id}`}
+            to={`/objetivos/edit/${selectedObjetivo?.id}`}
             className="p-1 w-28 text-center bg-teal-600 hover:bg-teal-800 text-white rounded"
           >
             Editar

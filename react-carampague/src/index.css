@@ -10,3 +10,8 @@
     opacity: 1
         
 }
+
+.active {
+    @apply text-sky-700 underline underline-offset-4 font-semibold
+}
+

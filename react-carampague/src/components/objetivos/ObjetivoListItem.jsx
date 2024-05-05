@@ -1,23 +1,22 @@
-import React from "react";
 import {InfoIcon} from '../utilities/icons/InfoIcon'
-export const ClienteListItems = ({ cliente }) => {
+export const ObjetivoListItem = ({ objetivo }) => {
   return (
     <tr className="bg-white border-b">
       <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
-        {cliente.razon_social}
+        {objetivo.nombre.toUpperCase()}
       </td>
       <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
-        {cliente.estado.nombre_estado}
+        {objetivo.estado.nombre_estado}
       </td>
       <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
-        {cliente.email}
+        {objetivo.cliente.razon_social}
       </td>
       <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
-        {cliente.telefono.numero_telefono} (
-        {cliente.telefono.tipo_telefono.nombre_tipo_telefono})
+        {objetivo.direccion.calle}{" "}
+        {objetivo.direccion.numeracion}
       </td>
       <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
-        <InfoIcon tipo='clientes' id={cliente.id} />
+        <InfoIcon tipo='objetivos' id={objetivo.id} />
       </td>
     </tr>
   );

@@ -8,9 +8,9 @@ import { getEstados } from "../../functions/Estado/estado";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { createCliente, updateCliente } from "../../store/slices/thunks/ClientesThunks";
 import { clienteSchema } from "../utilities/validator/cliente/clienteSchema";
 import { Alerta } from "../Alerta";
+import { createCliente, updateCliente } from "../../store/thunks/ClientesThunks";
 
 export const ClienteForm = ({editMode}) => {
   const {selectedCliente} = useSelector((state) => state.clientes)
@@ -35,7 +35,6 @@ export const ClienteForm = ({editMode}) => {
   const [provincias, setProvincias] = useState([]);
   const [localidades, setLocalidades] = useState([]);
   const [estados, setEstados] = useState([]);
-  const [showModal, setShowModal] = useState(false);
 const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -333,7 +332,7 @@ const navigate = useNavigate();
         { formik.errors.localidad_id ? (
           <Alerta error={formik.errors.localidad_id} />
         ) : null}
-        <p className="mt-2 text-slate-600">
+        {/* <p className="mt-2 text-slate-600">
           Si la localidad no existe puedes crear una clickeando{" "}
           <button
             onClick={() => setShowModal(true)}
@@ -351,7 +350,7 @@ const navigate = useNavigate();
           loadLocalidades={loadLocalidades}
           localidades={localidades}
           provincias={provincias}
-        />
+        /> */}
       </div>
       <input
         type="submit"

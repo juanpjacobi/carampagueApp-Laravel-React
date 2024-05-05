@@ -5,6 +5,7 @@ use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\CondicionIvaController;
 use App\Http\Controllers\EstadoController;
 use App\Http\Controllers\LocalidadController;
+use App\Http\Controllers\ObjetivosController;
 use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\TipoTelefonoController;
 use Illuminate\Http\Request;
@@ -33,6 +34,8 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::apiResource('/localidades', LocalidadController::class);
     Route::apiResource('/estados', EstadoController::class);
     Route::apiResource('/clientes', ClientesController::class);
+    Route::apiResource('/objetivos', ObjetivosController::class);
+
 
 });
 

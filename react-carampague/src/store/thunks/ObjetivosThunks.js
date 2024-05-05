@@ -1,21 +1,15 @@
-import carampagueApi from "../../../api/carampagueApi";
-
 import Swal from "sweetalert2";
-import {
-  addNewCliente,
-  setClientes,
-  setError,
-  setSelectedCliente,
-  setUpdateCliente,
-  startLoading,
-} from "../clientes/ClientesSlice";
+import carampagueApi from "../../api/carampagueApi";
+import { setObjetivos, setSelectedObjetivo, addNewObjetivo, setUpdatedObjetivo } from "../slices/ObjetivosSlice";
+import { startLoading, setError, endLoading } from "../slices/UiSlice";
 
-export const getClientes = () => {
+export const getObjetivos = () => {
   return async (dispatch) => {
     dispatch(startLoading());
     try {
-      const {data} = await carampagueApi.get(`/api/clientes/`);
-      dispatch(setClientes(data.clientes));
+      const { data } = await carampagueApi.get(`/api/objetivos/`);
+      dispatch(setObjetivos(data.objetivos));
+      dispatch(endLoading());
     } catch (error) {
       const errors = Object.values(error.response.data.errors).map((err) => {
         return err;
@@ -25,18 +19,19 @@ export const getClientes = () => {
         icon: "error",
         title: "Oops...",
         text: Object.values(error.response.data.errors),
-        footer: "Error al obtener clientes",
+        footer: "Error al obtener objetivos",
       });
     }
   };
 };
 
-export const getCliente =  (id) => {
+export const getObjetivo =  (id) => {
   return async (dispatch) => {
     dispatch(startLoading());
     try {
-      const {data} = await carampagueApi.get(`/api/clientes/${id}`);
-      dispatch(setSelectedCliente(data.cliente));
+      const {data} = await carampagueApi.get(`/api/objetivos/${id}`);
+      dispatch(setSelectedObjetivo(data.objetivo));
+      dispatch(endLoading())
     } catch (error) {
       const errors = Object.values(error.response.data.errors).map((err) => {
         return err;
@@ -47,26 +42,28 @@ export const getCliente =  (id) => {
         icon: "error",
         title: "Oops...",
         text: Object.values(error.response.data.errors),
-        footer: "Error al obtener cliente",
+        footer: "Error al obtener objetivo",
       });
     }
   };
 };
 
-export const createCliente = (data, navigate) => {
+export const createObjetivo = (data, navigate) => {
   return async (dispatch) => {
     dispatch(startLoading());
 
     try {
-      await carampagueApi.post(`/api/clientes/`, data);
-      dispatch(addNewCliente());
+      await carampagueApi.post(`/api/objetivos/`, data);
+      dispatch(addNewObjetivo());
       Swal.fire({
         position: "top-end",
         icon: "success",
-        title: "Cliente creado con exito",
+        title: "Objetivo creado con exito",
         showConfirmButton: true,
       }).then(() => {
-        navigate("/clientes");
+        navigate("/objetivos");
+      dispatch(endLoading())
+
       });
     } catch (error) {
       const errors = Object.values(error.response.data.errors).map((err) => {
@@ -77,26 +74,26 @@ export const createCliente = (data, navigate) => {
         icon: "error",
         title: "Oops...",
         text: errors,
-        footer: "Error al crear cliente",
+        footer: "Error al crear objetivo",
       });
     }
   };
 };
 
-export const updateCliente = (id, data, navigate) => {
+export const updateObjetivo = (id, data, navigate) => {
   return async (dispatch) => {
     dispatch(startLoading());
 
     try {
-      await carampagueApi.put(`/api/clientes/${id}`, data);
-      dispatch(setUpdateCliente());
+      await carampagueApi.put(`/api/objetivos/${id}`, data);
+      dispatch(setUpdatedObjetivo());
       Swal.fire({
         position: "top-end",
         icon: "success",
-        title: "Cliente actualizado con exito",
+        title: "Objetivo actualizado con exito",
         showConfirmButton: true,
       }).then(() => {
-        navigate("/clientes");
+        navigate("/objetivos");
       });
     } catch (error) {
         const errors = Object.values(error.response.data.errors).map((err) => {
@@ -107,8 +104,9 @@ export const updateCliente = (id, data, navigate) => {
           icon: "error",
           title: "Oops...",
           text: errors,
-          footer: "Error al actualizar cliente",
+          footer: "Error al actualizar objetivo",
         });
       }
   };
 };
+

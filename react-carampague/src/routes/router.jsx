@@ -3,8 +3,7 @@ import { Layout } from "../layouts/Layout";
 import { AuthLayout } from "../layouts/AuthLayout";
 import Inicio from "../views/Inicio";
 import Login from "../views/Login";
-import {UserRouter} from "./UserRouter"
-import { ClienteRouter } from "./ClienteRouter";
+import { ClienteRouter, ObjetivoRouter, UserRouter } from "./index";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: "/clientes/*",
         element: <ClienteRouter />,
+      },
+      {
+        path: "/objetivos/*",
+        element: <ObjetivoRouter />,
       },
     ],
   },

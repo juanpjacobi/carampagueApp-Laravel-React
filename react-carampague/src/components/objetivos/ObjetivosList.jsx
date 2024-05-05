@@ -1,9 +1,8 @@
-import React from "react";
 import { Spinner } from "../utilities/spinners/Spinner";
 import { useSelector } from "react-redux";
-import { ClienteListItems } from "./ClienteListItems";
+import { ObjetivoListItem } from "./ObjetivoListItem";
 
-export const ClientesList = ({clientes}) => {
+export const ObjetivosList = ({objetivos}) => {
   const {isLoading} = useSelector((state) => state.ui);
 
   if (isLoading) {
@@ -17,16 +16,16 @@ export const ClientesList = ({clientes}) => {
           <thead className="text-sm text-slate-700 uppercase bg-slate-200">
             <tr>
               <th scope="col" className="px-6 py-3">
-                Nombre cliente
+                Nombre objetivo
               </th>
               <th scope="col" className="px-6 py-3">
                 Estado
               </th>
               <th scope="col" className="px-6 py-3">
-                Email
+                Cliente
               </th>
               <th scope="col" className="px-6 py-3">
-                Telefono
+                Direccion
               </th>
               <th scope="col" className="px-6 py-3">
                 Ver
@@ -34,8 +33,8 @@ export const ClientesList = ({clientes}) => {
             </tr>
           </thead>
           <tbody>
-            {clientes?.map((cliente) => (
-              <ClienteListItems cliente={cliente} key={cliente.id} />
+            {objetivos?.map((objetivo) => (
+              <ObjetivoListItem objetivo={objetivo} key={objetivo.id} />
             ))}
           </tbody>
         </table>
