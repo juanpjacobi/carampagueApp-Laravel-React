@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Clientes;
-use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ClienteRequest;
 use App\Http\Resources\ClienteCollection;
 use App\Http\Resources\ClienteResource;
 use App\Models\Cliente;
+use App\Models\Direccion;
+use App\Models\Telefono;
 
 class ClientesController extends Controller
 {
@@ -17,36 +18,56 @@ class ClientesController extends Controller
      */
     public function index()
     {
-        $clientes = new ClienteCollection(Cliente::with(
-            ['direccion.localidad', 'telefono.tipoTelefono'])->get()
+        $clientes = new ClienteCollection(
+            Cliente::with(
+                ['direccion.localidad', 'telefono.tipoTelefono']
+            )->get()
         );
         return ["clientes" => $clientes];
     }
 
     public function store(ClienteRequest $request)
     {
-        $data = $request->validated();
+        $request->validated();
 
-        $razonSocial = $request->input('razon_social');
-        $cuitCliente = $request->input('cuit_cliente');
-        $email = $request->input('email');
-        $estadoId = $request->input('estado_id');
-        $condicionIvaId = $request->input('condicion_iva_id');
-        $calle = $request->input('calle');
-        $numeracion = $request->input('numeracion');
-        $barrio = $request->input('barrio');
-        $piso = $request->input('piso');
-        $departamento = $request->input('departamento');
-        $localidadId = $request->input('localidad_id');
-        $tipoTelefonoId = $request->input('tipo_telefono_id');
-        $numeroTelefono = $request->input('numero_telefono');
-
-        // Llama al procedimiento almacenado
-        DB::statement("CALL CrearCliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [
-            $razonSocial, $cuitCliente, $email, $estadoId, $condicionIvaId, $calle, $numeracion,
-            $barrio, $piso, $departamento, $localidadId, $tipoTelefonoId, $numeroTelefono
+        $direccion = Direccion::create([
+            'calle' => $request->input('calle'),
+            'numeracion' => $request->input('numeracion'),
+            'barrio' => $request->input('barrio'),
+            'piso' => $request->input('piso'),
+            'departamento' => $request->input('departamento'),
+            'localidad_id' => $request->input('localidad_id'),
         ]);
-        return ["cliente" => $data];
+
+        // Crear un nuevo teléfono
+        $telefono = Telefono::create([
+            'tipo_telefono_id' => $request->input('tipo_telefono_id'),
+            'numero_telefono' => $request->input('numero_telefono'),
+        ]);
+
+        // Crear un nuevo cliente
+        $cliente = new Cliente([
+            'razon_social' => $request->input('razon_social'),
+            'cuit_cliente' => $request->input('cuit_cliente'),
+            'email' => $request->input('email'),
+            'estado_id' => $request->input('estado_id'),
+            'condicion_iva_id' => $request->input('condicion_iva_id'),
+        ]);
+
+        // Asignar la dirección y el teléfono al cliente
+        $cliente->direccion()->associate($direccion);
+        $cliente->telefono()->associate($telefono);
+
+        // Guardar el cliente en la base de datos
+        $cliente->save();
+
+        // Devolver el cliente insertado
+
+        return ["cliente" => new ClienteResource(Cliente::with(
+            ['direccion.localidad', 'telefono.tipoTelefono']
+        )->find($cliente->id))];
+
+
     }
 
     /**
@@ -56,10 +77,8 @@ class ClientesController extends Controller
     {
         $cliente = new ClienteResource(Cliente::with(
             ['direccion.localidad', 'telefono.tipoTelefono']
-            )->find($cliente->id));
-            return ["cliente" => $cliente];
-
-
+        )->find($cliente->id));
+        return ["cliente" => $cliente];
     }
 
     /**
@@ -67,34 +86,39 @@ class ClientesController extends Controller
      */
     public function update(ClienteRequest $request, Cliente $cliente)
     {
-        $data = $request->validated();
+        $request->validated();
 
- // Obtén los datos del formulario
- $razonSocial = $request->input('razon_social');
- $cuitCliente = $request->input('cuit_cliente');
- $email = $request->input('email');
- $estadoId = $request->input('estado_id');
- $condicionIvaId = $request->input('condicion_iva_id');
- $calle = $request->input('calle');
- $numeracion = $request->input('numeracion');
- $barrio = $request->input('barrio');
- $piso = $request->input('piso');
- $departamento = $request->input('departamento');
- $localidadId = $request->input('localidad_id');
- $tipoTelefonoId = $request->input('tipo_telefono_id');
- $numeroTelefono = $request->input('numero_telefono');
+        $cliente = Cliente::findOrFail($cliente->id);
 
- // Llama al procedimiento almacenado
- DB::statement("CALL ActualizarCliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [
-     $cliente->id, $razonSocial, $cuitCliente, $email, $estadoId, $condicionIvaId, $calle, $numeracion,
-     $barrio, $piso, $departamento, $localidadId, $tipoTelefonoId, $numeroTelefono
- ]);
+        // Actualizar los datos del cliente
+        $cliente->razon_social = $request->input('razon_social');
+        $cliente->cuit_cliente = $request->input('cuit_cliente');
+        $cliente->estado_id = $request->input('estado_id');
+        $cliente->condicion_iva_id = $request->input('condicion_iva_id');
 
- $cliente = new ClienteResource(Cliente::with(
-    ['direccion.localidad', 'telefono.tipoTelefono']
-    )->find($cliente->id));
-    return ["cliente" => $cliente];
-}
+        // Actualizar los datos de la dirección asociada al cliente
+        $cliente->direccion->update([
+            'calle' => $request->input('calle'),
+            'numeracion' => $request->input('numeracion'),
+            'barrio' => $request->input('barrio'),
+            'piso' => $request->input('piso'),
+            'departamento' => $request->input('departamento'),
+            'localidad_id' => $request->input('localidad_id'),
+        ]);
+
+        // Actualizar los datos del teléfono asociado al cliente
+        $cliente->telefono->update([
+            'tipo_telefono_id' => $request->input('tipo_telefono_id'),
+            'numero_telefono' => $request->input('numero_telefono'),
+        ]);
+
+        // Guardar los cambios
+        $cliente->save();
+
+        // Devolver una respuesta adecuada
+        return response()->json(['cliente' => new ClienteResource($cliente)]);
+
+    }
 
     /**
      * Remove the specified resource from storage.
