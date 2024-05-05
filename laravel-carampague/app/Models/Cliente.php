@@ -12,6 +12,7 @@ class Cliente extends Model
         'cuit_cliente',
         'email',
         'estado_id',
+        'direccion_id',
         'condicion_iva_id',
         'calle',
         'numeracion',
