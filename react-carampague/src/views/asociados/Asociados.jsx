@@ -1,19 +1,20 @@
-import { useEffect } from "react";
+import  { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import { useDispatch } from "react-redux";
-import { Empty } from "../../components/Empty";
-import { ObjetivosList } from "../../components/objetivos/ObjetivosList";
-import { getObjetivos } from "../../store/thunks/ObjetivosThunks";
+import { getAsociados } from "../../store/thunks/AsociadosThunks";
+import { AsociadoList } from "../../components/asociados/AsociadosList";
 
-export const Objetivos = () => {
+
+export const Asociados = () => {
+
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getObjetivos());
+    dispatch(getAsociados());
   }, [dispatch]);
 
-  const { objetivos } = useSelector((state) => state.objetivos);
+  const { asociados } = useSelector((state) => state.asociados);
 
   return (
     <>
@@ -22,23 +23,18 @@ export const Objetivos = () => {
           className="text-3xl underline underline-offset-8
          text-sky-700 font-semibold text-center mb-5"
         >
-          Objetivos
+          Asociados
         </h1>
         <Link
-          to={"/objetivos/crear"}
+          to={"/asociados/crear"}
           className="bg-sky-800 hover:bg-sky-950 text-sm text-white p-2
     uppercase font-bold cursor-pointer rounded"
         >
-          Crear objetivo
+          Crear asociado
         </Link>
       </div>
-      {objetivos.length > 0 ? (
-        <ObjetivosList objetivos={objetivos} />
-      ) : (
-        <Empty
-          message={"Aun no hay objetivos registrados, crea uno para continuar"}
-        />
-      )}
+        <AsociadoList asociados={asociados} />
+      
     </>
   );
 };

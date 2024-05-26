@@ -3,7 +3,7 @@ import { Layout } from "../layouts/Layout";
 import { AuthLayout } from "../layouts/AuthLayout";
 import Inicio from "../views/Inicio";
 import Login from "../views/Login";
-import { ClienteRouter, ObjetivoRouter, UserRouter } from "./index";
+import { ClienteRouter, ObjetivoRouter, UserRouter, AsociadosRouter } from "./index";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +25,10 @@ const router = createBrowserRouter([
       {
         path: "/objetivos/*",
         element: <ObjetivoRouter />,
+      },
+      {
+        path: "/asociados/*",
+        element: <AsociadosRouter />,
       },
     ],
   },

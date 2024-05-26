@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ClientesList } from "../../components/clientes/ClientesList";
 import { useSelector } from "react-redux";
@@ -9,22 +9,21 @@ import { getClientes } from "../../store/thunks/ClientesThunks";
 
 export const Clientes = () => {
   const dispatch = useDispatch();
-useEffect(() => {
-  dispatch(getClientes())
+  useEffect(() => {
+    dispatch(getClientes());
+  }, [dispatch]);
 
-
-}, [dispatch])
-
-  const {clientes} = useSelector((state) => state.clientes);
+  const { clientes } = useSelector((state) => state.clientes);
 
   return (
     <>
       <div className="flex flex-col md:flex-row justify-between items-center">
-        <h1 
-        className="text-3xl underline underline-offset-8
-         text-sky-700 font-semibold text-center mb-5">
+        <h1
+          className="text-3xl underline underline-offset-8
+         text-sky-700 font-semibold text-center mb-5"
+        >
           Clientes
-         </h1>
+        </h1>
         <Link
           to={"/clientes/crear"}
           className="bg-sky-800 hover:bg-sky-950 text-sm text-white p-2
@@ -33,9 +32,13 @@ useEffect(() => {
           Crear cliente
         </Link>
       </div>
-      {clientes 
-      ? <ClientesList clientes={clientes} /> 
-      : <Empty message={'Aun no hay clientes registrados, crea uno para continuar'}/>}
+      {clientes.length > 0 ? (
+        <ClientesList clientes={clientes} />
+      ) : (
+        <Empty
+          message={"Aun no hay clientes registrados, crea uno para continuar"}
+        />
+      )}
     </>
   );
 };

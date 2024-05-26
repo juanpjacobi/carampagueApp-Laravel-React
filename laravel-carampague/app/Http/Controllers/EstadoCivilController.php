@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\documentacion;
+use App\Http\Resources\EstadoCivilCollection;
+use App\Models\EstadoCivil;
 use Illuminate\Http\Request;
 
-class DocumentacionController extends Controller
+class EstadoCivilController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return new EstadoCivilCollection(EstadoCivil::all());
+
     }
 
     /**
@@ -34,7 +36,7 @@ class DocumentacionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(documentacion $documentacion)
+    public function show(EstadoCivil $estadoCivil)
     {
         //
     }
@@ -42,7 +44,7 @@ class DocumentacionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(documentacion $documentacion)
+    public function edit(EstadoCivil $estadoCivil)
     {
         //
     }
@@ -50,7 +52,7 @@ class DocumentacionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, documentacion $documentacion)
+    public function update(Request $request, EstadoCivil $estadoCivil)
     {
         //
     }
@@ -58,7 +60,7 @@ class DocumentacionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(documentacion $documentacion)
+    public function destroy(EstadoCivil $estadoCivil)
     {
         //
     }

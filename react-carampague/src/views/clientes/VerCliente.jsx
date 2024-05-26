@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Spinner } from "../../components/utilities/spinners/Spinner";
 import { useDispatch, useSelector } from "react-redux";
 import { ClienteCard } from "../../components/clientes/ClienteCard";
 import { getCliente } from "../../store/thunks/ClientesThunks";
-import { setSelectedCliente } from "../../store/slices/ClientesSlice";
 
 export const VerCliente = () => {
   const { id } = useParams();

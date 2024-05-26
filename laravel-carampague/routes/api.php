@@ -1,13 +1,16 @@
 <?php
 
+use App\Http\Controllers\AsociadosController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\CondicionIvaController;
+use App\Http\Controllers\EstadoCivilController;
 use App\Http\Controllers\EstadoController;
 use App\Http\Controllers\LocalidadController;
 use App\Http\Controllers\ObjetivosController;
 use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\TipoTelefonoController;
+use App\Http\Controllers\UploadImageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +38,9 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::apiResource('/estados', EstadoController::class);
     Route::apiResource('/clientes', ClientesController::class);
     Route::apiResource('/objetivos', ObjetivosController::class);
+    Route::apiResource('/estados-civiles', EstadoCivilController::class);
+    Route::apiResource('/asociados', AsociadosController::class);
+    Route::post('/upload', [UploadImageController::class, 'uploadImage']);
 
 
 });

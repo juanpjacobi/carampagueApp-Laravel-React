@@ -10,6 +10,7 @@ use App\Http\Resources\ClienteResource;
 use App\Models\Cliente;
 use App\Models\Direccion;
 use App\Models\Telefono;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ClientesController extends Controller
 {
@@ -28,44 +29,49 @@ class ClientesController extends Controller
 
     public function store(ClienteRequest $request)
     {
-        $request->validated();
+        try {
+            $request->validated();
 
-        $direccion = Direccion::create([
-            'calle' => $request->input('calle'),
-            'numeracion' => $request->input('numeracion'),
-            'barrio' => $request->input('barrio'),
-            'piso' => $request->input('piso'),
-            'departamento' => $request->input('departamento'),
-            'localidad_id' => $request->input('localidad_id'),
-        ]);
+            $direccion = Direccion::create([
+                'calle' => $request->input('calle'),
+                'numeracion' => $request->input('numeracion'),
+                'barrio' => $request->input('barrio'),
+                'piso' => $request->input('piso'),
+                'departamento' => $request->input('departamento'),
+                'localidad_id' => $request->input('localidad_id'),
+            ]);
 
-        // Crear un nuevo teléfono
-        $telefono = Telefono::create([
-            'tipo_telefono_id' => $request->input('tipo_telefono_id'),
-            'numero_telefono' => $request->input('numero_telefono'),
-        ]);
+            // Crear un nuevo teléfono
+            $telefono = Telefono::create([
+                'tipo_telefono_id' => $request->input('tipo_telefono_id'),
+                'numero_telefono' => $request->input('numero_telefono'),
+            ]);
 
-        // Crear un nuevo cliente
-        $cliente = new Cliente([
-            'razon_social' => $request->input('razon_social'),
-            'cuit_cliente' => $request->input('cuit_cliente'),
-            'email' => $request->input('email'),
-            'estado_id' => $request->input('estado_id'),
-            'condicion_iva_id' => $request->input('condicion_iva_id'),
-        ]);
+            // Crear un nuevo cliente
+            $cliente = new Cliente([
+                'razon_social' => $request->input('razon_social'),
+                'cuit_cliente' => $request->input('cuit_cliente'),
+                'email' => $request->input('email'),
+                'estado_id' => $request->input('estado_id'),
+                'condicion_iva_id' => $request->input('condicion_iva_id'),
+            ]);
 
-        // Asignar la dirección y el teléfono al cliente
-        $cliente->direccion()->associate($direccion);
-        $cliente->telefono()->associate($telefono);
+            // Asignar la dirección y el teléfono al cliente
+            $cliente->direccion()->associate($direccion);
+            $cliente->telefono()->associate($telefono);
 
-        // Guardar el cliente en la base de datos
-        $cliente->save();
+            // Guardar el cliente en la base de datos
+            $cliente->save();
 
-        // Devolver el cliente insertado
+            // Devolver el cliente insertado
 
-        return ["cliente" => new ClienteResource(Cliente::with(
-            ['direccion.localidad', 'telefono.tipoTelefono']
-        )->find($cliente->id))];
+            return ["cliente" => new ClienteResource(Cliente::with(
+                ['direccion.localidad', 'telefono.tipoTelefono']
+            )->find($cliente->id))];
+
+        } catch (\Exception $e) {
+            throw new HttpException(500, $e->getMessage());
+        }
 
 
     }
