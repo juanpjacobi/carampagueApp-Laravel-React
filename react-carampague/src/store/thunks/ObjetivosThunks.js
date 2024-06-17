@@ -1,6 +1,10 @@
 import Swal from "sweetalert2";
 import carampagueApi from "../../api/carampagueApi";
-import { setObjetivos, setSelectedObjetivo, addNewObjetivo, setUpdatedObjetivo } from "../slices/ObjetivosSlice";
+import {
+  setObjetivos,
+  setSelectedObjetivo,
+
+} from "../slices/ObjetivosSlice";
 import { startLoading, setError, endLoading } from "../slices/UiSlice";
 
 export const getObjetivos = () => {
@@ -25,13 +29,13 @@ export const getObjetivos = () => {
   };
 };
 
-export const getObjetivo =  (id) => {
+export const getObjetivo = (id) => {
   return async (dispatch) => {
     dispatch(startLoading());
     try {
-      const {data} = await carampagueApi.get(`/api/objetivos/${id}`);
+      const { data } = await carampagueApi.get(`/api/objetivos/${id}`);
       dispatch(setSelectedObjetivo(data.objetivo));
-      dispatch(endLoading())
+      dispatch(endLoading());
     } catch (error) {
       const errors = Object.values(error.response.data.errors).map((err) => {
         return err;
@@ -54,7 +58,6 @@ export const createObjetivo = (data, navigate) => {
 
     try {
       await carampagueApi.post(`/api/objetivos/`, data);
-      dispatch(addNewObjetivo());
       Swal.fire({
         position: "top-end",
         icon: "success",
@@ -62,8 +65,7 @@ export const createObjetivo = (data, navigate) => {
         showConfirmButton: true,
       }).then(() => {
         navigate("/objetivos");
-      dispatch(endLoading())
-
+        dispatch(endLoading());
       });
     } catch (error) {
       const errors = Object.values(error.response.data.errors).map((err) => {
@@ -82,8 +84,6 @@ export const createObjetivo = (data, navigate) => {
 
 export const updateObjetivo = (id, data, navigate) => {
   return async (dispatch) => {
-    dispatch(startLoading());
-
     try {
       await carampagueApi.put(`/api/objetivos/${id}`, data);
       dispatch(setUpdatedObjetivo());
@@ -96,17 +96,63 @@ export const updateObjetivo = (id, data, navigate) => {
         navigate("/objetivos");
       });
     } catch (error) {
-        const errors = Object.values(error.response.data.errors).map((err) => {
-          return err;
-        });
-        dispatch(setError(errors));
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: errors,
-          footer: "Error al actualizar objetivo",
-        });
-      }
+      const errors = Object.values(error.response.data.errors).map((err) => {
+        return err;
+      });
+      dispatch(setError(errors));
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: errors,
+        footer: "Error al actualizar objetivo",
+      });
+    }
   };
 };
 
+export const toggleObjetivoActivo = (id, setActivo) => {
+  return async (dispatch) => {
+    // dispatch(startLoading());
+    try {
+      const result = await Swal.fire({
+        title: "¿Estás seguro?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, cambiar estado!",
+      });
+
+      if (result.isConfirmed) {
+        const { data } = await carampagueApi.put(`/api/objetivos/${id}/toggle`);
+        const updatedObjetivo = {
+          ...data.objetivo,
+          activo: data.activo ? 1 : 0, // Convertir true/false a 1/0
+        };
+        dispatch(setSelectedObjetivo(updatedObjetivo)); // Aquí pasas el asociado actualizado
+        setActivo(updatedObjetivo.activo); // Actualiza el estado local
+        dispatch(endLoading());
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Estado del objetivo actualizado con éxito",
+          showConfirmButton: true,
+        });
+      } else {
+        // dispatch(endLoading());
+      }
+    } catch (error) {
+      const errors = Object.values(error.response.data.errors).map((err) => {
+        return err;
+      });
+      dispatch(setError(errors));
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: errors,
+        footer: "Error al actualizar el estado del objetivo",
+      });
+      dispatch(endLoading());
+    }
+  };
+};
