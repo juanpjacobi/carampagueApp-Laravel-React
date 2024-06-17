@@ -9,16 +9,12 @@ class Objetivo extends Model
 {
     protected $fillable = [
         'nombre_objetivo',
-        'estado_id',
+        'activo',
         'direccion_id',
         'cliente_id',
         'valor_id'
 
     ];
-    public function estado()
-    {
-        return $this->belongsTo(Estado::class);
-    }
     public function valor()
     {
         return $this->belongsTo(Valor::class);
