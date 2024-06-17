@@ -1,15 +1,38 @@
-import { Route, Routes } from 'react-router-dom';
-import { Asociados, CrearAsociado, VerAsociado } from '../views';
-import { ActualizarAsociado } from '../views/asociados/ActualizarAsociado';
-
+import { Route, Routes } from "react-router-dom";
+import {
+  ActualizarAsociado,
+  Asociados,
+  CrearAsociado,
+  DocumentacionAsociado,
+  EditarDocumentacion,
+  EditarEntregaRopa,
+  EntregaRopa,
+  RegistrarDocumentacionAsociado,
+  RegistrarEntregaRopa,
+  VerAsociado,
+  VerDocumentacion,
+  VerEntregaRopa,
+} from "../views";
 
 export const AsociadosRouter = () => {
-    return (
-        <Routes>
-          <Route path="/" element={<Asociados />} />
-          <Route path="/crear" element={<CrearAsociado />} />
-          <Route path="/:id" element={<VerAsociado />} />
-          <Route path="/edit/:id" element={<ActualizarAsociado />} />
-        </Routes>
-      );
-}
+  return (
+    <Routes>
+      <Route path="/" element={<Asociados />} />
+      <Route path="/crear" element={<CrearAsociado />} />
+      <Route path="/:id" element={<VerAsociado />} />
+      <Route path="/edit/:id" element={<ActualizarAsociado />} />
+      <Route path="/documentacion/:id" element={<DocumentacionAsociado />} />
+      <Route
+        path="/documentacion/crear"
+        element={<RegistrarDocumentacionAsociado />}
+      />
+      <Route path="/documentacion/detalle/:id" element={<VerDocumentacion />} />
+      <Route path="/documentacion/edit/:id" element={<EditarDocumentacion />} />
+      <Route path="/entrega-ropa/" element={<EntregaRopa />} />
+      <Route path="/entrega-ropa/crear" element={<RegistrarEntregaRopa />} />
+      <Route path="/entrega-ropa/edit/:id" element={<EditarEntregaRopa />} />
+
+      <Route path="/entrega-ropa/detalle/:id" element={<VerEntregaRopa />} />
+    </Routes>
+  );
+};
