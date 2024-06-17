@@ -19,10 +19,13 @@ class ClienteResource extends JsonResource
             'razon_social' => $this->razon_social,
             'cuit_cliente' => $this->cuit_cliente,
             'email' => $this->email,
-            'estado' => $this->estado,
+            'activo' => $this->activo,
             'condicion_iva' => $this->condicion_iva,
             'telefono' => $this->telefono,
+            'tipo_telefono' => $this->telefono->tipoTelefono,
             'direccion' => $this->direccion,
+            'barrio' => $this->direccion->barrio,
+            'localidad' => $this->direccion->barrio->localidad,
         ];
     }
 }
