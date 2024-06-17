@@ -13,8 +13,8 @@ class EstadoCivilController extends Controller
      */
     public function index()
     {
-        return new EstadoCivilCollection(EstadoCivil::all());
-
+        $estados_civiles = new EstadoCivilCollection(EstadoCivil::all());
+        return response(['estados_civiles' => $estados_civiles], 200);
     }
 
     /**
