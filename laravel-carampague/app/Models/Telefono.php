@@ -14,8 +14,6 @@ class Telefono extends Model
     ];
 
 
-
-
     public function tipoTelefono(){
         return $this->belongsTo(TipoTelefono::class);
     }
