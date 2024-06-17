@@ -18,7 +18,7 @@ class ObjetivosController extends Controller
     public function index()
     {
         $objetivos = Objetivo::all();
-        return ["objetivos" => new ObjetivoCollection($objetivos)];
+        return response(["objetivos" => new ObjetivoCollection($objetivos)], 200);
     }
 
 
@@ -33,10 +33,9 @@ class ObjetivosController extends Controller
         $direccion = Direccion::create([
             'calle' => $request->input('calle'),
             'numeracion' => $request->input('numeracion'),
-            'barrio' => $request->input('barrio'),
             'piso' => $request->input('piso'),
             'departamento' => $request->input('departamento'),
-            'localidad_id' => $request->input('localidad_id'),
+            'barrio_id' => $request->input('barrio_id'),
         ]);
 
         // Crear un nuevo valor
@@ -49,7 +48,7 @@ class ObjetivosController extends Controller
         $objetivo = new Objetivo([
             'nombre_objetivo' => $request->input('nombre_objetivo'),
             'cliente_id' => $request->input('cliente_id'),
-            'estado_id' => $request->input('estado_id'),
+            'activo' => $request->input('activo'),
         ]);
 
         // Asignar la dirección y el valor al objetivo
@@ -60,7 +59,7 @@ class ObjetivosController extends Controller
         $objetivo->save();
 
         // Devolver una respuesta adecuada
-        return ['objetivo' => new ObjetivoResource($objetivo)];
+        return response(['objetivo' => new ObjetivoResource($objetivo)], 201);
     }
 
     /**
@@ -68,8 +67,8 @@ class ObjetivosController extends Controller
      */
     public function show(string $id)
     {
-        $objetivo = Objetivo::with(['direccion.localidad'])->find($id);
-        return ['objetivo' => new ObjetivoResource($objetivo)];
+        $objetivo = Objetivo::find($id);
+        return response(['objetivo' => new ObjetivoResource($objetivo)], 200);
     }
 
 
@@ -86,17 +85,18 @@ class ObjetivosController extends Controller
         // Actualizar los datos del objetivo
         $objetivo->nombre_objetivo = $request->input('nombre_objetivo');
         $objetivo->cliente_id = $request->input('cliente_id');
-        $objetivo->estado_id = $request->input('estado_id');
+        $objetivo->activo = $request->input('activo');
 
-        // Actualizar los datos de la dirección asociada al objetivo
-        $objetivo->direccion->update([
-            'calle' => $request->input('calle'),
-            'numeracion' => $request->input('numeracion'),
-            'barrio' => $request->input('barrio'),
-            'piso' => $request->input('piso'),
-            'departamento' => $request->input('departamento'),
-            'localidad_id' => $request->input('localidad_id'),
-        ]);
+        // Actualizar la dirección del asociado si se proporcionan datos
+        if ($request->has('calle') || $request->has('numeracion') || $request->has('piso') || $request->has('departamento') || $request->has('barrio_id')) {
+            $objetivo->direccion->update([
+                'calle' => $request->input('calle'),
+                'numeracion' => $request->input('numeracion'),
+                'piso' => $request->input('piso'),
+                'departamento' => $request->input('departamento'),
+                'barrio_id' => $request->input('barrio_id'),
+            ]);
+        }
 
         // Actualizar los datos del valor asociado al objetivo
         $objetivo->valor->update([
@@ -108,7 +108,7 @@ class ObjetivosController extends Controller
         $objetivo->save();
 
         // Devolver una respuesta adecuada
-        return ['objetivo' => new ObjetivoResource($objetivo)];
+        return response(['objetivo' => new ObjetivoResource($objetivo)], 200);
     }
 
     /**
@@ -117,5 +117,18 @@ class ObjetivosController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function toggleActivo($id)
+    {
+        $objetivo = Objetivo::findOrFail($id);
+        $objetivo->activo = !$objetivo->activo;
+        $objetivo->save();
+
+        return response([
+            'message' => 'Estado del objetivo actualizado con éxito',
+            'activo' => $objetivo->activo,
+            'objetivo' => new ObjetivoResource($objetivo)
+        ], 200);
     }
 }

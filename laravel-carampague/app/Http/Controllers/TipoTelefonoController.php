@@ -14,10 +14,8 @@ class TipoTelefonoController extends Controller
      */
     public function index()
     {
-    //    return response()->json(
-    //     ['tipo-telefono' => TipoTelefono::all()]
-    //    );
-    return new TipoTelefonoCollection(TipoTelefono::all());
+        $tipos_telefonos = new TipoTelefonoCollection(TipoTelefono::all());
+        return response(['tipos_telefonos' => $tipos_telefonos]);
     }
 
     /**

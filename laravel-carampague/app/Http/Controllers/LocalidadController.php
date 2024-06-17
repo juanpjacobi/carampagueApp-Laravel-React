@@ -16,7 +16,8 @@ class LocalidadController extends Controller
      */
     public function index()
     {
-        return new LocalidadCollection(Localidad::all());
+        $localidades = new LocalidadCollection(Localidad::all());
+        return response(['localidades' => $localidades], 200);
     }
 
     /**

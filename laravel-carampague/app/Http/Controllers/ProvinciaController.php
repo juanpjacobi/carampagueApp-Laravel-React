@@ -14,8 +14,8 @@ class ProvinciaController extends Controller
      */
     public function index()
     {
-        return new ProvinciaCollection(Provincia::all());
-
+        $provincias = new ProvinciaCollection(Provincia::all());
+        return response(['provincias' => $provincias], 200);
     }
 
     /**
@@ -23,7 +23,17 @@ class ProvinciaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+
+        $provincia = new Provincia([
+            "nombre_provincia" => $request->input('nombre_provincia'),
+        ]);
+        $provincia->save();
+        return ['provincia' => $provincia];
+
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Error al crear la provincia', 'error' => $e->getMessage()], 500);
+    }
     }
 
     /**
