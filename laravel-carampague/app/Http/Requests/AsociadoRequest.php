@@ -31,14 +31,13 @@ class AsociadoRequest extends FormRequest
             'fecha_alta' => ['required', 'date'],
             'fecha_nacimiento' => ['required', 'date'],
             'cuit_asociado' => ['required', 'integer'],
-            'estado_id' => ['required'],
+            'activo' => ['required'],
             'estado_civil_id' => ['required'],
             'numero_telefono'=>['required'],
             'tipo_telefono_id'=>['required'],
             'calle'=>['required', 'string'],
             'numeracion'=>['required'],
-            'barrio'=>['required'],
-            'localidad_id'=>['required'],
+            'barrio_id'=>['required'],
         ];
     }
     public function messages()
@@ -57,15 +56,14 @@ class AsociadoRequest extends FormRequest
             'fecha_alta.date' => 'La fecha de alta deb ser valida',
             'fecha_nacimiento.required' => 'La fecha de alta es requerida',
             'fecha_nacimiento.date' => 'La fecha de alta deb ser valida',
-            'estado_id.required' => 'El estado es requerido',
+            'activo.required' => 'El estado es requerido',
             'estado_civil_id.required' => 'El estado es requerido',
             'numero_telefono.required' => 'El numero de telefono es requerido',
             'tipo_telefono_id'=> 'El tipo de telefono es requerido',
             'calle.required'=> 'La calle es requerida',
             'calle.string'=> 'La calle debe ser una cadena de caracteres',
             'numeracion.required'=> 'La numeracion es requerida',
-            'barrio.required'=> 'El barrio es requerido',
-            'localidad_id.required'=> 'La localidad es requerida',
+            'barrio_id.required'=> 'El barrio es requerido',
         ];
     }
 }
