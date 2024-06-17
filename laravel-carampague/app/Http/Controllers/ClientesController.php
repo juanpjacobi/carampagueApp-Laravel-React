@@ -19,26 +19,24 @@ class ClientesController extends Controller
      */
     public function index()
     {
-        $clientes = new ClienteCollection(
-            Cliente::with(
-                ['direccion.localidad', 'telefono.tipoTelefono']
-            )->get()
-        );
-        return ["clientes" => $clientes];
+        $clientes = new ClienteCollection(Cliente::all());
+        return response(["clientes" => $clientes], 200);
     }
 
     public function store(ClienteRequest $request)
     {
+        $request->validated();
+
+        DB::beginTransaction();
         try {
-            $request->validated();
+            // Crear una nueva dirección
 
             $direccion = Direccion::create([
                 'calle' => $request->input('calle'),
                 'numeracion' => $request->input('numeracion'),
-                'barrio' => $request->input('barrio'),
                 'piso' => $request->input('piso'),
                 'departamento' => $request->input('departamento'),
-                'localidad_id' => $request->input('localidad_id'),
+                'barrio_id' => $request->input('barrio_id'),
             ]);
 
             // Crear un nuevo teléfono
@@ -52,7 +50,7 @@ class ClientesController extends Controller
                 'razon_social' => $request->input('razon_social'),
                 'cuit_cliente' => $request->input('cuit_cliente'),
                 'email' => $request->input('email'),
-                'estado_id' => $request->input('estado_id'),
+                'activo' => $request->input('activo'),
                 'condicion_iva_id' => $request->input('condicion_iva_id'),
             ]);
 
@@ -62,18 +60,14 @@ class ClientesController extends Controller
 
             // Guardar el cliente en la base de datos
             $cliente->save();
+            DB::commit();
 
             // Devolver el cliente insertado
-
-            return ["cliente" => new ClienteResource(Cliente::with(
-                ['direccion.localidad', 'telefono.tipoTelefono']
-            )->find($cliente->id))];
-
+            return response(["cliente" => new ClienteResource(Cliente::find($cliente->id))], 201);
         } catch (\Exception $e) {
-            throw new HttpException(500, $e->getMessage());
+            DB::rollback();
+            return response()->json(['message' => 'Error al crear el asociado: ' . $e->getMessage()], 500);
         }
-
-
     }
 
     /**
@@ -81,10 +75,8 @@ class ClientesController extends Controller
      */
     public function show(Cliente $cliente)
     {
-        $cliente = new ClienteResource(Cliente::with(
-            ['direccion.localidad', 'telefono.tipoTelefono']
-        )->find($cliente->id));
-        return ["cliente" => $cliente];
+        $cliente = new ClienteResource(Cliente::find($cliente->id));
+        return response(["cliente" => $cliente], 200);
     }
 
     /**
@@ -92,38 +84,46 @@ class ClientesController extends Controller
      */
     public function update(ClienteRequest $request, Cliente $cliente)
     {
+
         $request->validated();
+        DB::beginTransaction();
+        try {
 
-        $cliente = Cliente::findOrFail($cliente->id);
+            $cliente = Cliente::findOrFail($cliente->id);
 
-        // Actualizar los datos del cliente
-        $cliente->razon_social = $request->input('razon_social');
-        $cliente->cuit_cliente = $request->input('cuit_cliente');
-        $cliente->estado_id = $request->input('estado_id');
-        $cliente->condicion_iva_id = $request->input('condicion_iva_id');
+            // Actualizar los datos del cliente
+            $cliente->razon_social = $request->input('razon_social');
+            $cliente->cuit_cliente = $request->input('cuit_cliente');
+            $cliente->activo = $request->input('activo');
+            $cliente->condicion_iva_id = $request->input('condicion_iva_id');
 
-        // Actualizar los datos de la dirección asociada al cliente
-        $cliente->direccion->update([
-            'calle' => $request->input('calle'),
-            'numeracion' => $request->input('numeracion'),
-            'barrio' => $request->input('barrio'),
-            'piso' => $request->input('piso'),
-            'departamento' => $request->input('departamento'),
-            'localidad_id' => $request->input('localidad_id'),
-        ]);
+            // Actualizar los datos de la dirección asociada al cliente
+            if ($request->has('calle') || $request->has('numeracion') || $request->has('piso') || $request->has('departamento') || $request->has('barrio_id')) {
+                $cliente->direccion->update([
+                    'calle' => $request->input('calle'),
+                    'numeracion' => $request->input('numeracion'),
+                    'piso' => $request->input('piso'),
+                    'departamento' => $request->input('departamento'),
+                    'barrio_id' => $request->input('barrio_id'),
+                ]);
+            }
 
-        // Actualizar los datos del teléfono asociado al cliente
-        $cliente->telefono->update([
-            'tipo_telefono_id' => $request->input('tipo_telefono_id'),
-            'numero_telefono' => $request->input('numero_telefono'),
-        ]);
+            // Actualizar los datos del teléfono asociado al cliente
+            $cliente->telefono->update([
+                'tipo_telefono_id' => $request->input('tipo_telefono_id'),
+                'numero_telefono' => $request->input('numero_telefono'),
+            ]);
 
-        // Guardar los cambios
-        $cliente->save();
+            // Guardar los cambios
+            $cliente->save();
+            DB::commit();
 
-        // Devolver una respuesta adecuada
-        return response()->json(['cliente' => new ClienteResource($cliente)]);
-
+            // Devolver una respuesta adecuada
+            return response((['cliente' => new ClienteResource($cliente)]), 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['message' => 'Error al crear el asociado: ' . $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -132,5 +132,18 @@ class ClientesController extends Controller
     public function destroy(Cliente $clientes)
     {
         //
+    }
+
+    public function toggleActivo($id)
+    {
+        $cliente = Cliente::findOrFail($id);
+        $cliente->activo = !$cliente->activo;
+        $cliente->save();
+
+        return response(([
+            'message' => 'Estado del cliente actualizado con éxito',
+            'activo' => $cliente->activo,
+            'cliente' => new ClienteResource($cliente)
+        ]), 200);
     }
 }
