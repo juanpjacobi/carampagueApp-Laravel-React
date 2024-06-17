@@ -9,6 +9,8 @@ class Localidad extends Model
 {
     protected $table = 'localidades';
     protected $fillable = ['nombre_localidad','provincia_id'];
-
+    public function provincia(){
+        return $this->belongsTo(Provincia::class);
+    }
     use HasFactory;
 }
