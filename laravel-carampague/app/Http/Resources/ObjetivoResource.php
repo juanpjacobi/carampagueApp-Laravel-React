@@ -17,10 +17,13 @@ class ObjetivoResource extends JsonResource
         return [
             'id' => $this->id,
             'nombre' => $this->nombre_objetivo,
-            'estado' => $this->estado,
+            'activo' => $this->activo,
             'direccion' => $this->direccion,
             'valor' => $this->valor,
             'cliente' => $this->cliente,
+            'direccion' => $this->direccion,
+            'barrio' => $this->direccion->barrio,
+            'localidad' => $this->direccion->barrio->localidad,
         ];
     }
 }
