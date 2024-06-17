@@ -2,12 +2,7 @@ import carampagueApi from "../../api/carampagueApi";
 import Swal from "sweetalert2";
 
 import { startLoading, setError, endLoading } from "../slices/UiSlice";
-import {
-  addNewCliente,
-  setClientes,
-  setSelectedCliente,
-  setUpdatedCliente,
-} from "../slices/ClientesSlice";
+import { setClientes, setSelectedCliente } from "../slices/ClientesSlice";
 
 export const getClientes = () => {
   return async (dispatch) => {
@@ -15,7 +10,6 @@ export const getClientes = () => {
     try {
       const { data } = await carampagueApi.get(`/api/clientes/`);
       dispatch(setClientes(data.clientes));
-      dispatch(endLoading());
     } catch (error) {
       const errors = Object.values(error.response.data.errors).map((err) => {
         return err;
@@ -27,6 +21,8 @@ export const getClientes = () => {
         text: Object.values(error.response.data.errors),
         footer: "Error al obtener clientes",
       });
+    } finally {
+      dispatch(endLoading());
     }
   };
 };
@@ -37,7 +33,6 @@ export const getCliente = (id) => {
     try {
       const { data } = await carampagueApi.get(`/api/clientes/${id}`);
       dispatch(setSelectedCliente(data.cliente));
-      dispatch(endLoading());
     } catch (error) {
       const errors = Object.values(error.response.data.errors).map((err) => {
         return err;
@@ -50,6 +45,8 @@ export const getCliente = (id) => {
         text: Object.values(error.response.data.errors),
         footer: "Error al obtener cliente",
       });
+    } finally {
+      dispatch(endLoading());
     }
   };
 };
@@ -60,7 +57,6 @@ export const createCliente = (data, navigate) => {
 
     try {
       await carampagueApi.post(`/api/clientes/`, data);
-      dispatch(addNewCliente());
       Swal.fire({
         position: "top-end",
         icon: "success",
@@ -68,7 +64,6 @@ export const createCliente = (data, navigate) => {
         showConfirmButton: true,
       }).then(() => {
         navigate("/clientes");
-        dispatch(endLoading());
       });
     } catch (error) {
       const errors = Object.values(error.response.data.errors).map((err) => {
@@ -81,6 +76,8 @@ export const createCliente = (data, navigate) => {
         text: errors,
         footer: "Error al crear cliente",
       });
+    } finally {
+      dispatch(endLoading());
     }
   };
 };
@@ -91,7 +88,6 @@ export const updateCliente = (id, data, navigate) => {
 
     try {
       await carampagueApi.put(`/api/clientes/${id}`, data);
-      dispatch(setUpdatedCliente());
       Swal.fire({
         position: "top-end",
         icon: "success",
@@ -111,6 +107,8 @@ export const updateCliente = (id, data, navigate) => {
         text: errors,
         footer: "Error al actualizar cliente",
       });
+    } finally {
+      dispatch(endLoading());
     }
   };
 };
@@ -135,7 +133,6 @@ export const toggleClienteActivo = (id, setActivo) => {
         };
         dispatch(setSelectedCliente(updatedCliente)); // Aquí pasas el asociado actualizado
         setActivo(updatedCliente.activo); // Actualiza el estado local
-        dispatch(endLoading());
         Swal.fire({
           position: "top-end",
           icon: "success",
@@ -156,7 +153,6 @@ export const toggleClienteActivo = (id, setActivo) => {
         text: errors,
         footer: "Error al actualizar el estado del cliente",
       });
-      dispatch(endLoading());
     }
   };
 };

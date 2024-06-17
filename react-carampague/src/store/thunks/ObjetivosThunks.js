@@ -1,10 +1,6 @@
 import Swal from "sweetalert2";
 import carampagueApi from "../../api/carampagueApi";
-import {
-  setObjetivos,
-  setSelectedObjetivo,
-
-} from "../slices/ObjetivosSlice";
+import { setObjetivos, setSelectedObjetivo } from "../slices/ObjetivosSlice";
 import { startLoading, setError, endLoading } from "../slices/UiSlice";
 
 export const getObjetivos = () => {
@@ -13,7 +9,6 @@ export const getObjetivos = () => {
     try {
       const { data } = await carampagueApi.get(`/api/objetivos/`);
       dispatch(setObjetivos(data.objetivos));
-      dispatch(endLoading());
     } catch (error) {
       const errors = Object.values(error.response.data.errors).map((err) => {
         return err;
@@ -25,6 +20,8 @@ export const getObjetivos = () => {
         text: Object.values(error.response.data.errors),
         footer: "Error al obtener objetivos",
       });
+    } finally {
+      dispatch(endLoading());
     }
   };
 };
@@ -35,7 +32,6 @@ export const getObjetivo = (id) => {
     try {
       const { data } = await carampagueApi.get(`/api/objetivos/${id}`);
       dispatch(setSelectedObjetivo(data.objetivo));
-      dispatch(endLoading());
     } catch (error) {
       const errors = Object.values(error.response.data.errors).map((err) => {
         return err;
@@ -48,6 +44,8 @@ export const getObjetivo = (id) => {
         text: Object.values(error.response.data.errors),
         footer: "Error al obtener objetivo",
       });
+    } finally {
+      dispatch(endLoading());
     }
   };
 };
@@ -65,7 +63,6 @@ export const createObjetivo = (data, navigate) => {
         showConfirmButton: true,
       }).then(() => {
         navigate("/objetivos");
-        dispatch(endLoading());
       });
     } catch (error) {
       const errors = Object.values(error.response.data.errors).map((err) => {
@@ -78,6 +75,8 @@ export const createObjetivo = (data, navigate) => {
         text: errors,
         footer: "Error al crear objetivo",
       });
+    } finally {
+      dispatch(endLoading());
     }
   };
 };
@@ -85,6 +84,7 @@ export const createObjetivo = (data, navigate) => {
 export const updateObjetivo = (id, data, navigate) => {
   return async (dispatch) => {
     try {
+      dispatch(startLoading());
       await carampagueApi.put(`/api/objetivos/${id}`, data);
       dispatch(setUpdatedObjetivo());
       Swal.fire({
@@ -106,6 +106,8 @@ export const updateObjetivo = (id, data, navigate) => {
         text: errors,
         footer: "Error al actualizar objetivo",
       });
+    } finally {
+      dispatch(endLoading());
     }
   };
 };

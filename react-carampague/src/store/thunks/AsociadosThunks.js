@@ -2,13 +2,7 @@ import carampagueApi from "../../api/carampagueApi";
 import Swal from "sweetalert2";
 
 import { startLoading, setError, endLoading } from "../slices/UiSlice";
-import {
-  addNewAsociado,
-  setAsociados,
-  setSelectedAsociado,
-  setToggledAsociado,
-  setUpdatedAsociado,
-} from "../slices/AsociadosSlice";
+import { setAsociados, setSelectedAsociado } from "../slices/AsociadosSlice";
 
 export const getAsociados = () => {
   return async (dispatch) => {
@@ -16,7 +10,6 @@ export const getAsociados = () => {
     try {
       const { data } = await carampagueApi.get(`/api/asociados/`);
       dispatch(setAsociados(data.asociados));
-      dispatch(endLoading());
     } catch (error) {
       const errors = Object.values(error.response.data.errors).map((err) => {
         return err;
@@ -28,6 +21,8 @@ export const getAsociados = () => {
         text: Object.values(error.response.data.errors),
         footer: "Error al obtener asociados",
       });
+    } finally {
+      dispatch(endLoading());
     }
   };
 };
@@ -38,7 +33,6 @@ export const getAsociado = (id) => {
     try {
       const { data } = await carampagueApi.get(`/api/asociados/${id}`);
       dispatch(setSelectedAsociado(data.asociado));
-      dispatch(endLoading());
     } catch (error) {
       const errors = Object.values(error.response.data.errors).map((err) => {
         return err;
@@ -51,6 +45,8 @@ export const getAsociado = (id) => {
         text: Object.values(error.response.data.errors),
         footer: "Error al obtener asociado",
       });
+    } finally {
+      dispatch(endLoading());
     }
   };
 };
@@ -58,10 +54,8 @@ export const getAsociado = (id) => {
 export const createAsociado = (data, navigate) => {
   return async (dispatch) => {
     dispatch(startLoading());
-
     try {
       await carampagueApi.post(`/api/asociados/`, data);
-      dispatch(addNewAsociado());
       Swal.fire({
         position: "top-end",
         icon: "success",
@@ -69,7 +63,6 @@ export const createAsociado = (data, navigate) => {
         showConfirmButton: true,
       }).then(() => {
         navigate("/asociados");
-        dispatch(endLoading());
       });
     } catch (error) {
       const errors = Object.values(error.response.data.errors).map((err) => {
@@ -82,6 +75,8 @@ export const createAsociado = (data, navigate) => {
         text: errors,
         footer: "Error al crear asociado",
       });
+    } finally {
+      dispatch(endLoading());
     }
   };
 };
@@ -92,7 +87,6 @@ export const updateAsociado = (id, data, navigate) => {
 
     try {
       await carampagueApi.put(`/api/asociados/${id}`, data);
-      dispatch(setUpdatedAsociado());
       Swal.fire({
         position: "top-end",
         icon: "success",
@@ -112,13 +106,14 @@ export const updateAsociado = (id, data, navigate) => {
         text: errors,
         footer: "Error al actualizar asociado",
       });
+    } finally {
+      dispatch(endLoading());
     }
   };
 };
 
 export const toggleAsociadoActivo = (id, setActivo) => {
   return async (dispatch) => {
-    // dispatch(startLoading());
     try {
       const result = await Swal.fire({
         title: "¿Estás seguro?",
@@ -133,10 +128,10 @@ export const toggleAsociadoActivo = (id, setActivo) => {
         const { data } = await carampagueApi.put(`/api/asociados/${id}/toggle`);
         const updatedAsociado = {
           ...data.asociado,
-          activo: data.activo ? 1 : 0, // Convertir true/false a 1/0
+          activo: data.activo ? 1 : 0,
         };
-        dispatch(setSelectedAsociado(updatedAsociado)); // Aquí pasas el asociado actualizado
-        setActivo(updatedAsociado.activo); // Actualiza el estado local
+        dispatch(setSelectedAsociado(updatedAsociado));
+        setActivo(updatedAsociado.activo);
         dispatch(endLoading());
         Swal.fire({
           position: "top-end",
@@ -145,7 +140,6 @@ export const toggleAsociadoActivo = (id, setActivo) => {
           showConfirmButton: true,
         });
       } else {
-        // dispatch(endLoading());
       }
     } catch (error) {
       const errors = Object.values(error.response.data.errors).map((err) => {
@@ -158,7 +152,6 @@ export const toggleAsociadoActivo = (id, setActivo) => {
         text: errors,
         footer: "Error al actualizar el estado del asociado",
       });
-      dispatch(endLoading());
     }
   };
 };
