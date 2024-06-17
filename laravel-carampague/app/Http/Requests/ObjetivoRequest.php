@@ -25,14 +25,13 @@ class ObjetivoRequest extends FormRequest
     {
         return [
             'nombre_objetivo' => ['required',Rule::unique('objetivos')->ignore($this->objetivo), 'string'],
-            'estado_id' => ['required'],
+            'activo' => ['required'],
             'cliente_id' => ['required'],
             'valor_vigilador' => ['required'],
             'valor_cliente' => ['required'],
             'calle'=>['required', 'string'],
             'numeracion'=>['required'],
-            'barrio'=>['required'],
-            'localidad_id'=>['required'],
+            'barrio_id'=>['required'],
         ];
     }
     public function messages()
@@ -43,13 +42,12 @@ class ObjetivoRequest extends FormRequest
             'nombre_objetivo.string' => 'El nombre debe ser una cadena de caracteres',
             'valor_vigilador.required' => 'El valor vigilador es requerido',
             'valor_cliente.required' => 'El valor cliente es requerido',
-            'estado_id.required' => 'El estado es requerido',
+            'activo.required' => 'El estado es requerido',
             'cliente_id.required' => 'El cliente es requerido',
             'calle.required'=> 'La calle es requerida',
             'calle.string'=> 'La calle debe ser una cadena de caracteres',
             'numeracion.required'=> 'La numeracion es requerida',
-            'barrio.required'=> 'El barrio es requerido',
-            'localidad_id.required'=> 'La localidad es requerida',
+            'barrio_id.required'=> 'El barrio es requerido',
         ];
     }
 }
