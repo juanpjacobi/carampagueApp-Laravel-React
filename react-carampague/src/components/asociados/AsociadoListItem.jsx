@@ -13,14 +13,14 @@ export const AsociadoListItem = ({ asociado }) => {
         {asociado.numero_asociado}
       </td>
       <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
-        {asociado.estado.nombre_estado}
+        {asociado.activo ? 'Activo' : 'Inactivo'}
       </td>
 
       <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
         {asociado.telefono.numero_telefono} (
         {asociado.telefono.tipo_telefono.nombre_tipo_telefono})
       </td>
-      <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
+      <td className="px-6 py-4 font-medium flex text-slate-800 whitespace-nowrap">
         <InfoIcon tipo='asociados' id={asociado.id} />
       </td>
     </tr>

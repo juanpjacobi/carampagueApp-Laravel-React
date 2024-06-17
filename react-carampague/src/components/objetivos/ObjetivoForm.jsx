@@ -1,90 +1,82 @@
-import React, { useEffect, useState } from "react";
-import { getProvincias } from "../../functions/Provincia/provincia";
-import { getLocalidades } from "../../functions/Localidad/localidad";
-import { getEstados } from "../../functions/Estado/estado";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Alerta } from "../Alerta";
 import { objetivoSchema } from "../utilities/validator/objetivo/objetivoSchema";
-import {createObjetivo, updateObjetivo} from "../../store/thunks/ObjetivosThunks"
+import { getProvincias } from "../../functions/Provincia/provincia";
+import { getLocalidades } from "../../functions/Localidad/localidad";
+import {
+  createObjetivo,
+  updateObjetivo,
+} from "../../store/thunks/ObjetivosThunks";
+import DireccionForm from "../shared/direcciones/DireccionForm";
+import { Alerta } from "../shared/Alerta";
+import { ActivoToggle } from "../shared/estado/ActivoTogle";
 
-export const ObjetivoForm = ({editMode}) => {
-  const {selectedObjetivo} = useSelector((state) => state.objetivos)
+export const ObjetivoForm = ({ editMode }) => {
+  const { selectedObjetivo } = useSelector((state) => state.objetivos);
   const initialState = {
     nombre_objetivo: selectedObjetivo ? selectedObjetivo.nombre : "",
-    valor_cliente: selectedObjetivo ? selectedObjetivo.valor.valor_cliente : null,
-    valor_vigilador: selectedObjetivo ? selectedObjetivo.valor.valor_vigilador : null,
+    valor_cliente: selectedObjetivo
+      ? selectedObjetivo.valor.valor_cliente
+      : null,
+    valor_vigilador: selectedObjetivo
+      ? selectedObjetivo.valor.valor_vigilador
+      : null,
     cliente_id: selectedObjetivo ? selectedObjetivo.cliente.id : null,
-    estado_id: selectedObjetivo ? selectedObjetivo.estado.id : null,
+    activo: selectedObjetivo ? selectedObjetivo.activo : null,
     calle: selectedObjetivo ? selectedObjetivo.direccion.calle : "",
     numeracion: selectedObjetivo ? selectedObjetivo.direccion.numeracion : "",
-    barrio:selectedObjetivo ? selectedObjetivo.direccion.barrio : "",
-    piso: selectedObjetivo ? selectedObjetivo.direccion.piso :"",
-    departamento:selectedObjetivo ? selectedObjetivo.direccion.departamento : "",
-    localidad_id: selectedObjetivo ? selectedObjetivo.direccion.localidad_id : null,
+    piso: selectedObjetivo ? selectedObjetivo.direccion.piso : "",
+    departamento: selectedObjetivo
+      ? selectedObjetivo.direccion.departamento
+      : "",
+      provincia_id: selectedObjetivo
+      ? selectedObjetivo.barrio.localidad.provincia_id.toString()
+      : null,
+    localidad_id: selectedObjetivo
+      ? selectedObjetivo.direccion.barrio.localidad_id.toString()
+      : null,
+    barrio_id: selectedObjetivo ? selectedObjetivo.direccion.barrio_id.toString() : "",
+
   };
-  const {clientes} = useSelector((state) => state.clientes);
+  const { clientes } = useSelector((state) => state.clientes);
 
 
-  const [provincias, setProvincias] = useState([]);
-  const [localidades, setLocalidades] = useState([]);
-  const [estados, setEstados] = useState([]);
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
   useEffect(() => {
     if (!selectedObjetivo && editMode) {
-      navigate('/objetivos');
+      navigate("/objetivos");
     }
-    loadProvincias();
-    loadLocalidades();
-    loadEstados();
+
   }, []);
-
-
-
-  const loadProvincias = async () => {
-    const { data } = await getProvincias();
-
-    setProvincias(data.data);
-  };
-  const loadLocalidades = async () => {
-    const { data } = await getLocalidades();
-
-    setLocalidades(data.data);
-  };
-
-  const loadEstados = async () => {
-    const { data } = await getEstados();
-
-    setEstados(data.data);
-  };
 
   const handleSubmit = () => {
     if (editMode) {
-      console.log(formik.values)
-      dispatch(updateObjetivo(selectedObjetivo.id, formik.values, navigate))
+      dispatch(updateObjetivo(selectedObjetivo.id, formik.values, navigate));
       return;
     }
-    console.log(formik.values)
     dispatch(createObjetivo(formik.values, navigate));
-    
   };
 
   const formik = useFormik({
-    initialValues: initialState ,
+    initialValues: initialState,
     validationSchema: objetivoSchema,
-    validateOnChange:false,
-     validateOnBlur:false,
-    onSubmit: handleSubmit
+    validateOnChange: false,
+    validateOnBlur: false,
+    onSubmit: handleSubmit,
   });
 
   return (
     <form onSubmit={formik.handleSubmit} noValidate>
+      <div className="text-gray-700 text-sm text-center">
+        <span>Los campos marcados con * son obligatorios</span>
+      </div>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="nombre_objetivo">
-          Nombre del objetivo
+          Nombre del objetivo*
         </label>
 
         <input
@@ -96,36 +88,14 @@ const navigate = useNavigate();
           onChange={formik.handleChange}
           value={formik.values.nombre_objetivo ?? ""}
         />
-        { formik.errors.nombre_objetivo ? (
+        {formik.errors.nombre_objetivo ? (
           <Alerta error={formik.errors.nombre_objetivo} />
         ) : null}
       </div>
-  
-      <div className="mb-4">
-        <label className="text-slate-800" htmlFor="estado_id">
-          Estado del objetivo
-        </label>
-        <select
-          name="estado_id"
-          id="estado_id"
-          className="mt-2 w-full p-3 bg-gray-200"
-          onChange={formik.handleChange}
-          value={formik.values.estado_id ?? ""}
-        >
-          <option value="">Seleccione uno</option>
-          {estados?.map((e) => (
-            <option key={e.id} value={e.id}>
-              {e.nombre}
-            </option>
-          ))}
-        </select>
-        { formik.errors.estado_id ? (
-          <Alerta error={formik.errors.estado_id} />
-        ) : null}
-      </div>
+      <ActivoToggle formik={formik}/>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="cliente_id">
-          Cliente
+          Cliente*
         </label>
         <select
           name="cliente_id"
@@ -141,13 +111,13 @@ const navigate = useNavigate();
             </option>
           ))}
         </select>
-        { formik.errors.cliente_id ? (
+        {formik.errors.cliente_id ? (
           <Alerta error={formik.errors.cliente_id} />
         ) : null}
       </div>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="valor_cliente">
-          Valor de la hora para el cliente
+          Valor de la hora para el cliente*
         </label>
         <input
           type="number"
@@ -158,13 +128,13 @@ const navigate = useNavigate();
           onChange={formik.handleChange}
           value={formik.values.valor_cliente ?? ""}
         />
-        { formik.errors.valor_cliente ? (
+        {formik.errors.valor_cliente ? (
           <Alerta error={formik.errors.valor_cliente} />
         ) : null}
       </div>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="valor_vigilador">
-          Valor de la hora para el vigilador
+          Valor de la hora para el vigilador*
         </label>
         <input
           type="number"
@@ -175,113 +145,12 @@ const navigate = useNavigate();
           onChange={formik.handleChange}
           value={formik.values.valor_vigilador ?? ""}
         />
-        { formik.errors.valor_vigilador ? (
+        {formik.errors.valor_vigilador ? (
           <Alerta error={formik.errors.valor_vigilador} />
         ) : null}
       </div>
-      <div className="mb-4">
-        <label className="text-slate-800" htmlFor="calle">
-          Calle
-        </label>
-        <input
-          type="text"
-          id="calle"
-          className="mt-2 w-full p-3 bg-gray-200"
-          name="calle"
-          placeholder="Ingresa la calle del objetivo"
-          onChange={formik.handleChange}
-          value={formik.values.calle ?? ""}
-        />
-        { formik.errors.calle ? <Alerta error={formik.errors.calle} /> : null}
-      </div>
-      <div className="mb-4">
-        <label className="text-slate-800" htmlFor="numeracion">
-          Numeracion
-        </label>
-        <input
-          type="number"
-          id="numeracion"
-          className="mt-2 w-full p-3 bg-gray-200"
-          name="numeracion"
-          placeholder="Ingresa la numeracion del objetivo"
-          onChange={formik.handleChange}
-          value={formik.values.numeracion ?? ""}
-        />
-        { formik.errors.numeracion ? (
-          <Alerta error={formik.errors.numeracion} />
-        ) : null}
-      </div>
-      <div className="mb-4">
-        <label className="text-slate-800" htmlFor="barrio">
-          Barrio
-        </label>
-        <input
-          type="text"
-          id="barrio"
-          className="mt-2 w-full p-3 bg-gray-200"
-          name="barrio"
-          placeholder="Ingresa el barrio del objetivo"
-          onChange={formik.handleChange}
-          value={formik.values.barrio ?? ""}
-        />
-        { formik.errors.barrio ? <Alerta error={formik.errors.barrio} /> : null}
-      </div>
-      <div className="mb-4">
-        <label className="text-slate-800" htmlFor="piso">
-          Piso
-        </label>
-        <input
-          type="text"
-          id="piso"
-          className="mt-2 w-full p-3 bg-gray-200"
-          name="piso"
-          placeholder="Ingresa el piso del objetivo"
-          onChange={formik.handleChange}
-          value={formik.values.piso ?? ""}
-        />
+      <DireccionForm formik={formik} />
 
-        { formik.errors.piso ? <Alerta error={formik.errors.piso} /> : null}
-      </div>
-      <div className="mb-4">
-        <label className="text-slate-800" htmlFor="departamento">
-          Departamento
-        </label>
-        <input
-          type="text"
-          id="departamento"
-          className="mt-2 w-full p-3 bg-gray-200"
-          name="departamento"
-          placeholder="Ingresa el departamento"
-          onChange={formik.handleChange}
-          value={formik.values.departamento ?? ""}
-        />
-
-        { formik.errors.departamento ? (
-          <Alerta error={formik.errors.departamento} />
-        ) : null}
-      </div>
-      <div className="mb-4">
-        <label className="text-slate-800" htmlFor="localidad_id">
-          Localidad
-        </label>
-        <select
-          name="localidad_id"
-          id="localidad_id"
-          className="mt-2 w-full p-3 bg-gray-200"
-          onChange={formik.handleChange}
-          value={formik.values.localidad_id ?? ""}
-        >
-          <option value=""> Seleccione uno</option>
-          {localidades?.map((l, i) => (
-            <option key={i} value={l.id}>
-              {l.nombre}
-            </option>
-          ))}
-        </select>
-        { formik.errors.localidad_id ? (
-          <Alerta error={formik.errors.localidad_id} />
-        ) : null}
-      </div>
       <input
         type="submit"
         value={editMode ? "Actualizar objetivo" : "Crear objetivo"}

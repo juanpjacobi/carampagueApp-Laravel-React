@@ -1,9 +1,19 @@
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { toggleClienteActivo } from "../../store/thunks/ClientesThunks";
 
-export const ClienteCard = ({selectedCliente}) => {
+export const ClienteCard = ({ selectedCliente }) => {
+  const dispatch = useDispatch();
+
+  const [activo, setActivo] = useState(selectedCliente?.activo);
+
+  const handleToggleActivo = async () => {
+    await dispatch(toggleClienteActivo(selectedCliente.id, setActivo));
+  };
 
   return (
-    <div className="max-w-2xl m-auto">
+    <div className="max-w-2xl w-full m-auto">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl underline-offset-8 uppercase text-sky-700 font-semibold text-center">
           {selectedCliente?.razon_social}
@@ -47,7 +57,7 @@ export const ClienteCard = ({selectedCliente}) => {
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Estado:
             </span>
-            {selectedCliente?.estado?.nombre_estado}
+            {selectedCliente?.activo ? "Activo" : "Inactivo"}
           </p>
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
@@ -59,7 +69,7 @@ export const ClienteCard = ({selectedCliente}) => {
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Direccion
             </span>
-            {selectedCliente?.direccion?.calle}
+            {selectedCliente?.direccion?.calle}{" "}
             {selectedCliente?.direccion?.numeracion}
           </p>
           <p className="text-sm mb-2 text-slate-800">
@@ -78,13 +88,13 @@ export const ClienteCard = ({selectedCliente}) => {
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Barrio
             </span>
-            {selectedCliente?.direccion?.barrio}
+            {selectedCliente?.direccion?.barrio.nombre_barrio}
           </p>
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Localidad
             </span>
-            {selectedCliente?.direccion?.localidad.nombre_localidad}
+            {selectedCliente?.direccion?.barrio?.localidad.nombre_localidad}
           </p>
         </div>
         <div className="flex flex-col gap-8 text-center">
@@ -97,12 +107,16 @@ export const ClienteCard = ({selectedCliente}) => {
           >
             Editar
           </Link>
-          <Link
-            to={"/clientes/"}
-            className="p-1 w-28 text-center bg-red-600 hover:bg-red-950 text-white rounded"
+          <button
+            onClick={handleToggleActivo}
+            className={`p-2 w-full text-sm text-center ${
+              activo
+                ? "bg-red-600 hover:bg-red-950"
+                : "bg-green-600 hover:bg-green-950"
+            } text-white rounded`}
           >
-            Eliminar
-          </Link>
+            {activo ? "Inactivar" : "Activar"}
+          </button>
         </div>
       </div>
     </div>

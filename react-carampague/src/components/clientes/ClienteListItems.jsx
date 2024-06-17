@@ -1,4 +1,3 @@
-import React from "react";
 import {InfoIcon} from '../utilities/icons/InfoIcon'
 export const ClienteListItems = ({ cliente }) => {
   return (
@@ -7,7 +6,7 @@ export const ClienteListItems = ({ cliente }) => {
         {cliente.razon_social}
       </td>
       <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
-        {cliente.estado.nombre_estado}
+      {cliente.activo ? 'Activo' : 'Inactivo'}
       </td>
       <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
         {cliente.email}

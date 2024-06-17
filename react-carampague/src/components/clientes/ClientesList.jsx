@@ -1,15 +1,6 @@
-import React from "react";
-import { Spinner } from "../utilities/spinners/Spinner";
-import { useSelector } from "react-redux";
 import { ClienteListItems } from "./ClienteListItems";
 
-export const ClientesList = ({clientes}) => {
-  const {isLoading} = useSelector((state) => state.ui);
-
-  if (isLoading) {
-    return <Spinner />;
-  }
-  
+export const ClientesList = ({ clientes }) => {
   return (
     <>
       <div className="flex flex-col md:flex-row justify-between items-center shadow-2xl shadow-gray-700 mt-2 rounded-md">

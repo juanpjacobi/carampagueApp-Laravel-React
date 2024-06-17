@@ -1,6 +1,8 @@
-import { ObjetivoListItem } from "./ObjetivoListItem";
+import React from "react";
+import { DocumentacionListItem } from "./DocumentacionListItem";
 
-export const ObjetivosList = ({ objetivos }) => {
+export const DocumentacionList = ({ documentacion }) => {
+  const { lineas } = documentacion;
   return (
     <>
       <div className="flex flex-col md:flex-row justify-between items-center shadow-2xl shadow-gray-700 mt-2 rounded-md">
@@ -8,16 +10,21 @@ export const ObjetivosList = ({ objetivos }) => {
           <thead className="text-sm text-slate-700 uppercase bg-slate-200">
             <tr>
               <th scope="col" className="px-6 py-3">
-                Nombre objetivo
+                Tipo de documentacion
+              </th>
+
+              <th scope="col" className="px-6 py-3">
+                Fecha solicitud
               </th>
               <th scope="col" className="px-6 py-3">
-                Estado
+                Estado de la documentación
+              </th>
+
+              <th scope="col" className="px-6 py-3">
+                Fecha de entrega
               </th>
               <th scope="col" className="px-6 py-3">
-                Cliente
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Direccion
+                Fecha de vencimiento
               </th>
               <th scope="col" className="px-6 py-3">
                 Ver
@@ -25,8 +32,8 @@ export const ObjetivosList = ({ objetivos }) => {
             </tr>
           </thead>
           <tbody>
-            {objetivos?.map((objetivo) => (
-              <ObjetivoListItem objetivo={objetivo} key={objetivo.id} />
+            {lineas?.map((linea) => (
+              <DocumentacionListItem linea={linea} key={linea.id} />
             ))}
           </tbody>
         </table>
