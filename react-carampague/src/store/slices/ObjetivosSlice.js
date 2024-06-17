@@ -14,24 +14,16 @@ export const ObjetivosSlice = createSlice({
       state.selectedObjetivo = null;
     },
 
-    addNewObjetivo: (state) => {
-      state.error = null;
-      state.isLoading = false;
-    },
     setSelectedObjetivo: (state, action) => {
       state.selectedObjetivo = action.payload;
     },
-    setUpdatedObjetivo: (state) => {
-      state.error = null;
-      state.isLoading = false;
-    },
+ 
   },
 });
 
 export const {
   setObjetivos,
   setSelectedObjetivo,
-  addNewObjetivo,
-  setUpdatedObjetivo
+
 
 } = ObjetivosSlice.actions
