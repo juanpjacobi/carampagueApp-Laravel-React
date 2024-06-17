@@ -14,7 +14,8 @@ class CondicionIvaController extends Controller
      */
     public function index()
     {
-        return new CondicionIvaCollection(CondicionIva::all());
+        $condiciones_iva = new CondicionIvaCollection(CondicionIva::all());
+        return response(['condiciones_iva' => $condiciones_iva], 200);
 
     }
 
