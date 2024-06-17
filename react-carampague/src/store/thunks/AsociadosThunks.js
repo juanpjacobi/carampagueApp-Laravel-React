@@ -6,6 +6,7 @@ import {
   addNewAsociado,
   setAsociados,
   setSelectedAsociado,
+  setToggledAsociado,
   setUpdatedAsociado,
 } from "../slices/AsociadosSlice";
 
@@ -111,6 +112,53 @@ export const updateAsociado = (id, data, navigate) => {
         text: errors,
         footer: "Error al actualizar asociado",
       });
+    }
+  };
+};
+
+export const toggleAsociadoActivo = (id, setActivo) => {
+  return async (dispatch) => {
+    // dispatch(startLoading());
+    try {
+      const result = await Swal.fire({
+        title: "¿Estás seguro?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, cambiar estado!",
+      });
+
+      if (result.isConfirmed) {
+        const { data } = await carampagueApi.put(`/api/asociados/${id}/toggle`);
+        const updatedAsociado = {
+          ...data.asociado,
+          activo: data.activo ? 1 : 0, // Convertir true/false a 1/0
+        };
+        dispatch(setSelectedAsociado(updatedAsociado)); // Aquí pasas el asociado actualizado
+        setActivo(updatedAsociado.activo); // Actualiza el estado local
+        dispatch(endLoading());
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Estado del asociado actualizado con éxito",
+          showConfirmButton: true,
+        });
+      } else {
+        // dispatch(endLoading());
+      }
+    } catch (error) {
+      const errors = Object.values(error.response.data.errors).map((err) => {
+        return err;
+      });
+      dispatch(setError(errors));
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: errors,
+        footer: "Error al actualizar el estado del asociado",
+      });
+      dispatch(endLoading());
     }
   };
 };
