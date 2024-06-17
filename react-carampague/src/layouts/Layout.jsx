@@ -19,12 +19,12 @@ export const Layout = () => {
   }, [dispatch]);
  
   return (
-    <main className="m-auto flex flex-col items-center pattern">
+    <main className="m-auto w-95 flex flex-col items-center pattern">
       <div className="w-full border-b border-slate-300 shadow-lg  items-center flex flex-col lg:flex-row justify-between">
           <img
             src="/img/logo.jpg"
             alt="imagen logotipo"
-            className=""
+            className="max-w-2xl"
           />
         <NavBar />
       </div>

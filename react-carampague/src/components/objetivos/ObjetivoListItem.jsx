@@ -5,7 +5,7 @@ export const ObjetivoListItem = ({ objetivo }) => {
       <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
         {objetivo.nombre.toUpperCase()}
       </td>
-      <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
+      <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap hidden lg:visible">
       {objetivo.activo ? 'Activo' : 'Inactivo'}
       </td>
       <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">

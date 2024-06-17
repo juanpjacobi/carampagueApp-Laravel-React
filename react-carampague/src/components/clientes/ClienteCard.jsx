@@ -13,7 +13,7 @@ export const ClienteCard = ({ selectedCliente }) => {
   };
 
   return (
-    <div className="max-w-2xl w-full m-auto">
+    <div className="max-w-2xl p-5 w-full m-auto">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl underline-offset-8 uppercase text-sky-700 font-semibold text-center">
           {selectedCliente?.razon_social}
@@ -26,8 +26,8 @@ export const ClienteCard = ({ selectedCliente }) => {
           Atras
         </Link>
       </div>
-      <div className="bg-white flex justify-between shadow-2xl shadow-gray-700 rounded-md mt-5 px-5 py-10">
-        <div className="w-3/4 border-r">
+      <div className="bg-white flex flex-col md:flex-row justify-between shadow-2xl shadow-gray-700 rounded-md mt-5 px-5 py-10">
+        <div className="w-full md:w-3/4 md:border-r">
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Cuit:
@@ -103,8 +103,8 @@ export const ClienteCard = ({ selectedCliente }) => {
           </span>
           <Link
             to={`/clientes/edit/${selectedCliente?.id}`}
-            className="p-1 w-28 text-center bg-teal-600 hover:bg-teal-800 text-white rounded"
-          >
+            className="p-2 w-full text-sm text-center bg-blue-600 hover:bg-blue-950 text-white rounded"
+            >
             Editar
           </Link>
           <button

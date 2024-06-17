@@ -13,7 +13,7 @@ export const AsociadoCard = ({ selectedAsociado }) => {
   };
 
   return (
-    <div className="w-full max-w-2xl m-auto">
+    <div className="w-full p-5 max-w-2xl m-auto">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl underline-offset-8 uppercase text-sky-700 font-semibold text-center">
           {selectedAsociado?.apellido} {selectedAsociado?.nombre}
@@ -26,8 +26,8 @@ export const AsociadoCard = ({ selectedAsociado }) => {
           Atras
         </Link>
       </div>
-      <div className="bg-white flex justify-between shadow-2xl shadow-gray-700 rounded-md mt-5 px-5 py-10">
-        <div className="w-3/4 border-r">
+      <div className="bg-white flex flex-col md:flex-row justify-between shadow-2xl shadow-gray-700 rounded-md mt-5 px-5 py-10">
+        <div className="w-full md:w-3/4 md:border-r">
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Numero de asociado:
@@ -118,10 +118,10 @@ export const AsociadoCard = ({ selectedAsociado }) => {
         </div>
 
         <div className="flex flex-col text-center">
-          <span className="text-md mr-2 font-bold text-sky-800 uppercase border-b-2">
+          <span className="text-md  mr-2 font-bold text-sky-800 uppercase border-b-2">
             Acciones
           </span>
-          <div className="flex flex-col h-full justify-around">
+          <div className="flex flex-col h-full gap-2">
             <Link
               to={`/asociados/edit/${selectedAsociado?.id}`}
               className="p-2 w-full text-sm text-center bg-teal-600 hover:bg-teal-800 text-white rounded"

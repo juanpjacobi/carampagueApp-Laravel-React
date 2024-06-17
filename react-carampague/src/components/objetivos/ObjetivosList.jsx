@@ -10,10 +10,10 @@ export const ObjetivosList = ({ objetivos }) => {
               <th scope="col" className="px-6 py-3">
                 Nombre objetivo
               </th>
-              <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-6 py-3 hidden lg:visible">
                 Estado
               </th>
-              <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-6 py-3 ">
                 Cliente
               </th>
               <th scope="col" className="px-6 py-3">
