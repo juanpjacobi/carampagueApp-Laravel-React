@@ -9,6 +9,22 @@ export const getLocalidades = async() => {
   }
 }
 
+export const getProvincias = async() => {
+  try {
+    return await carampagueApi.get(`/api/provincias/`);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const getBarrios = async() => {
+  try {
+    return await carampagueApi.get(`/api/barrios/`);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export const createLocalidad = async(localidad) => {
   try {
     return await carampagueApi.post(`/api/localidades/`, localidad);
