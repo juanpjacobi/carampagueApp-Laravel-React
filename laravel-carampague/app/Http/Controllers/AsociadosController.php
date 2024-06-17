@@ -9,7 +9,6 @@ use App\Models\Asociado;
 use App\Models\Direccion;
 use App\Models\Documentacion;
 use App\Models\Telefono;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AsociadosController extends Controller
@@ -19,14 +18,9 @@ class AsociadosController extends Controller
      */
     public function index()
     {
-        $asociados = new AsociadoCollection(
-            Asociado::with(
-                ['direccion.localidad', 'telefono.tipoTelefono']
-            )->get()
-        );
-        return ["asociados" => $asociados];
+        $asociados = new AsociadoCollection(Asociado::all());
+        return response(["asociados" => $asociados], 200);
     }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -40,10 +34,9 @@ class AsociadosController extends Controller
             $direccion = Direccion::create([
                 'calle' => $request->input('calle'),
                 'numeracion' => $request->input('numeracion'),
-                'barrio' => $request->input('barrio'),
                 'piso' => $request->input('piso'),
                 'departamento' => $request->input('departamento'),
-                'localidad_id' => $request->input('localidad_id'),
+                'barrio_id' => $request->input('barrio_id'),
             ]);
 
             // Crear un nuevo teléfono
@@ -67,7 +60,7 @@ class AsociadosController extends Controller
                 'numero_asociado' => $request->input('numero_asociado'),
                 'cuit_asociado' => $request->input('cuit_asociado'),
                 'fecha_nacimiento' => $request->input('fecha_nacimiento'),
-                'estado_id' => $request->input('estado_id'),
+                'activo' => $request->input('activo'),
                 'estado_civil_id' => $request->input('estado_civil_id'),
             ]);
 
@@ -80,17 +73,9 @@ class AsociadosController extends Controller
             $asociado->save();
 
             DB::commit();
-
-
-            // Devolver una respuesta adecuada
-            return ["asociado" => new AsociadoResource(Asociado::with(
-                ['direccion.localidad', 'telefono.tipoTelefono']
-            )->find($asociado->id))];
+            return response(["asociado" => new AsociadoResource(Asociado::find($asociado->id))], 201);
         } catch (\Exception $e) {
-            // En caso de error, revertir la transacción
             DB::rollback();
-
-            // Devolver un mensaje de error
             return response()->json(['message' => 'Error al crear el asociado: ' . $e->getMessage()], 500);
         }
     }
@@ -100,10 +85,8 @@ class AsociadosController extends Controller
      */
     public function show(string $id)
     {
-        $asociado = new AsociadoResource(Asociado::with(
-            ['direccion.localidad', 'telefono.tipoTelefono']
-        )->find($id));
-        return ["asociado" => $asociado];
+        $asociado = new AsociadoResource(Asociado::find($id));
+        return response(["asociado" => $asociado], 200);
     }
 
     /**
@@ -112,46 +95,58 @@ class AsociadosController extends Controller
     public function update(AsociadoRequest $request, string $id)
     {
         $request->validated();
-        // Buscar el asociado por su ID
-        $asociado = Asociado::findOrFail($id);
-        $asociado->nombre_asociado = $request->input('nombre_asociado');
-        $asociado->apellido_asociado = $request->input('apellido_asociado');
-        $asociado->fecha_alta = $request->input('fecha_alta');
-        $asociado->fecha_baja = $request->input('fecha_baja');
-        $asociado->numero_asociado = $request->input('numero_asociado');
-        $asociado->cuit_asociado = $request->input('cuit_asociado');
-        $asociado->fecha_nacimiento = $request->input('fecha_nacimiento');
-        $asociado->estado_id = $request->input('estado_id');
-        $asociado->estado_civil_id = $request->input('estado_civil_id');
 
-        // Actualizar la dirección del asociado si se proporcionan datos
-        if ($request->has('calle') || $request->has('numeracion') || $request->has('barrio') || $request->has('piso') || $request->has('departamento') || $request->has('localidad_id')) {
-            $asociado->direccion->update([
-                'calle' => $request->input('calle'),
-                'numeracion' => $request->input('numeracion'),
-                'barrio' => $request->input('barrio'),
-                'piso' => $request->input('piso'),
-                'departamento' => $request->input('departamento'),
-                'localidad_id' => $request->input('localidad_id'),
-            ]);
-        }
+        DB::beginTransaction();
+        try {
+            // Buscar el asociado por su ID
+            $asociado = Asociado::findOrFail($id);
+            $asociado->nombre_asociado = $request->input('nombre_asociado');
+            $asociado->apellido_asociado = $request->input('apellido_asociado');
+            $asociado->fecha_alta = $request->input('fecha_alta');
+            $asociado->fecha_baja = $request->input('fecha_baja');
+            $asociado->numero_asociado = $request->input('numero_asociado');
+            $asociado->cuit_asociado = $request->input('cuit_asociado');
+            $asociado->fecha_nacimiento = $request->input('fecha_nacimiento');
+            $asociado->activo = $request->input('activo');
+            $asociado->estado_civil_id = $request->input('estado_civil_id');
 
-        // Actualizar el teléfono del asociado si se proporcionan datos
-        if ($request->has('tipo_telefono_id') || $request->has('numero_telefono')) {
-            $asociado->telefono->update([
-                'tipo_telefono_id' => $request->input('tipo_telefono_id'),
-                'numero_telefono' => $request->input('numero_telefono'),
-            ]);
-        }
+            // Actualizar la dirección del asociado si se proporcionan datos
+            if ($request->has('calle') || $request->has('numeracion') || $request->has('piso') || $request->has('departamento') || $request->has('barrio_id')) {
+                $asociado->direccion->update([
+                    'calle' => $request->input('calle'),
+                    'numeracion' => $request->input('numeracion'),
+                    'piso' => $request->input('piso'),
+                    'departamento' => $request->input('departamento'),
+                    'barrio_id' => $request->input('barrio_id'),
+                ]);
+            }
 
-        // Actualizar la imagen del asociado si se proporciona una nueva URL de imagen
-        if ($request->has('image_url')) {
-            $asociado->update([
-                'image_url' => $request->input('image_url'),
-            ]);
+            // Actualizar el teléfono del asociado si se proporcionan datos
+            if ($request->has('tipo_telefono_id') || $request->has('numero_telefono')) {
+                $asociado->telefono->update([
+                    'tipo_telefono_id' => $request->input('tipo_telefono_id'),
+                    'numero_telefono' => $request->input('numero_telefono'),
+                ]);
+            }
+
+            // Actualizar la imagen del asociado si se proporciona una nueva URL de imagen
+            if ($request->has('image_url')) {
+                $asociado->update([
+                    'image_url' => $request->input('image_url'),
+                ]);
+            }
+            $asociado->save();
+            DB::commit();
+
+            return response()->json(['asociado' => new AsociadoResource($asociado)]);
+            return response(["asociado" => new AsociadoResource(Asociado::find($asociado->id))], 200);
+        } catch (\Exception $e) {
+            // En caso de error, revertir la transacción
+            DB::rollback();
+
+            // Devolver un mensaje de error
+            return response()->json(['message' => 'Error al actualizar el asociado: ' . $e->getMessage()], 500);
         }
-        $asociado->save();
-        return response()->json(['asociado' => new AsociadoResource($asociado)]);
     }
 
     /**
@@ -160,5 +155,19 @@ class AsociadosController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+
+    public function toggleActivo($id)
+    {
+        $asociado = Asociado::findOrFail($id);
+        $asociado->activo = !$asociado->activo;
+        $asociado->save();
+
+        return response()->json([
+            'message' => 'Estado del asociado actualizado con éxito',
+            'activo' => $asociado->activo,
+            'asociado' => new AsociadoResource($asociado)
+        ], 200);
     }
 }
