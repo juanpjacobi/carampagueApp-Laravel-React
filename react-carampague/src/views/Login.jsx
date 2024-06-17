@@ -1,6 +1,6 @@
 import { createRef, useState } from "react";
-import { Alerta } from "../components/Alerta";
 import { useAuth } from "../hooks/useAuth";
+import { Alerta } from "../components/shared/Alerta";
 
 
 export default function Login() {

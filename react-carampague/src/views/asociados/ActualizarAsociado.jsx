@@ -1,11 +1,10 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import { AsociadoForm } from '../../components/asociados/AsociadoForm'
 
 export const ActualizarAsociado = () => {
 
   return (
-    <div className="max-w-2xl m-auto">
+    <div className="max-w-2xl w-full m-auto">
     <div className="flex justify-between items-center">
       <h1 className="text-2xl underline-offset-8 text-sky-700 font-semibold text-center">
         Actualizar asociado
