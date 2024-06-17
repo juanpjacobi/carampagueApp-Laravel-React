@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Asociado extends Model
 {
+
+
     protected $fillable = [
         'nombre_asociado',
         'apellido_asociado',
@@ -16,29 +18,31 @@ class Asociado extends Model
         'numero_asociado',
         'cuit_asociado',
         'fecha_nacimiento',
-        'estado_id',
+        'activo',
         'estado_civil_id',
-
+        'direccion_id'
     ];
-    public function estado()
-    {
-        return $this->belongsTo(Estado::class);
-    }
+
+
     public function estado_civil()
     {
         return $this->belongsTo(EstadoCivil::class);
     }
     public function documentacion()
     {
-        return $this->belongsTo(Documentacion::class);
+        return $this->belongsTo(Documentacion::class)->with('lineasDocumentacion');
     }
     public function telefono()
     {
-        return $this->belongsTo(Telefono::class);
+        return $this->belongsTo(Telefono::class)->with('tipoTelefono');
     }
     public function direccion()
     {
-        return $this->belongsTo(Direccion::class);
+        return $this->belongsTo(Direccion::class)->with('barrio');
+    }
+    public function entregaRopa()
+    {
+        return $this->hasMany(EntregaRopa::class)->with('lineas');
     }
     use HasFactory;
 }
