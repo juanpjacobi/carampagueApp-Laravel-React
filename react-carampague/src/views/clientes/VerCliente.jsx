@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Spinner } from "../../components/utilities/spinners/Spinner";
 import { useDispatch, useSelector } from "react-redux";
+import { Spinner } from "../../components/utilities/spinners/Spinner";
 import { ClienteCard } from "../../components/clientes/ClienteCard";
 import { getCliente } from "../../store/thunks/ClientesThunks";
 
@@ -14,7 +14,6 @@ export const VerCliente = () => {
 
   useEffect(() => {
     dispatch(getCliente(id));
-
   }, [dispatch]);
 
   return (

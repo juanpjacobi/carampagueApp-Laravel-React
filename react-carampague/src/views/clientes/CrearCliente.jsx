@@ -3,7 +3,7 @@ import { ClienteForm } from "../../components/clientes/ClienteForm";
 
 export const CrearCliente = () => {
   return (
-    <div className="max-w-2xl m-auto">
+    <div className="max-w-2xl w-full m-auto">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl underline-offset-8 text-sky-700 font-semibold text-center">
           Crear nuevo cliente
@@ -16,7 +16,7 @@ export const CrearCliente = () => {
         </Link>
       </div>
       <div className="bg-white shadow-2xl shadow-gray-700 rounded-md mt-5 px-5 py-10">
-        <ClienteForm editMode={false}/>
+        <ClienteForm editMode={false} />
       </div>
     </div>
   );
