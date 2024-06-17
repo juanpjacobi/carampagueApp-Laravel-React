@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\documentacion;
+use App\Http\Resources\DocumentacionResource;
+use App\Models\Documentacion;
+use App\Models\LineaDocumentacion;
 use Illuminate\Http\Request;
 
 class DocumentacionController extends Controller
@@ -34,10 +36,13 @@ class DocumentacionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(documentacion $documentacion)
+    public function show(string $id)
     {
-        //
+        $documentacion = new DocumentacionResource(Documentacion::find($id));
+        return response(['documentacion' => $documentacion], 200);
     }
+
+
 
     /**
      * Show the form for editing the specified resource.
@@ -46,6 +51,8 @@ class DocumentacionController extends Controller
     {
         //
     }
+
+
 
     /**
      * Update the specified resource in storage.
@@ -62,4 +69,6 @@ class DocumentacionController extends Controller
     {
         //
     }
+
+
 }
