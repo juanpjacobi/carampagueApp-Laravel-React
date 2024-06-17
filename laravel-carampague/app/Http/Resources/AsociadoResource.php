@@ -27,9 +27,10 @@ class AsociadoResource extends JsonResource
             'fecha_nacimiento' => $this->fecha_nacimiento,
             'telefono' => $this->telefono,
             'direccion' => $this->direccion,
-            'estado' => $this->estado,
+            'activo' => $this->activo,
             'estado_civil' => $this->estado_civil,
-            'documentacion' => $this->documentacion
+            'documentacion' => $this->documentacion,
+            'entrega_ropa' => $this->entregaRopa
 
         ];
     }
