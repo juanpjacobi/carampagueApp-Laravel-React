@@ -11,35 +11,26 @@ class Cliente extends Model
         'razon_social',
         'cuit_cliente',
         'email',
-        'estado_id',
-        'direccion_id',
         'condicion_iva_id',
-        'calle',
-        'numeracion',
-        'barrio',
-        'piso',
-        'departamento',
-        'localidad_id',
-        'tipo_telefono_id',
-        'numero_telefono'
+        'activo',
+        'telefono_id',
+        'direccion_id',
+        'barrio_id',
     ];
     public $timestamps = true;
 
-    public function estado()
-    {
-        return $this->belongsTo(Estado::class);
-    }
+
     public function condicion_iva()
     {
         return $this->belongsTo(CondicionIva::class);
     }
     public function telefono()
     {
-        return $this->belongsTo(Telefono::class);
+        return $this->belongsTo(Telefono::class)->with('tipoTelefono');
     }
     public function direccion()
     {
-        return $this->belongsTo(Direccion::class);
+        return $this->belongsTo(Direccion::class)->with('barrio');
     }
 
 

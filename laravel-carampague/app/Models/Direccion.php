@@ -12,14 +12,12 @@ class Direccion extends Model
     protected $fillable = [
         'calle',
         'numeracion',
-        'barrio',
         'piso',
         'departamento',
-        'localidad_id'
+        'barrio_id',
     ];
-    public function localidad(){
-        return $this->belongsTo(Localidad::class);
+    public function barrio(){
+        return $this->belongsTo(Barrio::class)->with('localidad');
     }
-
     use HasFactory;
 }

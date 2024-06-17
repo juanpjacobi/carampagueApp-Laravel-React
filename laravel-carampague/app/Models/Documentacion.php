@@ -11,5 +11,12 @@ class Documentacion extends Model
     protected $fillable = [
         'descripcion',
     ];
+
+    public function lineasDocumentacion()
+    {
+        return $this->hasMany(LineaDocumentacion::class)->with(
+            ['tipoDocumentacion', 'estadoDocumentacion']
+        );
+    }
     use HasFactory;
 }
