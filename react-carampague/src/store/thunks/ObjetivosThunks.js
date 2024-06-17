@@ -86,7 +86,6 @@ export const updateObjetivo = (id, data, navigate) => {
     try {
       dispatch(startLoading());
       await carampagueApi.put(`/api/objetivos/${id}`, data);
-      dispatch(setUpdatedObjetivo());
       Swal.fire({
         position: "top-end",
         icon: "success",
