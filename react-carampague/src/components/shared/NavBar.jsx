@@ -21,7 +21,7 @@ export const NavBar = () => {
   }, []);
 
   return (
-    <nav className="uppercase text-xs xl:text-sm  text-slate-800 p-10">
+    <nav className="uppercase text-sm xl:text-sm  text-slate-800 p-10">
       <div className={clsx(hiddeNavbar && "lg:hidden" , "flex justify-center")}>
         <GiHamburgerMenu className="cursor-pointer " size={30} onClick={() => setHiddeNavbar(!hiddeNavbar)} />
       </div>
@@ -71,7 +71,7 @@ export const NavBar = () => {
         </NavLink>
         <button
           onClick={logout}
-          className="bg-gray-600 hover:bg-gray-700  uppercase text-white w-full p-2 cursor-pointer rounded"
+          className="bg-gray-600 hover:bg-gray-700  uppercase text-white w-full p-2 cursor-pointer rounded-lg ml-1"
         >
           Cerrar Sesión
         </button>

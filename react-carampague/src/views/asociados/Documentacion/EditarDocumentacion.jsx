@@ -5,8 +5,8 @@ export const EditarDocumentacion = () => {
   const navigate = useNavigate()
 
     return (
-        <div className="max-w-2xl m-auto">
-        <div className="flex justify-between items-center">
+      <div className="w-full md:w-3/5 m-auto">
+      <div className="flex justify-between items-center">
           <h1 className="text-2xl underline-offset-8 text-sky-700 font-semibold text-center">
             Editar documentacion
           </h1>

@@ -6,6 +6,10 @@ export const VerDocumentacion = () => {
     const {selectedAsociado} = useSelector((state) => state.asociados);
     const { id } = useParams();
     const linea = selectedAsociado.documentacion.lineas_documentacion.find((l) => l.id.toString() === id);
+
+
+
+ 
   return (
     <DocumentacionCard linea={linea}/>
   )

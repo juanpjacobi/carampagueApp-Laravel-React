@@ -19,7 +19,7 @@ export const Layout = () => {
   }, [dispatch]);
  
   return (
-    <main className="m-auto w-95 flex flex-col items-center pattern">
+    <main className="m-auto w-full overflow-auto flex flex-col  items-center pattern">
       <div className="w-full border-b border-slate-300 shadow-lg  items-center flex flex-col lg:flex-row justify-between">
           <img
             src="/img/logo.jpg"
@@ -28,7 +28,7 @@ export const Layout = () => {
           />
         <NavBar />
       </div>
-      <div className="md:max-w-6xl p-1 flex flex-col md:p-10 w-full">
+      <div className="md:max-w-6xl flex flex-col md:p-10 w-full">
           <Outlet />
       </div>
     </main>
