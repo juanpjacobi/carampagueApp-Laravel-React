@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EntregaRopaRequest;
 use App\Http\Resources\EntregaRopaCollection;
 use App\Models\EntregaRopa;
 use App\Models\LineaEntregaRopa;
@@ -21,19 +22,12 @@ class EntregaRopaController extends Controller
         return response(['entragas_ropa' => $entregas_ropa], 200);
     }
 
-
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(EntregaRopaRequest $request)
     {
-        $request->validate([
-            'descripcion' => 'required|string',
-            'asociado_id' => 'required|exists:asociados,id',
-            'lineas' => 'required|array',
-            'lineas.*.prenda_id' => 'required|exists:prendas,id',
-            'lineas.*.cantidad' => 'required|integer|min:1',
-        ]);
+        $request->validated();
 
         $stockErrors = [];
 
@@ -81,32 +75,21 @@ class EntregaRopaController extends Controller
         }
     }
 
-
     /**
      * Display the specified resource.
      */
     public function show(EntregaRopa $entregaRopa)
     {
-        //
+        // Código para mostrar una entrega específica, si es necesario
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(EntregaRopaRequest $request, string $id)
     {
         // Validar la solicitud
-        $request->validate([
-            'descripcion' => 'required|string|max:255',
-            'lineas' => 'required|array|min:1',
-            'lineas.*.prenda_id' => 'required|exists:prendas,id',
-            'lineas.*.cantidad' => 'required|integer|min:1',
-        ]);
+        $request->validated();
 
         DB::beginTransaction();
 
@@ -168,6 +151,6 @@ class EntregaRopaController extends Controller
      */
     public function destroy(EntregaRopa $entregaRopa)
     {
-        //
+        // Código para eliminar una entrega específica, si es necesario
     }
 }

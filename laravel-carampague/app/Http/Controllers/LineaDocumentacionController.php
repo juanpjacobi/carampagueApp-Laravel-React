@@ -15,9 +15,7 @@ class LineaDocumentacionController extends Controller
     public function index()
     {
         $lineas =  new LineaDocumentacionCollection(LineaDocumentacion::all());
-        return response(['lineas' => $lineas]);
-
-
+        return response(['lineas' => $lineas], 200);
     }
 
     /**
@@ -25,7 +23,11 @@ class LineaDocumentacionController extends Controller
      */
     public function store(LineaDocumentacionRequest $request)
     {
+
         $request->validated();
+
+        try {
+
         $lineaDocumentacion = new LineaDocumentacion([
             "fecha_solicitud"=> $request->input('fecha_solicitud'),
             "observaciones"=> $request->input('observaciones'),
@@ -35,7 +37,11 @@ class LineaDocumentacionController extends Controller
 
         ]);
         $lineaDocumentacion->save();
-        return ['linea' => new LineaDocumentacionResource($lineaDocumentacion)];
+        return response(['linea' => new LineaDocumentacionResource($lineaDocumentacion)], 201);
+
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Error al crear linea documentacion', 'error' => $e->getMessage()], 500);
+    }
     }
 
     /**
@@ -44,7 +50,7 @@ class LineaDocumentacionController extends Controller
     public function show(string $id)
     {
         $linea = new LineaDocumentacionResource(LineaDocumentacion::find($id));
-        return ['linea' => $linea];
+        return response(['linea' => new LineaDocumentacionResource($linea)], 200);
     }
 
     /**
@@ -53,6 +59,9 @@ class LineaDocumentacionController extends Controller
     public function update(LineaDocumentacionRequest $request, string $id)
     {
         $request->validated();
+
+        try {
+
 
         $linea = LineaDocumentacion::findOrFail($id);
         $linea->fecha_solicitud = $request->input('fecha_solicitud');
@@ -63,7 +72,11 @@ class LineaDocumentacionController extends Controller
         $linea->estado_documentacion_id = $request->input('estado_documentacion_id');
         $linea->documentacion_id = $request->input('documentacion_id');
         $linea->save();
-        return response()->json(['linea' => new LineaDocumentacionResource($linea)]);
+        return response()->json(['linea' => new LineaDocumentacionResource($linea)], 200);
+
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Error al actualizar linea documentacion', 'error' => $e->getMessage()], 500);
+    }
     }
 
     /**

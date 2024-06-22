@@ -28,6 +28,8 @@ class ObjetivosController extends Controller
     public function store(ObjetivoRequest $request)
     {
         $request->validated();
+        DB::beginTransaction();
+        try {
 
         // Crear una nueva dirección
         $direccion = Direccion::create([
@@ -58,8 +60,13 @@ class ObjetivosController extends Controller
         // Guardar el objetivo en la base de datos
         $objetivo->save();
 
-        // Devolver una respuesta adecuada
-        return response(['objetivo' => new ObjetivoResource($objetivo)], 201);
+
+        DB::commit();
+        return response(["objetivo" => new ObjetivoResource(Objetivo::find($objetivo->id))], 201);
+    } catch (\Exception $e) {
+        DB::rollback();
+        return response()->json(['message' => 'Error al crear el objetivo: ' . $e->getMessage()], 500);
+    }
     }
 
     /**
@@ -78,6 +85,8 @@ class ObjetivosController extends Controller
     public function update(ObjetivoRequest $request, string $id)
     {
         $request->validated();
+        DB::beginTransaction();
+        try {
 
         // Buscar el objetivo por su ID
         $objetivo = Objetivo::findOrFail($id);
@@ -107,8 +116,13 @@ class ObjetivosController extends Controller
         // Guardar los cambios
         $objetivo->save();
 
-        // Devolver una respuesta adecuada
+
+        DB::commit();
         return response(['objetivo' => new ObjetivoResource($objetivo)], 200);
+    } catch (\Exception $e) {
+        DB::rollback();
+        return response()->json(['message' => 'Error al crear el objetivo: ' . $e->getMessage()], 500);
+    }
     }
 
     /**

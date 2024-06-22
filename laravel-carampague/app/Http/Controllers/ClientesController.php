@@ -122,7 +122,7 @@ class ClientesController extends Controller
             return response((['cliente' => new ClienteResource($cliente)]), 200);
         } catch (\Exception $e) {
             DB::rollback();
-            return response()->json(['message' => 'Error al crear el asociado: ' . $e->getMessage()], 500);
+            return response()->json(['message' => 'Error al actualizar el asociado: ' . $e->getMessage()], 500);
         }
     }
 

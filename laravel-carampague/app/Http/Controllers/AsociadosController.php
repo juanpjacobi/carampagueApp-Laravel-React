@@ -138,8 +138,7 @@ class AsociadosController extends Controller
             $asociado->save();
             DB::commit();
 
-            return response()->json(['asociado' => new AsociadoResource($asociado)]);
-            return response(["asociado" => new AsociadoResource(Asociado::find($asociado->id))], 200);
+            return response()->json(['asociado' => new AsociadoResource($asociado)], 200);
         } catch (\Exception $e) {
             // En caso de error, revertir la transacción
             DB::rollback();
