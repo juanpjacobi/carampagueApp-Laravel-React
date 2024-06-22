@@ -59,7 +59,7 @@ export const createAsociado = (data, navigate) => {
       Swal.fire({
         position: "top-end",
         icon: "success",
-        title: "Cliente creado con exito",
+        title: "ASociado creado con exito",
         showConfirmButton: true,
       }).then(() => {
         navigate("/asociados");
@@ -90,7 +90,7 @@ export const updateAsociado = (id, data, navigate) => {
       Swal.fire({
         position: "top-end",
         icon: "success",
-        title: "Asociados actualizado con exito",
+        title: "Asociado actualizado con exito",
         showConfirmButton: true,
       }).then(() => {
         navigate("/asociados");
