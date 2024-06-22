@@ -12,7 +12,6 @@ export const AsociadosSlice = createSlice({
  
     setAsociados: (state, action) => {
       state.asociados = action.payload;
-      state.selectedAsociado = null;
     },
 
     setSelectedAsociado: (state, action) => {
