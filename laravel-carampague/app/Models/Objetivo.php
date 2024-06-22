@@ -13,7 +13,6 @@ class Objetivo extends Model
         'direccion_id',
         'cliente_id',
         'valor_id'
-
     ];
     public function valor()
     {

@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Asociado extends Model
 {
 
-
     protected $fillable = [
         'nombre_asociado',
         'apellido_asociado',
