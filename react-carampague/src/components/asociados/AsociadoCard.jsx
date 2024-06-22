@@ -105,23 +105,24 @@ export const AsociadoCard = ({ selectedAsociado }) => {
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Localidad
             </span>
-            {selectedAsociado?.direccion?.barrio?.localidad.nombre_localidad} 
-            
+            {selectedAsociado?.direccion?.barrio?.localidad.nombre_localidad}
           </p>
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Provincia
             </span>
-            {selectedAsociado?.direccion?.barrio?.localidad?.provincia?.nombre_provincia} 
-            
+            {
+              selectedAsociado?.direccion?.barrio?.localidad?.provincia
+                ?.nombre_provincia
+            }
           </p>
         </div>
 
-        <div className="flex flex-col text-center">
+        <div className="flex flex-col text-center ">
           <span className="text-md  mr-2 font-bold text-sky-800 uppercase border-b-2">
             Acciones
           </span>
-          <div className="flex flex-col h-full gap-2">
+          <div className="flex flex-col h-full gap-2 md:justify-around">
             <Link
               to={`/asociados/edit/${selectedAsociado?.id}`}
               className="p-2 w-full text-sm text-center bg-teal-600 hover:bg-teal-800 text-white rounded"

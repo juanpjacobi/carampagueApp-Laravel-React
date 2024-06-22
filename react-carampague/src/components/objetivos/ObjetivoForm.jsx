@@ -3,8 +3,7 @@ import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { objetivoSchema } from "../utilities/validator/objetivo/objetivoSchema";
-import { getProvincias } from "../../functions/Provincia/provincia";
-import { getLocalidades } from "../../functions/Localidad/localidad";
+
 import {
   createObjetivo,
   updateObjetivo,

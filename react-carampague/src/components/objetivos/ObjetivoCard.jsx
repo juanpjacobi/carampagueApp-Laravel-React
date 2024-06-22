@@ -87,26 +87,28 @@ export const ObjetivoCard = ({ selectedObjetivo }) => {
             {selectedObjetivo?.direccion?.barrio?.localidad.nombre_localidad}
           </p>
         </div>
-        <div className="flex flex-col gap-8 text-center">
+        <div className="flex flex-col text-center ">
           <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
             Acciones
           </span>
-          <Link
-            to={`/objetivos/edit/${selectedObjetivo?.id}`}
-            className="p-2 w-full text-sm text-center bg-blue-600 hover:bg-blue-950 text-white rounded"
+          <div className="flex flex-col h-full gap-2 md:justify-around">
+            <Link
+              to={`/objetivos/edit/${selectedObjetivo?.id}`}
+              className="p-2 w-full text-sm text-center bg-blue-600 hover:bg-blue-950 text-white rounded"
             >
-            Editar
-          </Link>
-          <button
-            onClick={handleToggleActivo}
-            className={`p-2 w-full text-sm text-center ${
-              activo
-                ? "bg-red-600 hover:bg-red-950"
-                : "bg-green-600 hover:bg-green-950"
-            } text-white rounded`}
-          >
-            {activo ? "Inactivar" : "Activar"}
-          </button>
+              Editar
+            </Link>
+            <button
+              onClick={handleToggleActivo}
+              className={`p-2 w-full text-sm text-center ${
+                activo
+                  ? "bg-red-600 hover:bg-red-950"
+                  : "bg-green-600 hover:bg-green-950"
+              } text-white rounded`}
+            >
+              {activo ? "Inactivar" : "Activar"}
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -1,27 +1,33 @@
 import React from "react";
-import {InfoIcon} from '../utilities/icons/InfoIcon'
+import { InfoIcon } from "../utilities/icons/InfoIcon";
 export const AsociadoListItem = ({ asociado }) => {
   return (
-    <tr className="bg-white border-b">
-      <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
+    <tr className="bg-gray-100 p-5 border-b border-slate-300 md:bg-white mb-2 shadow-md shadow-gray-700  flex flex-col md:table-row">
+      <td className="p-2 border-b flex justify-between border-slate-300 md:border-none text-left md:table-cell ">
+        <span className="inline-block w-1/3 md:hidden font-bold">Nombre</span>
         {asociado.nombre}
       </td>
-      <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
+      <td className="p-2 border-b flex justify-between border-slate-300 md:border-none text-left md:table-cell ">
+        <span className="inline-block w-1/3 md:hidden font-bold">Apellido</span>
         {asociado.apellido}
       </td>
-      <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
+      <td className="p-2 border-b flex justify-between border-slate-300 md:border-none text-left md:table-cell ">
+        <span className="inline-block w-1/3 md:hidden font-bold">Numero</span>
         {asociado.numero_asociado}
       </td>
-      <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
-        {asociado.activo ? 'Activo' : 'Inactivo'}
+      <td className="p-2 border-b flex justify-between border-slate-300 md:border-none text-left md:table-cell ">
+        <span className="inline-block w-1/3 md:hidden font-bold">Estado</span>
+        {asociado.activo ? "Activo" : "Inactivo"}
       </td>
 
-      <td className="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
+      <td className="p-2 border-b flex justify-between border-slate-300 md:border-none text-left md:table-cell ">
+        <span className="inline-block w-1/3 md:hidden font-bold">Telefono</span>
         {asociado.telefono.numero_telefono} (
         {asociado.telefono.tipo_telefono.nombre_tipo_telefono})
       </td>
-      <td className="px-6 py-4 font-medium flex text-slate-800 whitespace-nowrap">
-        <InfoIcon tipo='asociados' id={asociado.id} />
+      <td className="p-2 text-left flex justify-between md:table-cell">
+        <span className="inline-block w-1/3 md:hidden font-bold">Ver</span>
+        <InfoIcon tipo="asociados" id={asociado.id} />
       </td>
     </tr>
   );

@@ -106,9 +106,12 @@ export const EntregaRopaForm = ({ editMode }) => {
 
   return (
     <form onSubmit={formik.handleSubmit} noValidate>
+      <div className="text-gray-700 text-sm text-center">
+        <span>Los campos marcados con * son obligatorios</span>
+      </div>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="descripcion">
-          Descripción
+          Descripción*
         </label>
         <input
           type="text"
@@ -134,7 +137,7 @@ export const EntregaRopaForm = ({ editMode }) => {
               className="text-slate-800"
               htmlFor={`lineas[${index}].prenda_id`}
             >
-              Prenda
+              Prenda*
             </label>
             <select
               name={`lineas[${index}].prenda_id`}
@@ -160,7 +163,7 @@ export const EntregaRopaForm = ({ editMode }) => {
               className="text-slate-800"
               htmlFor={`lineas[${index}].cantidad`}
             >
-              Cantidad
+              Cantidad*
             </label>
             <input
               type="number"

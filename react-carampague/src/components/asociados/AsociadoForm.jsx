@@ -225,7 +225,7 @@ export const AsociadoForm = ({ editMode }) => {
           Numero de telefono*
         </label>
         <input
-          type="number"
+          type="text"
           id="numero_telefono"
           className="mt-2 w-full p-3 bg-gray-200"
           name="numero_telefono"

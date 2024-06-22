@@ -81,9 +81,12 @@ export const DocumentacionForm = ({ editMode }) => {
 
   return (
     <form onSubmit={formik.handleSubmit} noValidate>
+      <div className="text-gray-700 text-sm text-center mb-2">
+        <span>Los campos marcados con * son obligatorios</span>
+      </div>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="fecha_solicitud">
-          Fecha de solicitud
+          Fecha de solicitud*
         </label>
         <input
           type="date"
@@ -99,7 +102,7 @@ export const DocumentacionForm = ({ editMode }) => {
       </div>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="observaciones">
-          Observaciones
+          Observaciones*
         </label>
 
         <input
@@ -118,7 +121,7 @@ export const DocumentacionForm = ({ editMode }) => {
 
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="tipo_documentacion_id">
-          Tipo de documentacion
+          Tipo de documentacion*
         </label>
         <select
           name="tipo_documentacion_id"
@@ -140,7 +143,7 @@ export const DocumentacionForm = ({ editMode }) => {
       </div>
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="estado_documentacion_id">
-          Estado de la documentacion
+          Estado de la documentacion*
         </label>
         <select
           name="estado_documentacion_id"

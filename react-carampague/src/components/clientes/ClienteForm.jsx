@@ -72,7 +72,6 @@ export const ClienteForm = ({ editMode }) => {
       return;
     }
     dispatch(createCliente(formik.values, navigate));
-    console.log(formik.values);
   };
 
   const formik = useFormik({
@@ -92,7 +91,6 @@ export const ClienteForm = ({ editMode }) => {
         <label className="text-slate-800" htmlFor="razon_social">
           Razon social*
         </label>
-
         <input
           type="text"
           id="razon_social"
@@ -165,7 +163,7 @@ export const ClienteForm = ({ editMode }) => {
           Numero de telefono*
         </label>
         <input
-          type="number"
+          type="text"
           id="numero_telefono"
           className="mt-2 w-full p-3 bg-gray-200"
           name="numero_telefono"
