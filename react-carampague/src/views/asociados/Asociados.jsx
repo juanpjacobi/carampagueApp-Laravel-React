@@ -1,28 +1,35 @@
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-
-import { useDispatch } from "react-redux";
-import { getAsociados } from "../../store/thunks/AsociadosThunks";
 import { AsociadoList } from "../../components/asociados/AsociadosList";
 import { Empty } from "../../components/shared/Empty";
 import { Spinner } from "../../components/utilities/spinners/Spinner";
+import { selectAsociadosConRelaciones } from "../../store/selectors/AsociadosSelectors";
 
 export const Asociados = () => {
-  const { asociados } = useSelector((state) => state.asociados);
+
+  const asociados = useSelector(selectAsociadosConRelaciones);
+
+  const {  hasLoaded } = useSelector((state) => state.asociados);
   const { isLoading } = useSelector((state) => state.ui);
 
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getAsociados());
-  }, [dispatch]);
+
+
+  if (isLoading) {
+    return <Spinner />;
+  }
+
+  if (hasLoaded && asociados.length === 0) {
+    return (
+      <Empty
+        message={"Aun no hay asociados registrados, crea uno para continuar"}
+        link={"/asociados/crear"}
+      />
+    );
+  }
 
   return (
     <>
-      {isLoading ? (
-        <Spinner />
-      ) : (
-        <>
+
           <div className="flex flex-col md:flex-row justify-between items-center">
             <h1 className="text-3xl underline underline-offset-8 text-sky-700 font-semibold text-center mb-5">
               Asociados
@@ -34,13 +41,8 @@ export const Asociados = () => {
               Crear asociado
             </Link>
           </div>
-          {asociados.length === 0 ? (
-            <Empty message={"Aun no hay asociados registrados, crea uno para continuar"} />
-          ) : (
+
             <AsociadoList asociados={asociados} />
-          )}
         </>
-      )}
-    </>
   );
 };

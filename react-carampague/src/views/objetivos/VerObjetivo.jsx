@@ -1,29 +1,29 @@
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Spinner } from "../../components/utilities/spinners/Spinner";
-import { useDispatch, useSelector } from "react-redux";
-import { getObjetivo } from "../../store/thunks/ObjetivosThunks";
+import { useEffect, useMemo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import {   useSelector } from "react-redux";
 import { ObjetivoCard } from "../../components/objetivos/ObjetivoCard";
+import { makeSelectObjetivoById } from "../../store/selectors/ObjetivosSelectors";
+import { NotFound } from "../../components/shared/NotFound";
 
 export const VerObjetivo = () => {
   const { id } = useParams();
-  const {isLoading} = useSelector((state) => state.ui);
-  const {selectedObjetivo} = useSelector((state) => state.objetivos);
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const objetivoId = parseInt(id, 10);
+
+  const selectObjetivo = useMemo(() => makeSelectObjetivoById(objetivoId), [objetivoId]);
+  const objetivo = useSelector(selectObjetivo);
 
 
   useEffect(() => {
-    dispatch(getObjetivo(id));
+    if ( !objetivo) {
+      navigate("/objetivos");
+    }
+  }, [ objetivo, navigate]);
 
-  }, [dispatch]);
 
-  return (
-    <>
-      {!isLoading ? (
-        <ObjetivoCard selectedObjetivo={selectedObjetivo}/>
-      ) : (
-        <Spinner />
-      )}
-    </>
-  );
+  if (!objetivo) {
+    return <NotFound message={"No se encuentra un objetivo con ese id"} />;
+  }
+
+  return <ObjetivoCard selectedObjetivo={objetivo} />;
 };

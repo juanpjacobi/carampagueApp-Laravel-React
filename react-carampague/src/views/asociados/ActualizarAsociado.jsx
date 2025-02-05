@@ -1,7 +1,25 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { AsociadoForm } from '../../components/asociados/AsociadoForm'
+import { makeSelectAsociadoById } from '../../store/selectors/AsociadosSelectors';
+import { useSelector } from 'react-redux';
+import { useMemo } from 'react';
+import { NotFound } from '../../components/shared/NotFound';
 
 export const ActualizarAsociado = () => {
+
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const asociadoId = parseInt(id, 10);
+
+  const selectAsociado = useMemo(() => makeSelectAsociadoById(asociadoId), [asociadoId]);
+  const asociado = useSelector(selectAsociado);
+  if (!asociado) {
+    navigate("/asociados");
+  }
+
+  if (!asociado) {
+    return <NotFound message={"No se encuentra un asociado con ese id"} />;
+  }
 
   return (
     <div className="max-w-2xl w-full m-auto">
@@ -17,7 +35,7 @@ export const ActualizarAsociado = () => {
       </Link>
     </div>
     <div className="bg-white shadow-2xl shadow-gray-700 rounded-md mt-5 px-5 py-10">
-      <AsociadoForm editMode={true}/>
+      <AsociadoForm editMode={true} initialData={asociado}/>
     </div>
   </div>
   )

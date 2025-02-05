@@ -1,7 +1,13 @@
 import { Link } from "react-router-dom";
 import { AsociadoForm } from "../../components/asociados/AsociadoForm";
+import { useDispatch } from "react-redux";
+import { clearSelectedAsociado } from "../../store/slices/AsociadosSlice";
 
 export const CrearAsociado = () => {
+
+  const dispatch = useDispatch();
+  dispatch(clearSelectedAsociado())
+
   return (
     <div className="w-full md:w-3/5 m-auto">
       <div className="flex justify-between items-center">
@@ -16,7 +22,7 @@ export const CrearAsociado = () => {
         </Link>
       </div>
       <div className="bg-white shadow-2xl shadow-gray-700 rounded-md mt-5 px-5 py-10">
-        <AsociadoForm editMode={false}/>
+        <AsociadoForm editMode={false} />
       </div>
     </div>
   );

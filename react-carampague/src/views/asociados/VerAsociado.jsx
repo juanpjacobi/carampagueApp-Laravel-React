@@ -1,29 +1,32 @@
-import  { useEffect } from "react";
-import {  useParams } from "react-router-dom";
-import { Spinner } from "../../components/utilities/spinners/Spinner";
-import { useDispatch, useSelector } from "react-redux";
+import  { useEffect, useMemo } from "react";
+import {  useNavigate, useParams } from "react-router-dom";
+import {  useSelector } from "react-redux";
 import { AsociadoCard } from "../../components/asociados/AsociadoCard";
-import { getAsociado } from "../../store/thunks/AsociadosThunks";
+
+import { makeSelectAsociadoById } from "../../store/selectors/AsociadosSelectors";
+import { NotFound } from "../../components/shared/NotFound";
+
 
 
 export const VerAsociado = () => {
   const { id } = useParams();
-  const {isLoading} = useSelector((state) => state.ui);
-  const {selectedAsociado} = useSelector((state) => state.asociados);
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const asociadoId = parseInt(id, 10);
+
+  const selectAsociado = useMemo(() => makeSelectAsociadoById(asociadoId), [asociadoId]);
+  const asociado = useSelector(selectAsociado);
+
 
 
   useEffect(() => {
-    dispatch(getAsociado(id));
-  }, [dispatch]);
+    if ( !asociado) {
+      navigate("/asociados");
+    }
+  }, [ asociado, navigate]);
 
-  return (
-    <>
-      {!isLoading ? (
-        <AsociadoCard selectedAsociado={selectedAsociado}/>
-      ) : (
-        <Spinner />
-      )}
-    </>
-  );
+
+  if (!asociado) {
+    return <NotFound message={"No se encuentra un asociado con ese id"} />;
+  }
+  return <AsociadoCard selectedAsociado={asociado} />;
 };

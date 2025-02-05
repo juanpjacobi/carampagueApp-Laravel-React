@@ -1,7 +1,24 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ObjetivoForm } from '../../components/objetivos/ObjetivoForm'
+import { useMemo } from 'react';
+import { NotFound } from '../../components/shared/NotFound';
+import { makeSelectObjetivoById } from '../../store/selectors/ObjetivosSelectors';
+import { useSelector } from 'react-redux';
 
 export const ActualizarObjetivo = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const objetivoId = parseInt(id, 10);
+
+  const selectObjetivo = useMemo(() => makeSelectObjetivoById(objetivoId), [objetivoId]);
+  const objetivo = useSelector(selectObjetivo);
+  if (!objetivo) {
+    navigate("/objetivos");
+  }
+
+  if (!objetivo) {
+    return <NotFound message={"No se encuentra un objetivo con ese id"} />;
+  }
 
   return (
     <div className="max-w-2xl w-full m-auto">
@@ -17,7 +34,7 @@ export const ActualizarObjetivo = () => {
       </Link>
     </div>
     <div className="bg-white shadow-2xl shadow-gray-700 rounded-md mt-5 px-5 py-10">
-      <ObjetivoForm editMode={true}/>
+    <ObjetivoForm editMode={true} initialData={objetivo} />
     </div>
   </div>
   )

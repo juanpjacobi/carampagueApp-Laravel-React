@@ -1,16 +1,23 @@
-import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { DocumentacionCard } from '../../../components/asociados/documentacion/DocumentacionCard'
+import { useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { DocumentacionCard } from "../../../components/asociados/documentacion/DocumentacionCard";
+import { makeSelectLineaDocumentacionById } from "../../../store/selectors/LineasDocumentacionSelectors";
 
 export const VerDocumentacion = () => {
-    const {selectedAsociado} = useSelector((state) => state.asociados);
-    const { id } = useParams();
-    const linea = selectedAsociado.documentacion.lineas_documentacion.find((l) => l.id.toString() === id);
+  const { id } = useParams(); 
+  const navigate = useNavigate();
+  
+  const linea = useSelector(makeSelectLineaDocumentacionById(id));
+  console.log(linea)
 
+  useEffect(() => {
+    if (!linea) {
+      navigate("/asociados", { replace: true });
+    }
+  }, [linea, navigate]);
 
-
- 
-  return (
-    <DocumentacionCard linea={linea}/>
-  )
-}
+  if (!linea) return null;
+  
+  return <DocumentacionCard linea={linea} />;
+};

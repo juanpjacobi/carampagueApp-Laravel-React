@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { ObjetivoForm } from "../../components/objetivos/ObjetivoForm";
 
+
 export const CrearObjetivo = () => {
+
   return (
     <div className="max-w-2xl w-full m-auto">
       <div className="flex justify-between items-center">

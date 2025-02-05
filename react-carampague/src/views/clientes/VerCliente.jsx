@@ -1,28 +1,30 @@
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { Spinner } from "../../components/utilities/spinners/Spinner";
+import { useEffect, useMemo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { ClienteCard } from "../../components/clientes/ClienteCard";
-import { getCliente } from "../../store/thunks/ClientesThunks";
+import { makeSelectClienteById } from "../../store/selectors/ClientesSelectors";
+import { NotFound } from "../../components/shared/NotFound";
 
 export const VerCliente = () => {
   const { id } = useParams();
-  const {isLoading} = useSelector((state) => state.ui);
-  const {selectedCliente} = useSelector((state) => state.clientes);
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const clienteId = parseInt(id, 10);
+
+  const selectCliente = useMemo(() => makeSelectClienteById(clienteId), [clienteId]);
+  const cliente = useSelector(selectCliente);
+
 
 
   useEffect(() => {
-    dispatch(getCliente(id));
-  }, [dispatch]);
+    if ( !cliente) {
+      navigate("/clientes");
+    }
+  }, [ cliente, navigate]);
 
-  return (
-    <>
-      {!isLoading ? (
-        <ClienteCard selectedCliente={selectedCliente}/>
-      ) : (
-        <Spinner />
-      )}
-    </>
-  );
+
+  if (!cliente) {
+    return <NotFound message={"No se encuentra un cliente con ese id"} />;
+  }
+
+  return <ClienteCard selectedCliente={cliente} />;
 };
