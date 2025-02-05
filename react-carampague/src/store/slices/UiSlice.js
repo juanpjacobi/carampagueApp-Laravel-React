@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   isLoading: false,
+  isInitialLoading: false,
   error: null,
 };
 
@@ -8,6 +9,13 @@ export const UiSlice = createSlice({
   name: "ui",
   initialState,
   reducers: {
+
+    startInitialLoading: (state) => {
+      state.isInitialLoading = true;
+    },
+    endInitialLoading: (state) => {
+      state.isInitialLoading = false;
+    },
     startLoading: (state) => {
       state.isLoading = true;
     },
@@ -28,7 +36,7 @@ export const {
   startLoading,
   setError,
   endLoading,
-  clearErrors
-
-
+  clearErrors,
+  startInitialLoading, 
+  endInitialLoading
 } = UiSlice.actions
