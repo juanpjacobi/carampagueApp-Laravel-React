@@ -7,7 +7,6 @@ use App\Http\Resources\ObjetivoCollection;
 use App\Http\Resources\ObjetivoResource;
 use App\Models\Direccion;
 use App\Models\Objetivo;
-use App\Models\Valor;
 use Illuminate\Support\Facades\DB;
 
 class ObjetivosController extends Controller
@@ -17,8 +16,8 @@ class ObjetivosController extends Controller
      */
     public function index()
     {
-        $objetivos = Objetivo::all();
-        return response(["objetivos" => new ObjetivoCollection($objetivos)], 200);
+        $objetivos = new ObjetivoCollection(Objetivo::all());
+        return response(["objetivos" =>  ($objetivos)], 200);
     }
 
 
@@ -40,11 +39,6 @@ class ObjetivosController extends Controller
             'barrio_id' => $request->input('barrio_id'),
         ]);
 
-        // Crear un nuevo valor
-        $valor = Valor::create([
-            'valor_vigilador' => $request->input('valor_vigilador'),
-            'valor_cliente' => $request->input('valor_cliente'),
-        ]);
 
         // Crear un nuevo objetivo
         $objetivo = new Objetivo([
@@ -55,7 +49,6 @@ class ObjetivosController extends Controller
 
         // Asignar la dirección y el valor al objetivo
         $objetivo->direccion()->associate($direccion);
-        $objetivo->valor()->associate($valor);
 
         // Guardar el objetivo en la base de datos
         $objetivo->save();
@@ -107,11 +100,6 @@ class ObjetivosController extends Controller
             ]);
         }
 
-        // Actualizar los datos del valor asociado al objetivo
-        $objetivo->valor->update([
-            'valor_vigilador' => $request->input('valor_vigilador'),
-            'valor_cliente' => $request->input('valor_cliente'),
-        ]);
 
         // Guardar los cambios
         $objetivo->save();

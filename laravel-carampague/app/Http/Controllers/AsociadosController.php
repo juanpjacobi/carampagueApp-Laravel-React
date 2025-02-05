@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AsociadoRequest;
 use App\Http\Resources\AsociadoCollection;
 use App\Http\Resources\AsociadoResource;
+use App\Http\Resources\DocumentacionResource;
 use App\Models\Asociado;
 use App\Models\Direccion;
 use App\Models\Documentacion;
@@ -73,7 +74,10 @@ class AsociadosController extends Controller
             $asociado->save();
 
             DB::commit();
-            return response(["asociado" => new AsociadoResource(Asociado::find($asociado->id))], 201);
+            return response([
+                "asociado" => new AsociadoResource(Asociado::find($asociado->id)),
+                "documentacion" => new DocumentacionResource($documentacion),
+        ], 201);
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['message' => 'Error al crear el asociado: ' . $e->getMessage()], 500);
@@ -98,7 +102,6 @@ class AsociadosController extends Controller
 
         DB::beginTransaction();
         try {
-            // Buscar el asociado por su ID
             $asociado = Asociado::findOrFail($id);
             $asociado->nombre_asociado = $request->input('nombre_asociado');
             $asociado->apellido_asociado = $request->input('apellido_asociado');

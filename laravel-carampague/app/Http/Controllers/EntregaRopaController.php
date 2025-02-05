@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EntregaRopaRequest;
 use App\Http\Resources\EntregaRopaCollection;
+use App\Http\Resources\EntregaRopaResource;
+use App\Http\Resources\LineaRopaResource;
 use App\Models\EntregaRopa;
 use App\Models\LineaEntregaRopa;
 use App\Models\Prenda;
@@ -19,7 +21,7 @@ class EntregaRopaController extends Controller
     public function index()
     {
         $entregas_ropa = new EntregaRopaCollection(EntregaRopa::all());
-        return response(['entragas_ropa' => $entregas_ropa], 200);
+        return response(['entregas_ropa' => $entregas_ropa], 200);
     }
 
     /**
@@ -68,7 +70,7 @@ class EntregaRopaController extends Controller
 
             DB::commit();
 
-            return response()->json($entrega->load('lineas'), 201);
+            return response()->json(['entregaRopa' => new EntregaRopaResource($entrega->load('lineas'))], 201);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['message' => 'Error processing request: ' . $e->getMessage()], 500);
@@ -139,7 +141,7 @@ class EntregaRopaController extends Controller
             DB::commit();
 
             // Devolver una respuesta exitosa
-            return response()->json(['message' => 'Entrega de ropa actualizada correctamente'], 200);
+            return response()->json(['entregaRopa' => new EntregaRopaResource($entregaRopa->load('lineas'))], 201);
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['message' => 'Error al actualizar la entrega de ropa', 'error' => $e->getMessage()], 500);
@@ -152,5 +154,14 @@ class EntregaRopaController extends Controller
     public function destroy(EntregaRopa $entregaRopa)
     {
         // Código para eliminar una entrega específica, si es necesario
+    }
+    public function getLineasPorEntregaId($entregaId)
+    {
+        // Verifica que $entregaId se reciba correctamente
+        // Puedes usar dd($entregaId) para depurar
+        $lineas = LineaEntregaRopa::where('entrega_ropa_id', $entregaId)->get();
+        return response()->json([
+            'lineas' => LineaRopaResource::collection($lineas)
+        ], 200);
     }
 }

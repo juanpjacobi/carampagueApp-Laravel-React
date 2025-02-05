@@ -62,7 +62,6 @@ class LineaDocumentacionController extends Controller
 
         try {
 
-
         $linea = LineaDocumentacion::findOrFail($id);
         $linea->fecha_solicitud = $request->input('fecha_solicitud');
         $linea->fecha_entrega = $request->input('fecha_entrega');

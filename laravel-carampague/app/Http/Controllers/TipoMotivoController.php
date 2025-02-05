@@ -2,21 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\DocumentacionCollection;
-use App\Http\Resources\DocumentacionResource;
-use App\Models\Documentacion;
-use App\Models\LineaDocumentacion;
+use App\Models\TipoMotivo;
 use Illuminate\Http\Request;
 
-class DocumentacionController extends Controller
+class TipoMotivoController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $documentaciones = new DocumentacionCollection(Documentacion::all());
-        return response(['documentaciones' => $documentaciones], 200);
+        $tipos_motivos = TipoMotivo::all();
+        return response(['tipos_motivos' => $tipos_motivos], 200);
     }
 
     /**
@@ -40,26 +37,21 @@ class DocumentacionController extends Controller
      */
     public function show(string $id)
     {
-        $documentacion = new DocumentacionResource(Documentacion::find($id));
-        return response(['documentacion' => $documentacion], 200);
+        //
     }
-
-
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(documentacion $documentacion)
+    public function edit(string $id)
     {
         //
     }
 
-
-
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, documentacion $documentacion)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -67,10 +59,8 @@ class DocumentacionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(documentacion $documentacion)
+    public function destroy(string $id)
     {
         //
     }
-
-
 }
