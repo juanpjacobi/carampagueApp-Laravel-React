@@ -3,7 +3,8 @@ import { Layout } from "../layouts/Layout";
 import { AuthLayout } from "../layouts/AuthLayout";
 import Inicio from "../views/Inicio";
 import Login from "../views/Login";
-import { ClienteRouter, ObjetivoRouter, UserRouter, AsociadosRouter } from "./index";
+import { ClienteRouter, ObjetivoRouter, UserRouter, AsociadosRouter, ServicioRouter, PlanDiarioRouter, ComputosRouter } from "./index";
+
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,18 @@ const router = createBrowserRouter([
       {
         path: "/asociados/*",
         element: <AsociadosRouter />,
+      },
+      {
+        path: "/servicios/*",
+        element: <ServicioRouter />,
+      },
+      {
+        path: "/planes-diarios/*",
+        element: <PlanDiarioRouter />,
+      },
+      {
+        path: "/computos/*",
+        element: <ComputosRouter />,
       },
     ],
   },
