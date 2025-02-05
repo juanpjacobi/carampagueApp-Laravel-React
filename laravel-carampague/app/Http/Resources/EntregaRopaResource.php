@@ -17,8 +17,9 @@ class EntregaRopaResource extends JsonResource
         return [
             'id' => $this->id,
             'descripcion' => $this->descripcion,
-            'lineas' => $this->lineas,
-            'asociado' => $this->asociado
+            'fecha' => $this->fecha,
+            'lineas_ids' => $this->lineas->pluck('id'), // Solo los IDs de las líneas
+            'asociado_id' => $this->asociado_id, // Solo el ID del asociado
         ];
     }
 }

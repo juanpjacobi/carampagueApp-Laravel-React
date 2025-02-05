@@ -16,8 +16,9 @@ class LineaRopaResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'prenda' => $this->prenda,
-
+            'prenda_id' => $this->prenda_id,
+            'cantidad' => $this->cantidad,
+            'entrega_ropa_id' => $this->entrega_ropa_id
         ];
     }
 }

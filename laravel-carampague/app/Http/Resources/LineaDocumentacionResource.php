@@ -20,9 +20,9 @@ class LineaDocumentacionResource extends JsonResource
             'fecha_entrega' => $this->fecha_entrega,
             'fecha_vencimiento' => $this->fecha_vencimiento,
             'observaciones' => $this->observaciones,
-            'estado_documentacion' => $this->estadoDocumentacion,
-            'tipo_documentacion' => $this->tipoDocumentacion,
-            'documentacion' => $this->documentacion
+            'estado_documentacion_id' => $this->estado_documentacion_id,
+            'tipo_documentacion_id' => $this->tipo_documentacion_id,
+            'documentacion_id' => $this->documentacion_id
 
         ];
     }

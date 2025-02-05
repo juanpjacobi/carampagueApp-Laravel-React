@@ -17,9 +17,8 @@ class PrendaResource extends JsonResource
         return [
             'id' => $this->id,
             'stock' => $this->stock,
-            'tipo_prenda' => $this->tipoPrenda,
-            'talle' => $this->talle,
-
+            'tipo_prenda_id' => $this->tipoPrenda->id,
+            'talle_id' => $this->talle->id,
         ];
     }
 }

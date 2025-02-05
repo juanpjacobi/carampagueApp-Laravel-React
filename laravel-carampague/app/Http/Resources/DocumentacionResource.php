@@ -17,7 +17,7 @@ class DocumentacionResource extends JsonResource
         return [
             'id' => $this->id,
             'descripcion' => $this->descripcion,
-            'lineas' => $this->lineasDocumentacion,
+            'lineas_ids' => $this->lineasDocumentacion->pluck('id'),
 
         ];
     }

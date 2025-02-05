@@ -25,13 +25,24 @@ class AsociadoResource extends JsonResource
             'fecha_alta' => $this->fecha_alta,
             'fecha_baja' => $this->fecha_baja,
             'fecha_nacimiento' => $this->fecha_nacimiento,
-            'telefono' => $this->telefono,
-            'direccion' => $this->direccion,
+            'telefono' => [
+                'numero_telefono' => $this->telefono->numero_telefono,
+                'tipo_telefono_id' => $this->telefono->tipo_telefono_id,
+            ],
+            'direccion' => [
+                'id' => $this->direccion->id,
+                'calle' => $this->direccion->calle,
+                'numeracion' => $this->direccion->numeracion,
+                'piso' => $this->direccion->piso,
+                'departamento' => $this->direccion->departamento,
+                'barrio_id' => $this->direccion->barrio_id,
+                'localidad_id' => $this->direccion->barrio->localidad_id,
+                'provincia_id' => $this->direccion->barrio->localidad->provincia_id,
+            ],
             'activo' => $this->activo,
-            'estado_civil' => $this->estado_civil,
-            'documentacion' => $this->documentacion,
-            'entrega_ropa' => $this->entregaRopa
-
+            'estado_civil_id' => $this->estado_civil_id,
+            'entrega_ropa_ids' => $this->entregaRopa->pluck('id'), // Devolver array de IDs
+            'documentacion_id' => $this->documentacion->id,
         ];
     }
 }

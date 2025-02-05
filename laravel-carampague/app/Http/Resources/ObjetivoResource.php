@@ -19,11 +19,17 @@ class ObjetivoResource extends JsonResource
             'nombre' => $this->nombre_objetivo,
             'activo' => $this->activo,
             'direccion' => $this->direccion,
-            'valor' => $this->valor,
-            'cliente' => $this->cliente,
-            'direccion' => $this->direccion,
-            'barrio' => $this->direccion->barrio,
-            'localidad' => $this->direccion->barrio->localidad,
+            'cliente_id' => $this->cliente_id,
+            'direccion' => [
+                'id' => $this->direccion->id,
+                'calle' => $this->direccion->calle,
+                'numeracion' => $this->direccion->numeracion,
+                'piso' => $this->direccion->piso,
+                'departamento' => $this->direccion->departamento,
+                'barrio_id' => $this->direccion->barrio_id,
+                'localidad_id' => $this->direccion->barrio->localidad_id,
+                'provincia_id' => $this->direccion->barrio->localidad->provincia_id,
+            ],
         ];
     }
 }
