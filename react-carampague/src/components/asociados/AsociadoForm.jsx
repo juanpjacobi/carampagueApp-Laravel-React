@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import { getTiposTelefono } from "../../functions/TipoTelefono/tipoTelefono";
-import { getEstadosCiviles } from "../../functions/EstadoCivl/estadoCivil";
 import { Alerta } from "../shared/Alerta";
 import {
   createAsociado,
@@ -13,81 +11,50 @@ import { asociadoSchema } from "../utilities/validator/asociado/asociadoSchema";
 import DireccionForm from "../shared/direcciones/DireccionForm";
 import { ActivoToggle } from "../shared/estado/ActivoTogle";
 
-export const AsociadoForm = ({ editMode }) => {
+export const AsociadoForm = ({ editMode, initialData }) => {
 
-  const { selectedAsociado } = useSelector((state) => state.asociados);
-  const [tiposTelefono, setTiposTelefono] = useState([]);
-  const [estadosCiviles, setEstadosCiviles] = useState([]);
+  const { estadosCiviles } = useSelector((state) => state.estadosCiviles);
+  const { tiposTelefonos } = useSelector((state) => state.tiposTelefonos);
+
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (!selectedAsociado && editMode) {
-      navigate("/asociados");
-    }
-    loadTiposTelefonos();
-    loadEstadosCiviles();
-  }, []);
-
-  const loadTiposTelefonos = async () => {
-    const { data } = await getTiposTelefono();
-    setTiposTelefono(data.tipos_telefonos);
-  };
-
-  const loadEstadosCiviles = async () => {
-    const { data } = await getEstadosCiviles();
-    setEstadosCiviles(data.estados_civiles);
-  };
-
   const initialState = {
-    nombre_asociado: selectedAsociado ? selectedAsociado.nombre : "",
-    apellido_asociado: selectedAsociado ? selectedAsociado.apellido : null,
-    numero_asociado: selectedAsociado ? selectedAsociado.numero_asociado : "",
-    estado_civil_id: selectedAsociado ? selectedAsociado.estado_civil.id : null,
-    cuit_asociado: selectedAsociado ? selectedAsociado.cuit_asociado : null,
-    fecha_alta: selectedAsociado ? selectedAsociado.fecha_alta : null,
-    fecha_nacimiento: selectedAsociado
-      ? selectedAsociado.fecha_nacimiento
-      : null,
-    numero_telefono: selectedAsociado
-      ? selectedAsociado.telefono.numero_telefono
-      : "",
-    tipo_telefono_id: selectedAsociado
-      ? selectedAsociado.telefono.tipo_telefono_id
-      : null,
-    activo: selectedAsociado ? selectedAsociado.activo : null,
-    calle: selectedAsociado ? selectedAsociado.direccion.calle : "",
-    numeracion: selectedAsociado ? selectedAsociado.direccion.numeracion : "",
-    piso: selectedAsociado ? selectedAsociado.direccion.piso : "",
-    provincia_id: selectedAsociado
-      ? selectedAsociado.direccion.barrio.localidad.provincia_id.toString()
-      : null,
-    localidad_id: selectedAsociado
-      ? selectedAsociado.direccion.barrio.localidad_id.toString()
-      : null,
-    barrio_id: selectedAsociado ? selectedAsociado.direccion.barrio_id.toString() : "",
-    departamento: selectedAsociado
-      ? selectedAsociado.direccion.departamento
-      : "",
+    nombre_asociado: initialData ? initialData.nombre : "",
+    apellido_asociado: initialData ? initialData.apellido : "",
+    numero_asociado: initialData ? initialData.numero_asociado : "",
+    estado_civil_id: initialData ? initialData.estado_civil.id : "",
+    cuit_asociado: initialData ? initialData.cuit_asociado : "",
+    fecha_alta: initialData ? initialData.fecha_alta : "",
+    fecha_nacimiento: initialData ? initialData.fecha_nacimiento : "",
+    numero_telefono: initialData ? initialData.telefono.numero_telefono : "",
+    tipo_telefono_id: initialData ? initialData.telefono.tipo_telefono_id : "",
+    activo: initialData ? initialData.activo : false,
+    calle: initialData ? initialData.direccion.calle : "",
+    numeracion: initialData ? initialData.direccion.numeracion : "",
+    piso: initialData ? initialData.direccion.piso : "",
+    departamento: initialData ? initialData.direccion.departamento : "",
+    provincia_id: initialData ? initialData.direccion.provincia_id : "",
+    localidad_id: initialData ? initialData.direccion.localidad_id : "",
+    barrio_id: initialData ? initialData.direccion.barrio_id : "",
+
   };
 
 
-
-  const handleSubmit = () => {
-    if (editMode) {
-      console.log(selectedAsociado.id);
-      dispatch(updateAsociado(selectedAsociado.id, formik.values, navigate));
-      return;
-    }
-    dispatch(createAsociado(formik.values, navigate));
-  };
 
   const formik = useFormik({
     initialValues: initialState,
     validationSchema: asociadoSchema,
     validateOnChange: false,
     validateOnBlur: false,
-    onSubmit: handleSubmit,
+    onSubmit: () => {
+      if (editMode) {
+        dispatch(updateAsociado(initialData.id, formik.values, navigate));
+        return;
+      }
+      dispatch(createAsociado(formik.values, navigate));
+    },
   });
 
   return (
@@ -249,7 +216,7 @@ export const AsociadoForm = ({ editMode }) => {
           value={formik.values.tipo_telefono_id ?? ""}
         >
           <option value="">Seleccione uno</option>
-          {tiposTelefono?.map((t) => (
+          {tiposTelefonos?.map((t) => (
             <option key={t.id} value={t.id}>
               {t.nombre}
             </option>

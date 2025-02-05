@@ -40,19 +40,7 @@ export const ObjetivoCard = ({ selectedObjetivo }) => {
             {selectedObjetivo?.activo ? "Activo" : "Inactivo"}
           </p>
 
-          <p className="text-sm mb-2 text-slate-800">
-            <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
-              Valor cliente:
-            </span>
-            ${selectedObjetivo?.valor.valor_cliente}
-          </p>
-          <p className="text-sm mb-2 text-slate-800">
-            <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
-              Valor Asociado:
-            </span>
-            ${selectedObjetivo?.valor.valor_vigilador}
-          </p>
-
+      
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Direccion
@@ -78,13 +66,13 @@ export const ObjetivoCard = ({ selectedObjetivo }) => {
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Barrio
             </span>
-            {selectedObjetivo?.direccion?.barrio.nombre_barrio}
+            {selectedObjetivo?.barrio.nombre_barrio}
           </p>
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Localidad
             </span>
-            {selectedObjetivo?.direccion?.barrio?.localidad.nombre_localidad}
+            {selectedObjetivo?.localidad.nombre}
           </p>
         </div>
         <div className="flex flex-col text-center ">

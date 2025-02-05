@@ -1,9 +1,6 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { getTiposTelefono } from "../../functions/TipoTelefono/tipoTelefono";
-import { getCondicionesIva } from "../../functions/CondicionIva/condicionIva";
 import { clienteSchema } from "../utilities/validator/cliente/clienteSchema";
 
 import {
@@ -14,72 +11,43 @@ import DireccionForm from "../shared/direcciones/DireccionForm";
 import { Alerta } from "../shared/Alerta";
 import { ActivoToggle } from "../shared/estado/ActivoTogle";
 
-export const ClienteForm = ({ editMode }) => {
-  const { selectedCliente } = useSelector((state) => state.clientes);
-  const initialState = {
-    razon_social: selectedCliente ? selectedCliente.razon_social : "",
-    cuit_cliente: selectedCliente ? selectedCliente.cuit_cliente : null,
-    email: selectedCliente ? selectedCliente.email : "",
-    condicion_iva_id: selectedCliente ? selectedCliente.condicion_iva.id : null,
-    numero_telefono: selectedCliente
-      ? selectedCliente.telefono.numero_telefono
-      : "",
-    tipo_telefono_id: selectedCliente
-      ? selectedCliente.telefono.tipo_telefono_id
-      : null,
-    activo: selectedCliente ? selectedCliente.activo : null,
-    calle: selectedCliente ? selectedCliente.direccion.calle : "",
-    numeracion: selectedCliente ? selectedCliente.direccion.numeracion : "",
-    piso: selectedCliente ? selectedCliente.direccion.piso : "",
-    departamento: selectedCliente ? selectedCliente.direccion.departamento : "",
-    provincia_id: selectedCliente
-      ? selectedCliente.barrio.localidad.provincia_id.toString()
-      : null,
-    localidad_id: selectedCliente
-      ? selectedCliente.direccion.barrio.localidad_id.toString()
-      : null,
-    barrio_id: selectedCliente
-      ? selectedCliente.direccion.barrio_id.toString()
-      : "",
-  };
+export const ClienteForm = ({ editMode, initialData }) => {
 
-  const [tiposTelefono, setTiposTelefono] = useState([]);
-  const [condicionesIva, setCondicionesIva] = useState([]);
+  const { condicionesIva } = useSelector((state) => state.condicionesIva);
+  const { tiposTelefonos } = useSelector((state) => state.tiposTelefonos);
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (!selectedCliente && editMode) {
-      navigate("/clientes");
-    }
-    loadTiposTelefonos();
-    loadCondicionesIva();
-  }, []);
 
-  const loadTiposTelefonos = async () => {
-    const { data } = await getTiposTelefono();
-
-    setTiposTelefono(data.tipos_telefonos);
-  };
-  const loadCondicionesIva = async () => {
-    const { data } = await getCondicionesIva();
-    setCondicionesIva(data.condiciones_iva);
-  };
-
-  const handleSubmit = () => {
-    if (editMode) {
-      dispatch(updateCliente(selectedCliente.id, formik.values, navigate));
-      return;
-    }
-    dispatch(createCliente(formik.values, navigate));
+  const initialState = {
+    razon_social: initialData ? initialData.razon_social : "",
+    cuit_cliente: initialData ? initialData.cuit_cliente : "",
+    email: initialData ? initialData.email : "",
+    condicion_iva_id: initialData ? initialData.condicion_iva_id : "",
+    numero_telefono: initialData ? initialData.telefono.numero_telefono : "",
+    tipo_telefono_id: initialData ? initialData.telefono.tipo_telefono_id : "",
+    activo: initialData ? initialData.activo : false,
+    calle: initialData ? initialData.direccion.calle : "",
+    numeracion: initialData ? initialData.direccion.numeracion : "",
+    piso: initialData ? initialData.direccion.piso : "",
+    departamento: initialData ? initialData.direccion.departamento : "",
+    provincia_id: initialData ? initialData.direccion.provincia_id : "",
+    localidad_id: initialData ? initialData.direccion.localidad_id : "",
+    barrio_id: initialData ? initialData.direccion.barrio_id : "",
   };
 
   const formik = useFormik({
     initialValues: initialState,
     validationSchema: clienteSchema,
+    enableReinitialize: true, 
     validateOnChange: false,
     validateOnBlur: false,
-    onSubmit: handleSubmit,
+    onSubmit: () => {
+      if (editMode) {
+        dispatch(updateCliente(initialData.id, formik.values, navigate));
+        return;
+      }
+      dispatch(createCliente(formik.values, navigate));
+    },
   });
 
   return (
@@ -130,7 +98,7 @@ export const ClienteForm = ({ editMode }) => {
           id="email"
           className="mt-2 w-full p-3 bg-gray-200"
           name="email"
-          placeholder="Ingresa el cuit del cliente"
+          placeholder="Ingresa el mail del cliente"
           onChange={formik.handleChange}
           value={formik.values.email ?? ""}
         />
@@ -187,7 +155,7 @@ export const ClienteForm = ({ editMode }) => {
           value={formik.values.tipo_telefono_id ?? ""}
         >
           <option value="">Seleccione uno</option>
-          {tiposTelefono?.map((t) => (
+          {tiposTelefonos?.map((t) => (
             <option key={t.id} value={t.id}>
               {t.nombre}
             </option>

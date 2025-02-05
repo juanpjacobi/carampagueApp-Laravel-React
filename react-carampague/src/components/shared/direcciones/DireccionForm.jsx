@@ -1,47 +1,43 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
-import {
-  getBarrios,
-  getLocalidades,
-  getProvincias,
-} from "../../../functions/Localidad/localidad"; // Ajusta la ruta según tu estructura de archivos
 import { Alerta } from "../Alerta";
+import { useSelector } from "react-redux";
+
 
 const DireccionForm = ({ formik }) => {
-  const [barrios, setBarrios] = useState([]);
-  const [localidades, setLocalidades] = useState([]);
-  const [provincias, setProvincias] = useState([]);
+  const {barrios, localidades, provincias} = useSelector((state) => state.ubicaciones)
+  const [barriosMapped, setBarriosMapped] = useState([]);
+  const [localidadesMapped, setLocalidadesMapped] = useState([]);
+  const [provinciasMapped, setProvinciasMapped] = useState([]);
 
   useEffect(() => {
     loadData();
   }, []);
 
-  const loadData = async () => {
-    const barriosData = await getBarrios();
-    const localidadesData = await getLocalidades();
-    const provinciasData = await getProvincias();
+  const loadData = () => {
 
-    const barriosOptions = barriosData.data.barrios.map((barrio) => ({
-      value: barrio.id.toString(),
+
+    const barriosOptions = barrios.map((barrio) => ({
+      value: barrio.id,
       label: barrio.nombre_barrio,
-      localidad_id: barrio.localidad.id.toString(), // Aseguramos que el id de localidad también sea una cadena
+      localidad_id: barrio.localidad_id, 
     }));
-    const localidadesOptions = localidadesData.data.localidades.map(
+    const localidadesOptions = localidades.map(
       (localidad) => ({
-        value: localidad.id.toString(),
+        value: localidad.id,
         label: localidad.nombre,
-        provincia_id: localidad.provincia_id.toString(), // Aseguramos que el id de provincia también sea una cadena
+        provincia_id: localidad.provincia_id, 
       })
     );
-    const provinciasOptions = provinciasData.data.provincias.map(
+    const provinciasOptions = provincias.map(
       (provincia) => ({
-        value: provincia.id.toString(),
+        value: provincia.id,
         label: provincia.nombre,
       })
     );
-    setBarrios(barriosOptions);
-    setLocalidades(localidadesOptions);
-    setProvincias(provinciasOptions);
+    setBarriosMapped(barriosOptions);
+    setLocalidadesMapped(localidadesOptions);
+    setProvinciasMapped(provinciasOptions);
   };
 
   const handleProvinciaChange = (selectedOption) => {
@@ -68,10 +64,10 @@ const DireccionForm = ({ formik }) => {
     );
   };
 
-  const filteredLocalidades = localidades.filter(
+  const filteredLocalidades = localidadesMapped.filter(
     (l) => l.provincia_id === formik.values.provincia_id
   );
-  const filteredBarrios = barrios.filter(
+  const filteredBarrios = barriosMapped.filter(
     (b) => b.localidad_id === formik.values.localidad_id
   );
   return (
@@ -146,10 +142,10 @@ const DireccionForm = ({ formik }) => {
         </label>
         <Select
           id="provincia_id"
-          options={provincias}
+          options={provinciasMapped}
           onChange={handleProvinciaChange}
           value={
-            provincias.find(
+            provinciasMapped.find(
               (option) => option.value === formik.values.provincia_id
             ) || null
           }

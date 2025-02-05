@@ -1,78 +1,96 @@
-import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { documentacionAsociadoSchema } from "../../utilities/validator/asociado/documentacionAsociadoSchema";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
-import {
-  createLineaDocumentacion,
-  getEstadosDocumentacion,
-  getTiposDocumentacion,
-  updateLineaDocumentacion,
-} from "../../../functions/Documentacion/documentacion";
+
 import { Alerta } from "../../shared/Alerta";
-import { getAsociado } from "../../../store/thunks/AsociadosThunks";
+import { useEffect, useMemo } from "react";
+import { makeSelectLineaDocumentacionById } from "../../../store/selectors/LineasDocumentacionSelectors";
+import { makeSelectDocumentacionByAsociadoId } from "../../../store/selectors/DocumentacionSelectors";
+import { createLineaDocumentacion, updateLineaDocumentacion } from "../../../store/thunks/LineasDocumentacionThunks";
 
 export const DocumentacionForm = ({ editMode }) => {
-  const { selectedAsociado } = useSelector((state) => state.asociados);
-  const { documentacion } = selectedAsociado;
-  const { id } = useParams();
-
-  const linea = selectedAsociado.documentacion.lineas_documentacion.find(
-    (l) => l.id.toString() === id
-  );
-
-  const initialState = {
-    fecha_solicitud: linea ? linea.fecha_solicitud : "",
-    fecha_entrega: linea ? linea.fecha_entrega : "",
-    fecha_vencimiento: linea ? linea.fecha_vencimiento : "",
-
-    observaciones: linea ? linea.observaciones : "",
-    tipo_documentacion_id: linea ? linea.tipo_documentacion_id : null,
-    estado_documentacion_id: linea ? linea.estado_documentacion_id : null,
-    documentacion_id: documentacion.id,
-  };
-
-  const [tiposDocumentacion, setTiposDocumentacion] = useState([]);
-  const [estadosDocumentacion, setestadosDocumentacion] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const params = useParams();
+  const { lineaId, asociadoId } = params;
+  const {  tiposDocumentacion } = useSelector((state) => state.tiposDocumentacion);
+  const {  estadosDocumentacion } = useSelector((state) => state.estadosDocumentacion);
+
+  const linea = editMode
+  ? useSelector(makeSelectLineaDocumentacionById(lineaId))
+  : null;
+
+  const documentacion = useSelector(makeSelectDocumentacionByAsociadoId(asociadoId));
+
+
+
   useEffect(() => {
-    //   if (!documentacion && editMode) {
-    //     navigate("/asociados");
-    //   }
-    loadTiposDocumentacion();
-    loadEstadosDocumentacion();
-  }, []);
-  const loadTiposDocumentacion = async () => {
-    const { data } = await getTiposDocumentacion();
-    setTiposDocumentacion(data.tipos_documentacion);
-  };
-  const loadEstadosDocumentacion = async () => {
-    const { data } = await getEstadosDocumentacion();
-    setestadosDocumentacion(data.estados_documentacion);
-  };
+    if (editMode && !linea) {
+      navigate("/asociados", { replace: true });
+    }
+    if (!editMode && !documentacion) {
+      navigate("/asociados", { replace: true });
+    }
+  }, [editMode, linea, documentacion, navigate]);
+
+
+
+  const initialstate = useMemo(() => {
+    if (editMode && linea) {
+      return {
+        fecha_solicitud: linea.fecha_solicitud || "",
+        fecha_entrega: linea.fecha_entrega || "",
+        fecha_vencimiento: linea.fecha_vencimiento || "",
+        observaciones: linea.observaciones || "",
+        tipo_documentacion_id: linea.tipo_documentacion_id ? String(linea.tipo_documentacion_id) : "",
+        estado_documentacion_id: linea.estado_documentacion_id ? String(linea.estado_documentacion_id) : "",
+        documentacion_id: linea.documentacion_id || "", // Se supone que la línea tiene este campo
+      };
+    } else if (!editMode && documentacion) {
+      return {
+        fecha_solicitud: "",
+        fecha_entrega: "",
+        fecha_vencimiento: "",
+        observaciones: "",
+        tipo_documentacion_id: "",
+        estado_documentacion_id: "",
+        documentacion_id: documentacion.id, 
+      };
+    } else {
+      // Valores por defecto
+      return {
+        fecha_solicitud: "",
+        fecha_entrega: "",
+        fecha_vencimiento: "",
+        observaciones: "",
+        tipo_documentacion_id: "",
+        estado_documentacion_id: "",
+        documentacion_id: "",
+      };
+    }
+  }, [editMode, linea, documentacion]);
+
 
   const handleSubmit = () => {
     if (editMode) {
-      updateLineaDocumentacion(
-        formik.values,
-        navigate,
+      dispatch(updateLineaDocumentacion(
         linea.id,
-        selectedAsociado.documentacion.id
-      );
-    } else {
-      createLineaDocumentacion(
         formik.values,
         navigate,
-        selectedAsociado.documentacion.id
-      );
+      ));
+    } else {
+      dispatch(createLineaDocumentacion(
+        formik.values,
+        navigate,
+        documentacion.id
+      ));
     }
-
-    dispatch(getAsociado(selectedAsociado.id));
   };
 
   const formik = useFormik({
-    initialValues: initialState,
+    
+    initialValues: initialstate,
     validationSchema: documentacionAsociadoSchema,
     validateOnChange: false,
     validateOnBlur: false,

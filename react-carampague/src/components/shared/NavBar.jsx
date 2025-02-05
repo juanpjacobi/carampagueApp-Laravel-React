@@ -22,8 +22,12 @@ export const NavBar = () => {
 
   return (
     <nav className="uppercase text-sm xl:text-sm  text-slate-800 p-10">
-      <div className={clsx(hiddeNavbar && "lg:hidden" , "flex justify-center")}>
-        <GiHamburgerMenu className="cursor-pointer " size={30} onClick={() => setHiddeNavbar(!hiddeNavbar)} />
+      <div className={clsx(hiddeNavbar && "lg:hidden", "flex justify-center")}>
+        <GiHamburgerMenu
+          className="cursor-pointer "
+          size={30}
+          onClick={() => setHiddeNavbar(!hiddeNavbar)}
+        />
       </div>
       <div
         className={clsx(
@@ -41,6 +45,7 @@ export const NavBar = () => {
         <NavLink
           className="hover:bg-sky-800 hover:text-white p-2 rounded-lg"
           to={"/asociados"}
+
         >
           asociados
         </NavLink>
@@ -69,6 +74,26 @@ export const NavBar = () => {
         >
           servicios
         </NavLink>
+
+        <NavLink
+          className="hover:bg-sky-800 hover:text-white p-2 rounded-lg"
+          to={"/planes-diarios"}
+        >
+          plan
+        </NavLink>
+        <NavLink
+          className="hover:bg-sky-800 hover:text-white p-2 rounded-lg"
+          to={"/computos"}
+        >
+          Computos
+        </NavLink>
+        <NavLink
+          className="hover:bg-sky-800 hover:text-white p-2 rounded-lg"
+          to={"/asociados/ausentismo"}
+        >
+          ausentismo
+        </NavLink>
+
         <button
           onClick={logout}
           className="bg-gray-600 hover:bg-gray-700  uppercase text-white w-full p-2 cursor-pointer rounded-lg ml-1"

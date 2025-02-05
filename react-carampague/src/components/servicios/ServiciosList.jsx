@@ -1,7 +1,6 @@
-import { ObjetivoListItem } from "./ObjetivoListItem";
+import { ServicioListItem } from "./ServicioListItem";
 
-export const ObjetivosList = ({ objetivos }) => {
-
+export const ServiciosList = ({ servicios }) => {
   return (
     <>
       <div className="flex flex-col shadow-2xl md:shadow-gray-500 mt-2">
@@ -12,26 +11,21 @@ export const ObjetivosList = ({ objetivos }) => {
                 scope="col"
                 className=" p-2 font-bold md:border md:border-grey-500 block md:table-cell"
               >
-                Nombre objetivo
+                Servicio
               </th>
               <th
                 scope="col"
                 className=" p-2 font-bold md:border md:border-grey-500 block md:table-cell"
               >
-                Estado
+                Descripcion
               </th>
               <th
                 scope="col"
                 className=" p-2 font-bold md:border md:border-grey-500 block md:table-cell"
               >
-                Cliente
+                Objetivo
               </th>
-              <th
-                scope="col"
-                className=" p-2 font-bold md:border md:border-grey-500 block md:table-cell"
-              >
-                Direccion
-              </th>
+
               <th
                 scope="col"
                 className=" p-2 font-bold md:border md:border-grey-500 block md:table-cell"
@@ -41,8 +35,8 @@ export const ObjetivosList = ({ objetivos }) => {
             </tr>
           </thead>
           <tbody className="block md:table-row-group ">
-            {objetivos?.map((objetivo) => (
-              <ObjetivoListItem objetivo={objetivo} key={objetivo.id} />
+            {servicios?.map((servicio) => (
+              <ServicioListItem servicio={servicio} key={servicio.id} />
             ))}
           </tbody>
         </table>

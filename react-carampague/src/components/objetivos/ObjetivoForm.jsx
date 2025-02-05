@@ -12,60 +12,37 @@ import DireccionForm from "../shared/direcciones/DireccionForm";
 import { Alerta } from "../shared/Alerta";
 import { ActivoToggle } from "../shared/estado/ActivoTogle";
 
-export const ObjetivoForm = ({ editMode }) => {
-  const { selectedObjetivo } = useSelector((state) => state.objetivos);
-  const initialState = {
-    nombre_objetivo: selectedObjetivo ? selectedObjetivo.nombre : "",
-    valor_cliente: selectedObjetivo
-      ? selectedObjetivo.valor.valor_cliente
-      : null,
-    valor_vigilador: selectedObjetivo
-      ? selectedObjetivo.valor.valor_vigilador
-      : null,
-    cliente_id: selectedObjetivo ? selectedObjetivo.cliente.id : null,
-    activo: selectedObjetivo ? selectedObjetivo.activo : null,
-    calle: selectedObjetivo ? selectedObjetivo.direccion.calle : "",
-    numeracion: selectedObjetivo ? selectedObjetivo.direccion.numeracion : "",
-    piso: selectedObjetivo ? selectedObjetivo.direccion.piso : "",
-    departamento: selectedObjetivo
-      ? selectedObjetivo.direccion.departamento
-      : "",
-      provincia_id: selectedObjetivo
-      ? selectedObjetivo.barrio.localidad.provincia_id.toString()
-      : null,
-    localidad_id: selectedObjetivo
-      ? selectedObjetivo.direccion.barrio.localidad_id.toString()
-      : null,
-    barrio_id: selectedObjetivo ? selectedObjetivo.direccion.barrio_id.toString() : "",
-
-  };
+export const ObjetivoForm = ({ editMode, initialData }) => {
   const { clientes } = useSelector((state) => state.clientes);
-
-
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (!selectedObjetivo && editMode) {
-      navigate("/objetivos");
-    }
 
-  }, []);
-
-  const handleSubmit = () => {
-    if (editMode) {
-      dispatch(updateObjetivo(selectedObjetivo.id, formik.values, navigate));
-      return;
-    }
-    dispatch(createObjetivo(formik.values, navigate));
+  const initialState = {
+    nombre_objetivo: initialData ? initialData.nombre: "",
+    cliente_id: initialData ? initialData.cliente_id : "",
+    activo: initialData ? initialData.activo : false,
+    calle: initialData ? initialData.direccion.calle : "",
+    numeracion: initialData ? initialData.direccion.numeracion : "",
+    piso: initialData ? initialData.direccion.piso : "",
+    departamento: initialData ? initialData.direccion.departamento : "",
+    provincia_id: initialData ? initialData.direccion.provincia_id : "",
+    localidad_id: initialData ? initialData.direccion.localidad_id : "",
+    barrio_id: initialData ? initialData.direccion.barrio_id : "",
   };
 
   const formik = useFormik({
     initialValues: initialState,
     validationSchema: objetivoSchema,
+    enableReinitialize: true, 
     validateOnChange: false,
     validateOnBlur: false,
-    onSubmit: handleSubmit,
+    onSubmit: () => {
+      if (editMode) {
+        dispatch(updateObjetivo(initialData.id, formik.values, navigate));
+        return;
+      }
+      dispatch(createObjetivo(formik.values, navigate));
+    },
   });
 
   return (
@@ -91,7 +68,7 @@ export const ObjetivoForm = ({ editMode }) => {
           <Alerta error={formik.errors.nombre_objetivo} />
         ) : null}
       </div>
-      <ActivoToggle formik={formik}/>
+      <ActivoToggle formik={formik} />
       <div className="mb-4">
         <label className="text-slate-800" htmlFor="cliente_id">
           Cliente*
@@ -114,40 +91,7 @@ export const ObjetivoForm = ({ editMode }) => {
           <Alerta error={formik.errors.cliente_id} />
         ) : null}
       </div>
-      <div className="mb-4">
-        <label className="text-slate-800" htmlFor="valor_cliente">
-          Valor de la hora para el cliente*
-        </label>
-        <input
-          type="number"
-          id="valor_cliente"
-          className="mt-2 w-full p-3 bg-gray-200"
-          name="valor_cliente"
-          placeholder="Ingresa el valor hora para el cliente"
-          onChange={formik.handleChange}
-          value={formik.values.valor_cliente ?? ""}
-        />
-        {formik.errors.valor_cliente ? (
-          <Alerta error={formik.errors.valor_cliente} />
-        ) : null}
-      </div>
-      <div className="mb-4">
-        <label className="text-slate-800" htmlFor="valor_vigilador">
-          Valor de la hora para el vigilador*
-        </label>
-        <input
-          type="number"
-          id="valor_vigilador"
-          className="mt-2 w-full p-3 bg-gray-200"
-          name="valor_vigilador"
-          placeholder="Ingresa el valor hora para el vigilador"
-          onChange={formik.handleChange}
-          value={formik.values.valor_vigilador ?? ""}
-        />
-        {formik.errors.valor_vigilador ? (
-          <Alerta error={formik.errors.valor_vigilador} />
-        ) : null}
-      </div>
+
       <DireccionForm formik={formik} />
 
       <input

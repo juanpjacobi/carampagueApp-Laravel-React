@@ -1,46 +1,73 @@
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+
+import React, { useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { IoAdd } from "react-icons/io5";
+import { IoIosRemoveCircleOutline } from "react-icons/io";
 import { Alerta } from "../../shared/Alerta";
-import {
-  createEntregaRopa,
-  getPrendas,
-  updateEntregaRopa,
-} from "../../../functions/EntregaRopa/entregaRopa";
 import * as Yup from "yup";
 import { entregaRopaAsociadoSchema } from "../../utilities/validator/asociado/entregaRopaAsociadoSchema";
-import { IoIosRemoveCircleOutline } from "react-icons/io";
+import { makeSelectEntregaRopaById } from "../../../store/selectors/EntregaRopaSelectors";
+import { makeSelectLineasEnriquecidasByEntregaRopaId } from "../../../store/selectors/LineasEntregaRopaSelectors";
+import { mapLineaEntregaRopa } from "../../utilities/mappers/mapLineaEntregaRopa";
+import { createEntregaRopa, updateEntregaRopa } from "../../../store/thunks/EntregaRopathunks";
 
 export const EntregaRopaForm = ({ editMode }) => {
-  const { selectedAsociado } = useSelector((state) => state.asociados);
-  const { id } = useParams(); // Asumimos que el ID de la entrega viene como parámetro de ruta
-
-  const entregaRopa = selectedAsociado.entrega_ropa.find(
-    (entrega) => entrega.id === parseInt(id)
-  );
+  const { id } = useParams(); 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const [prendas, setPrendas] = useState([]);
-
-  useEffect(() => {
-    loadPrendas();
-  }, []);
-
-  const loadPrendas = async () => {
-    const { data } = await getPrendas();
-    setPrendas(data.prendas);
-  };
-
-  const initialState = {
-    descripcion: editMode && entregaRopa ? entregaRopa.descripcion : "",
-    asociado_id: selectedAsociado?.id || "",
-    lineas:
-      editMode && entregaRopa
-        ? entregaRopa.lineas
-        : [{ prenda_id: "", cantidad: "" }],
-  };
+  
+  // Si estamos en edición, obtenemos el id numérico de la entrega
+  const entregaRopaId = editMode ? parseInt(id, 10) : null;
+  
+  // Seleccionamos la entrega en modo edición (en caso de que editMode sea true)
+  const entregaRopa = editMode 
+    ? useSelector(makeSelectEntregaRopaById(entregaRopaId))
+    : null;
+  
+  // Selector para obtener las líneas enriquecidas de la entrega (usando el helper que ya las enriquece)
+  const selectLineasEnriquecidas = useMemo(
+    () => (entregaRopaId ? makeSelectLineasEnriquecidasByEntregaRopaId(entregaRopaId) : () => []),
+    [entregaRopaId]
+  );
+  const enrichedLineas = useSelector(selectLineasEnriquecidas);
+  
+  // Obtenemos las listas de prendas, tipos de prendas y talles de una sola vez
+  const { prendas, tiposPrendas, talles } = useSelector((state) => state.prendas);
+  
+  // Construir el initialValues usando useMemo para que se reevalúe cuando cambien los datos
+  const initialValues = useMemo(() => {
+    return {
+      descripcion: editMode && entregaRopa ? entregaRopa.descripcion : "",
+      // Para asociado_id, en edición se extrae de la entrega; en creación, podrías obtenerlo de la URL o props
+      asociado_id: editMode && entregaRopa ? entregaRopa.asociado_id : id,
+      lineas:
+        editMode && entregaRopa && enrichedLineas && enrichedLineas.length > 0
+          ? enrichedLineas.map((linea) => {
+              // Usamos el helper para "enriquecer" la línea y luego extraer los campos necesarios
+              const enriched = mapLineaEntregaRopa(linea, prendas, tiposPrendas, talles);
+              return {
+                prenda_id: enriched.prenda.id ? String(enriched.prenda.id) : "",
+                cantidad: enriched.cantidad || "",
+                tipo_prenda_id: enriched.prenda.tipo_prenda && enriched.prenda.tipo_prenda.id 
+                  ? String(enriched.prenda.tipo_prenda.id) 
+                  : "",
+                talle_id: enriched.prenda.talle && enriched.prenda.talle.id 
+                  ? String(enriched.prenda.talle.id) 
+                  : "",
+              };
+            })
+          : [
+              {
+                prenda_id: "",
+                cantidad: "",
+                tipo_prenda_id: "",
+                talle_id: "",
+              },
+            ],
+    };
+  }, [editMode, entregaRopa, enrichedLineas, prendas, tiposPrendas, talles]);
 
   const validationSchema = entregaRopaAsociadoSchema.concat(
     Yup.object().shape({
@@ -64,44 +91,83 @@ export const EntregaRopaForm = ({ editMode }) => {
     })
   );
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (editMode) {
-      return updateEntregaRopa(
-        formik.values,
-        navigate,
-        entregaRopa.id,
-        selectedAsociado.id
+      dispatch(
+        updateEntregaRopa(entregaRopa.id, formik.values, navigate)
       );
+    } else {
+      dispatch(createEntregaRopa(formik.values, navigate ));
     }
-    createEntregaRopa(formik.values, navigate, selectedAsociado.id);
   };
 
   const formik = useFormik({
-    initialValues: initialState,
-    validationSchema: validationSchema,
-    enableReinitialize: true,
+    initialValues,
+    validationSchema,
+    enableReinitialize: true, // Permite reinyectar valores cuando editMode es true y los datos están disponibles
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: handleSubmit,
   });
 
+  // Helper para obtener las opciones de talles disponibles para un tipo de prenda
+  const getAvailableTallesOptions = (tipoPrendaId) => {
+    if (!tipoPrendaId) return [];
+    // Filtrar las prendas que tengan el tipo seleccionado
+    const filteredPrendas = prendas.filter(
+      (prenda) => prenda.tipo_prenda_id === parseInt(tipoPrendaId, 10)
+    );
+    // Extraer y deduplicar los talles disponibles
+    const availableTallesIds = Array.from(new Set(filteredPrendas.map((p) => p.talle_id)));
+    return availableTallesIds
+      .map((id) => talles.find((t) => t.id === id))
+      .filter(Boolean);
+  };
+
   const addLine = () => {
     formik.setValues({
       ...formik.values,
-      lineas: [...formik.values.lineas, { prenda_id: "", cantidad: "" }],
+      lineas: [
+        ...formik.values.lineas,
+        { prenda_id: "", cantidad: "", tipo_prenda_id: "", talle_id: "" },
+      ],
     });
   };
 
   const removeLine = (index) => {
-    const lineas = [...formik.values.lineas];
-    lineas.splice(index, 1);
-    if (lineas.length === 0) {
-      lineas.push({ prenda_id: "", cantidad: "" });
+    const updatedLineas = [...formik.values.lineas];
+    updatedLineas.splice(index, 1);
+    if (updatedLineas.length === 0) {
+      updatedLineas.push({ prenda_id: "", cantidad: "", tipo_prenda_id: "", talle_id: "" });
     }
     formik.setValues({
       ...formik.values,
-      lineas,
+      lineas: updatedLineas,
     });
+  };
+
+  const handleTipoPrendaChange = (index, event) => {
+    const { value } = event.target;
+    formik.setFieldValue(`lineas[${index}].tipo_prenda_id`, value);
+    formik.setFieldValue(`lineas[${index}].talle_id`, ""); // Limpiar el talle
+    formik.setFieldValue(`lineas[${index}].prenda_id`, ""); // Limpiar prenda_id al cambiar el tipo
+  };
+
+  const handleTalleChange = (index, event) => {
+    const { value } = event.target;
+    formik.setFieldValue(`lineas[${index}].talle_id`, value);
+
+    // Calcular el prenda_id basándose en tipo_prenda_id y talle_id
+    const tipoPrendaId = formik.values.lineas[index].tipo_prenda_id;
+    const talleId = value;
+    const selectedPrenda = prendas.find(
+      (prenda) =>
+        prenda.tipo_prenda_id === parseInt(tipoPrendaId, 10) &&
+        prenda.talle_id === parseInt(talleId, 10)
+    );
+    if (selectedPrenda) {
+      formik.setFieldValue(`lineas[${index}].prenda_id`, selectedPrenda.id);
+    }
   };
 
   return (
@@ -128,41 +194,58 @@ export const EntregaRopaForm = ({ editMode }) => {
       </div>
 
       {formik.values.lineas.map((linea, index) => (
-        <div
-          key={index}
-          className="flex justify-between gap-5 items-center mb-4"
-        >
+        <div key={index} className="flex justify-between gap-5 items-center mb-4">
           <div className="w-2/4">
-            <label
-              className="text-slate-800"
-              htmlFor={`lineas[${index}].prenda_id`}
-            >
-              Prenda*
+            <label className="text-slate-800" htmlFor={`lineas[${index}].tipo_prenda_id`}>
+              Tipo de prenda*
             </label>
             <select
-              name={`lineas[${index}].prenda_id`}
-              id={`lineas[${index}].prenda_id`}
+              name={`lineas[${index}].tipo_prenda_id`}
+              id={`lineas[${index}].tipo_prenda_id`}
               className="mt-2 w-full p-3 bg-gray-200"
-              onChange={formik.handleChange}
-              value={formik.values.lineas[index].prenda_id}
+              onChange={(e) => handleTipoPrendaChange(index, e)}
+              value={formik.values.lineas[index].tipo_prenda_id}
             >
-              <option value="">Seleccione una prenda</option>
-              {prendas?.map((prenda) => (
-                <option key={prenda.id} value={prenda.id}>
-                  {prenda.tipo_prenda.nombre_tipo_prenda} |{" "}
-                  {prenda.talle.nombre_talle}
+              <option value="">Seleccione un tipo de prenda</option>
+              {tiposPrendas.map((tipo) => (
+                <option key={tipo.id} value={tipo.id}>
+                  {tipo.nombre_tipo_prenda}
                 </option>
               ))}
             </select>
-            {formik.errors.lineas && formik.errors.lineas[index]?.prenda_id && (
-              <Alerta error={formik.errors.lineas[index].prenda_id} />
+            {formik.errors.lineas &&
+              formik.errors.lineas[index]?.tipo_prenda_id && (
+                <Alerta error={formik.errors.lineas[index].tipo_prenda_id} />
+              )}
+          </div>
+          <div className="w-2/4">
+            <label className="text-slate-800" htmlFor={`lineas[${index}].talle_id`}>
+              Talle*
+            </label>
+            <select
+              name={`lineas[${index}].talle_id`}
+              id={`lineas[${index}].talle_id`}
+              className="mt-2 w-full p-3 bg-gray-200"
+              onChange={(e) => handleTalleChange(index, e)}
+              value={formik.values.lineas[index].talle_id}
+              disabled={!formik.values.lineas[index].tipo_prenda_id}
+            >
+              <option value="">Seleccione un talle</option>
+              {formik.values.lineas[index].tipo_prenda_id && 
+                getAvailableTallesOptions(formik.values.lineas[index].tipo_prenda_id, prendas, talles)
+                  .map((talle) => (
+                    <option key={talle.id} value={talle.id}>
+                      {talle.nombre_talle}
+                    </option>
+                  ))
+              }
+            </select>
+            {formik.errors.lineas && formik.errors.lineas[index]?.talle_id && (
+              <Alerta error={formik.errors.lineas[index].talle_id} />
             )}
           </div>
           <div className="w-1/4">
-            <label
-              className="text-slate-800"
-              htmlFor={`lineas[${index}].cantidad`}
-            >
+            <label className="text-slate-800" htmlFor={`lineas[${index}].cantidad`}>
               Cantidad*
             </label>
             <input
@@ -170,15 +253,16 @@ export const EntregaRopaForm = ({ editMode }) => {
               id={`lineas[${index}].cantidad`}
               className="mt-2 w-full p-3 bg-gray-200"
               name={`lineas[${index}].cantidad`}
-              placeholder="Puedes agregar cantidad aquí"
+              placeholder="Cantidad"
               onChange={formik.handleChange}
               value={formik.values.lineas[index].cantidad}
+              disabled={!formik.values.lineas[index].talle_id}
+
             />
             {formik.errors.lineas && formik.errors.lineas[index]?.cantidad && (
               <Alerta error={formik.errors.lineas[index].cantidad} />
             )}
           </div>
-
           <button
             type="button"
             onClick={() => removeLine(index)}
@@ -188,11 +272,7 @@ export const EntregaRopaForm = ({ editMode }) => {
           </button>
         </div>
       ))}
-      <button
-        type="button"
-        onClick={addLine}
-        className="mt-2 p-3 text-2xl text-sky-800"
-      >
+      <button type="button" onClick={addLine} className="mt-2 p-3 text-2xl text-sky-800">
         <IoAdd />
       </button>
       {formik.errors.lineas && typeof formik.errors.lineas === "string" && (
@@ -206,3 +286,4 @@ export const EntregaRopaForm = ({ editMode }) => {
     </form>
   );
 };
+

@@ -2,7 +2,7 @@ import React from "react";
 import { DocumentacionListItem } from "./DocumentacionListItem";
 
 export const DocumentacionList = ({ documentacion }) => {
-  const { lineas } = documentacion;
+  const { lineas_documentacion } = documentacion;
   return (
     <>
       <div className="flex flex-col shadow-2xl md:shadow-gray-500 mt-2">
@@ -50,7 +50,7 @@ export const DocumentacionList = ({ documentacion }) => {
             </tr>
           </thead>
           <tbody>
-            {lineas?.map((linea) => (
+            {lineas_documentacion?.map((linea) => (
               <DocumentacionListItem linea={linea} key={linea.id} />
             ))}
           </tbody>

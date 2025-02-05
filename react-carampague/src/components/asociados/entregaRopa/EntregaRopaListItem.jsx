@@ -16,12 +16,12 @@ export const EntregaRopaListItem = ({ linea }) => {
 
       <td className="p-2 text-left flex justify-between md:table-cell">
       <span className="inline-block w-1/3 md:hidden font-bold">Ver</span>  
-        <div className="flex gap-5">
-             <Link to={`/asociados/entrega-ropa/detalle/${linea.id}`}>
-          <BsInfoSquareFill  width={50} height={50} />
+        <div className="flex gap-5 text-cyan-500">
+             <Link to={`/asociados/entrega-ropa/detalle/${linea.id}`}className="text-teal-700">
+          <BsInfoSquareFill  size={25}/>
         </Link>
-        <Link to={`/asociados/entrega-ropa/edit/${linea.id}`}>
-          <AiFillEdit width={50} height={50}/>
+        <Link to={`/asociados/entrega-ropa/edit/${linea.id}`} className="text-teal-700">
+          <AiFillEdit size={25}/>
         </Link>
 
         </div>

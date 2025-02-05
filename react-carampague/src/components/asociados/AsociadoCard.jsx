@@ -45,10 +45,8 @@ export const AsociadoCard = ({ selectedAsociado }) => {
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Telefono:
             </span>
-            {selectedAsociado?.telefono?.numero_telefono} (
-            {selectedAsociado?.telefono?.tipo_telefono.nombre_tipo_telefono})
+            {selectedAsociado.telefono.numero_telefono} ({selectedAsociado.tipo_telefono.nombre})
           </p>
-
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Fecha de alta:
@@ -99,22 +97,19 @@ export const AsociadoCard = ({ selectedAsociado }) => {
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Barrio
             </span>
-            {selectedAsociado?.direccion?.barrio?.nombre_barrio}
+            {selectedAsociado?.barrio?.nombre_barrio}
           </p>
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Localidad
             </span>
-            {selectedAsociado?.direccion?.barrio?.localidad.nombre_localidad}
+            {selectedAsociado?.localidad?.nombre}
           </p>
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Provincia
             </span>
-            {
-              selectedAsociado?.direccion?.barrio?.localidad?.provincia
-                ?.nombre_provincia
-            }
+            {selectedAsociado?.provincia?.nombre}
           </p>
         </div>
 
@@ -130,13 +125,13 @@ export const AsociadoCard = ({ selectedAsociado }) => {
               Editar
             </Link>
             <Link
-              to={`/asociados/documentacion/${selectedAsociado?.documentacion.id}`}
+              to={`/asociados/documentacion/${selectedAsociado?.id}`}
               className="p-2 w-full text-sm text-center bg-blue-600 hover:bg-blue-950 text-white rounded"
             >
               Ver documentación
             </Link>
             <Link
-              to={"/asociados/entrega-ropa"}
+              to={`/asociados/${selectedAsociado?.id}/entrega-ropa`}
               className="p-2 w-full text-sm text-center bg-rose-600 hover:bg-rose-950 text-white rounded"
             >
               Entrega de ropa

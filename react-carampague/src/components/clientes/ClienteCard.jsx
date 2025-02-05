@@ -45,14 +45,9 @@ export const ClienteCard = ({ selectedCliente }) => {
               Telefono:
             </span>
             {selectedCliente?.telefono?.numero_telefono} (
-            {selectedCliente?.telefono?.tipo_telefono.nombre_tipo_telefono})
+            {selectedCliente?.tipo_telefono?.nombre})
           </p>
-          <p className="text-sm mb-2 text-slate-800">
-            <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
-              Email:
-            </span>
-            {selectedCliente?.email}
-          </p>
+
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Estado:
@@ -63,7 +58,7 @@ export const ClienteCard = ({ selectedCliente }) => {
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Condicion frente al iva:
             </span>
-            {selectedCliente?.condicion_iva?.nombre_condicion_iva}
+            {selectedCliente?.condicionIva?.nombre}
           </p>
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
@@ -88,13 +83,19 @@ export const ClienteCard = ({ selectedCliente }) => {
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Barrio
             </span>
-            {selectedCliente?.direccion?.barrio.nombre_barrio}
+            {selectedCliente?.barrio?.nombre_barrio}
           </p>
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Localidad
             </span>
-            {selectedCliente?.direccion?.barrio?.localidad.nombre_localidad}
+            {selectedCliente?.localidad?.nombre}
+          </p>
+          <p className="text-sm mb-2 text-slate-800">
+            <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
+              Provincia
+            </span>
+            {selectedCliente?.provincia?.nombre}
           </p>
         </div>
         <div className="flex flex-col text-center ">
@@ -107,6 +108,12 @@ export const ClienteCard = ({ selectedCliente }) => {
               className="p-2 w-full text-sm text-center bg-blue-600 hover:bg-blue-950 text-white rounded"
             >
               Editar
+            </Link>
+            <Link
+              to={`/clientes/administrar/${selectedCliente?.id}`}
+              className="p-2 w-full text-sm text-center bg-teal-600 hover:bg-teal-950 text-white rounded"
+            >
+              Administrar
             </Link>
             <button
               onClick={handleToggleActivo}
