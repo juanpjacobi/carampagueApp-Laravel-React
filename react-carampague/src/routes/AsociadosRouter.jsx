@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import {
   ActualizarAsociado,
   Asociados,
+  Ausentismo,
   CrearAsociado,
   DocumentacionAsociado,
   EditarDocumentacion,
@@ -23,16 +24,19 @@ export const AsociadosRouter = () => {
       <Route path="/edit/:id" element={<ActualizarAsociado />} />
       <Route path="/documentacion/:id" element={<DocumentacionAsociado />} />
       <Route
-        path="/documentacion/crear"
+        path="/:asociadoId/documentacion/crear"
         element={<RegistrarDocumentacionAsociado />}
       />
       <Route path="/documentacion/detalle/:id" element={<VerDocumentacion />} />
-      <Route path="/documentacion/edit/:id" element={<EditarDocumentacion />} />
-      <Route path="/entrega-ropa/" element={<EntregaRopa />} />
-      <Route path="/entrega-ropa/crear" element={<RegistrarEntregaRopa />} />
+      <Route path="/documentacion/edit/:lineaId" element={<EditarDocumentacion />} />
+      <Route path="/:id/entrega-ropa/" element={<EntregaRopa />} />
+      <Route path="/:id/entrega-ropa/crear" element={<RegistrarEntregaRopa />} />
       <Route path="/entrega-ropa/edit/:id" element={<EditarEntregaRopa />} />
 
       <Route path="/entrega-ropa/detalle/:id" element={<VerEntregaRopa />} />
+      <Route path="/ausentismo" element={<Ausentismo />} />
+
+
     </Routes>
   );
 };
