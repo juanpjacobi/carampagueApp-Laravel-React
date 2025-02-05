@@ -24,4 +24,5 @@ export const clienteSchema = Yup.object().shape({
   barrio_id: Yup.number().required("Requerido"),
   piso: Yup.string().nullable(),
   departamento: Yup.string().nullable(),
+
 });
