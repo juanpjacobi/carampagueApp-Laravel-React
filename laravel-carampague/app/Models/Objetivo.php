@@ -12,12 +12,8 @@ class Objetivo extends Model
         'activo',
         'direccion_id',
         'cliente_id',
-        'valor_id'
     ];
-    public function valor()
-    {
-        return $this->belongsTo(Valor::class);
-    }
+
 
     public function direccion()
     {
@@ -27,5 +23,9 @@ class Objetivo extends Model
     {
         return $this->belongsTo(Cliente::class);
     }
+
+
+
+
     use HasFactory;
 }

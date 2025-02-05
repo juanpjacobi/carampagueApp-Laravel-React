@@ -33,15 +33,20 @@ class Asociado extends Model
     }
     public function telefono()
     {
-        return $this->belongsTo(Telefono::class)->with('tipoTelefono');
+        return $this->belongsTo(Telefono::class);
     }
     public function direccion()
     {
-        return $this->belongsTo(Direccion::class)->with('barrio');
+        return $this->belongsTo(Direccion::class);
     }
     public function entregaRopa()
     {
         return $this->hasMany(EntregaRopa::class)->with('lineas');
     }
+
+    public function lineasServicio()
+{
+    return $this->hasMany(LineaServicio::class);
+}
     use HasFactory;
 }

@@ -12,7 +12,7 @@ class Barrio extends Model
         'localidad_id'
     ];
     public function localidad(){
-        return $this->belongsTo(Localidad::class)->with('provincia');
+        return $this->belongsTo(Localidad::class);
     }
     use HasFactory;
 }

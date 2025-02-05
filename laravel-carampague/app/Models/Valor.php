@@ -10,8 +10,15 @@ class Valor extends Model
     protected $table = 'valores';
     protected $fillable = [
         'valor_vigilador',
-        'valor_cliente'
+        'valor_cliente',
+        'cliente_id',
+        'periodo'
     ];
+
+    public function cliente()
+{
+    return $this->belongsTo(Cliente::class);
+}
 
     use HasFactory;
 }

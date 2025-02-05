@@ -17,7 +17,7 @@ class Direccion extends Model
         'barrio_id',
     ];
     public function barrio(){
-        return $this->belongsTo(Barrio::class)->with('localidad');
+        return $this->belongsTo(Barrio::class);
     }
     use HasFactory;
 }

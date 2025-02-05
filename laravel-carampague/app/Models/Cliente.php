@@ -26,11 +26,15 @@ class Cliente extends Model
     }
     public function telefono()
     {
-        return $this->belongsTo(Telefono::class)->with('tipoTelefono');
+        return $this->belongsTo(Telefono::class);
     }
     public function direccion()
     {
-        return $this->belongsTo(Direccion::class)->with('barrio');
+        return $this->belongsTo(Direccion::class);
+    }
+    public function valor()
+    {
+        return $this->hasOne(Valor::class);
     }
 
 
