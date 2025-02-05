@@ -17,14 +17,14 @@ class BarriosSeeder extends Seeder
         $currentTimestamp = Carbon::now();
 
         $barrios = [
-            ['nombre_barrio' => 'Nueva Córdoba', 'localidad_id' => 20, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
-            ['nombre_barrio' => 'Alberdi', 'localidad_id' => 21, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
-            ['nombre_barrio' => 'General Paz', 'localidad_id' => 22, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
-            ['nombre_barrio' => 'Cerro de las Rosas', 'localidad_id' => 23, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
-            ['nombre_barrio' => 'Jardín', 'localidad_id' => 25, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
-            ['nombre_barrio' => 'Villa Cabrera', 'localidad_id' => 26, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
-            ['nombre_barrio' => 'San Vicente', 'localidad_id' => 27, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
-            ['nombre_barrio' => 'Quintas de Argüello', 'localidad_id' => 28, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
+            ['nombre_barrio' => 'Nueva Córdoba', 'localidad_id' => 1, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
+            ['nombre_barrio' => 'Alberdi', 'localidad_id' => 2, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
+            ['nombre_barrio' => 'General Paz', 'localidad_id' => 3, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
+            ['nombre_barrio' => 'Cerro de las Rosas', 'localidad_id' => 1, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
+            ['nombre_barrio' => 'Jardín', 'localidad_id' => 2, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
+            ['nombre_barrio' => 'Villa Cabrera', 'localidad_id' => 3, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
+            ['nombre_barrio' => 'San Vicente', 'localidad_id' => 1, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
+            ['nombre_barrio' => 'Quintas de Argüello', 'localidad_id' => 2, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
         ];
 
         DB::table('barrios')->insert($barrios);

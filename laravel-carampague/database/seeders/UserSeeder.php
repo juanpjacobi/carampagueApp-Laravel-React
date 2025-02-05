@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         DB::table('users')->insert([
             'nombre_usuario' => 'juanpjacobi',
             'password' => bcrypt(12345678),
-            'estado_id' => 1,
+            'activo' => 1,
             'rol_id' => 1,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
         DB::table('users')->insert([
             'nombre_usuario' => 'cligorria',
             'password' => bcrypt(12345678),
-            'estado_id' => 2,
+            'activo' => 2,
             'rol_id' => 2,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
@@ -33,7 +33,7 @@ class UserSeeder extends Seeder
         DB::table('users')->insert([
             'nombre_usuario' => 'galthabe',
             'password' => bcrypt(12345678),
-            'estado_id' => 1,
+            'activo' => 1,
             'rol_id' => 3,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),

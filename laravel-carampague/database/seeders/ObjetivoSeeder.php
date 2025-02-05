@@ -16,27 +16,27 @@ class ObjetivoSeeder extends Seeder
     {
         DB::table('objetivos')->insert([
             'nombre_objetivo' => 'olympus',
-            'cliente_id' => 132,
-            'direccion_id' => 141,
-            'estado_id' => 1,
+            'cliente_id' => 1,
+            'direccion_id' => 1,
+            'activo' => 1,
             'valor_id' => 1,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
         DB::table('objetivos')->insert([
             'nombre_objetivo' => 'plaza intendencia',
-            'cliente_id' => 133,
-            'direccion_id' => 142,
-            'estado_id' => 1,
+            'cliente_id' => 2,
+            'direccion_id' => 2,
+            'activo' => 1,
             'valor_id' => 1,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
         DB::table('objetivos')->insert([
             'nombre_objetivo' => 'olympus',
-            'cliente_id' => 132,
-            'direccion_id' => 143,
-            'estado_id' => 1,
+            'cliente_id' => 3,
+            'direccion_id' => 3,
+            'activo' => 1,
             'valor_id' => 1,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
