@@ -2,18 +2,25 @@ import carampagueApi from "../../api/carampagueApi";
 import Swal from "sweetalert2";
 
 import { startLoading, setError, endLoading } from "../slices/UiSlice";
-import { setAsociados, setSelectedAsociado } from "../slices/AsociadosSlice";
+import {
+  addAsociado,
+  setAsociados,
+  setSelectedAsociado,
+  updateAsociadoEnStore,
+} from "../slices/AsociadosSlice";
+import { addDocumentacion } from "../slices/DocumentacionSlice";
 
 export const getAsociados = () => {
   return async (dispatch) => {
-    dispatch(startLoading());
     try {
       const { data } = await carampagueApi.get(`/api/asociados/`);
+      console.log(data)
       dispatch(setAsociados(data.asociados));
     } catch (error) {
-      const errors = Object.values(error.response.data.errors).map((err) => {
-        return err;
-      });
+      const errors = Object.values(error.response.data.errors).map(
+        (err) => err
+      );
+
       dispatch(setError(errors));
       Swal.fire({
         icon: "error",
@@ -21,8 +28,6 @@ export const getAsociados = () => {
         text: Object.values(error.response.data.errors),
         footer: "Error al obtener asociados",
       });
-    } finally {
-      dispatch(endLoading());
     }
   };
 };
@@ -34,9 +39,10 @@ export const getAsociado = (id) => {
       const { data } = await carampagueApi.get(`/api/asociados/${id}`);
       dispatch(setSelectedAsociado(data.asociado));
     } catch (error) {
-      const errors = Object.values(error.response.data.errors).map((err) => {
-        return err;
-      });
+      const errors = Object.values(error.response.data.errors).map(
+        (err) => err
+      );
+
       dispatch(setError(errors));
 
       Swal.fire({
@@ -55,19 +61,25 @@ export const createAsociado = (data, navigate) => {
   return async (dispatch) => {
     dispatch(startLoading());
     try {
-      await carampagueApi.post(`/api/asociados/`, data);
-      Swal.fire({
+      const { data: response } = await carampagueApi.post(
+        `/api/asociados/`,
+        data
+      );
+      dispatch(addAsociado(response.asociado));
+      dispatch(addDocumentacion(response.documentacion))
+      await Swal.fire({
         position: "top-end",
         icon: "success",
-        title: "ASociado creado con exito",
+        title: "Cliente creado con exito",
         showConfirmButton: true,
-      }).then(() => {
-        navigate("/asociados");
       });
+      navigate("/asociados");
     } catch (error) {
-      const errors = Object.values(error.response.data.errors).map((err) => {
-        return err;
-      });
+      console.log(error)
+
+      const errors = Object.values(error.response.data.errors).map(
+        (err) => err
+      );
       dispatch(setError(errors));
       Swal.fire({
         icon: "error",
@@ -86,19 +98,25 @@ export const updateAsociado = (id, data, navigate) => {
     dispatch(startLoading());
 
     try {
-      await carampagueApi.put(`/api/asociados/${id}`, data);
-      Swal.fire({
+      const { data: response } = await carampagueApi.put(
+        `/api/asociados/${id}`,
+        data
+      );
+      dispatch(updateAsociadoEnStore(response.asociado));
+
+      await Swal.fire({
         position: "top-end",
         icon: "success",
         title: "Asociado actualizado con exito",
         showConfirmButton: true,
-      }).then(() => {
-        navigate("/asociados");
       });
+      navigate("/asociados");
     } catch (error) {
-      const errors = Object.values(error.response.data.errors).map((err) => {
-        return err;
-      });
+      console.log(error)
+      const errors = Object.values(error.response.data.errors).map(
+        (err) => err
+      );
+
       dispatch(setError(errors));
       Swal.fire({
         icon: "error",
@@ -130,7 +148,7 @@ export const toggleAsociadoActivo = (id, setActivo) => {
           ...data.asociado,
           activo: data.activo ? 1 : 0,
         };
-        dispatch(setSelectedAsociado(updatedAsociado));
+        dispatch(updateAsociadoEnStore(updatedAsociado));
         setActivo(updatedAsociado.activo);
         dispatch(endLoading());
         Swal.fire({
@@ -142,9 +160,10 @@ export const toggleAsociadoActivo = (id, setActivo) => {
       } else {
       }
     } catch (error) {
-      const errors = Object.values(error.response.data.errors).map((err) => {
-        return err;
-      });
+      const errors = Object.values(error.response.data.errors).map(
+        (err) => err
+      );
+
       dispatch(setError(errors));
       Swal.fire({
         icon: "error",
@@ -155,3 +174,9 @@ export const toggleAsociadoActivo = (id, setActivo) => {
     }
   };
 };
+
+;
+
+
+
+

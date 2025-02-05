@@ -1,18 +1,23 @@
 import Swal from "sweetalert2";
 import carampagueApi from "../../api/carampagueApi";
-import { setObjetivos, setSelectedObjetivo } from "../slices/ObjetivosSlice";
+import {
+  addObjetivoEnStore,
+  setObjetivos,
+  updateObjetivoEnStore,
+} from "../slices/ObjetivosSlice";
 import { startLoading, setError, endLoading } from "../slices/UiSlice";
 
 export const getObjetivos = () => {
   return async (dispatch) => {
-    dispatch(startLoading());
     try {
       const { data } = await carampagueApi.get(`/api/objetivos/`);
-      dispatch(setObjetivos(data.objetivos));
+
+      dispatch(setObjetivos(data));
     } catch (error) {
-      const errors = Object.values(error.response.data.errors).map((err) => {
-        return err;
-      });
+      console.log(error);
+      const errors = Object.values(error.response.data.errors).map(
+        (err) => err
+      );
       dispatch(setError(errors));
       Swal.fire({
         icon: "error",
@@ -20,8 +25,6 @@ export const getObjetivos = () => {
         text: Object.values(error.response.data.errors),
         footer: "Error al obtener objetivos",
       });
-    } finally {
-      dispatch(endLoading());
     }
   };
 };
@@ -31,11 +34,11 @@ export const getObjetivo = (id) => {
     dispatch(startLoading());
     try {
       const { data } = await carampagueApi.get(`/api/objetivos/${id}`);
-      dispatch(setSelectedObjetivo(data.objetivo));
     } catch (error) {
-      const errors = Object.values(error.response.data.errors).map((err) => {
-        return err;
-      });
+      const errors = Object.values(error.response.data.errors).map(
+        (err) => err
+      );
+
       dispatch(setError(errors));
 
       Swal.fire({
@@ -55,19 +58,23 @@ export const createObjetivo = (data, navigate) => {
     dispatch(startLoading());
 
     try {
-      await carampagueApi.post(`/api/objetivos/`, data);
-      Swal.fire({
+      const { data: response } = await carampagueApi.post(
+        `/api/objetivos/`,
+        data
+      );
+      dispatch(addObjetivoEnStore(response.objetivo));
+      await Swal.fire({
         position: "top-end",
         icon: "success",
         title: "Objetivo creado con exito",
         showConfirmButton: true,
-      }).then(() => {
-        navigate("/objetivos");
       });
+      navigate("/objetivos");
     } catch (error) {
-      const errors = Object.values(error.response.data.errors).map((err) => {
-        return err;
-      });
+      const errors = Object.values(error.response.data.errors).map(
+        (err) => err
+      );
+
       dispatch(setError(errors));
       Swal.fire({
         icon: "error",
@@ -83,26 +90,35 @@ export const createObjetivo = (data, navigate) => {
 
 export const updateObjetivo = (id, data, navigate) => {
   return async (dispatch) => {
+    dispatch(startLoading());
     try {
-      dispatch(startLoading());
-      await carampagueApi.put(`/api/objetivos/${id}`, data);
-      Swal.fire({
+      const { data: response } = await carampagueApi.put(
+        `/api/objetivos/${id}`,
+        data
+      );
+
+      dispatch(updateObjetivoEnStore(response.objetivo));
+
+      await Swal.fire({
         position: "top-end",
         icon: "success",
         title: "Objetivo actualizado con exito",
         showConfirmButton: true,
-      }).then(() => {
-        navigate("/objetivos");
       });
+      navigate("/objetivos");
     } catch (error) {
-      const errors = Object.values(error.response.data.errors).map((err) => {
-        return err;
-      });
+      console.log("Error completo:", error);
+
+      const errors = error?.response?.data?.errors
+        ? Object.values(error.response.data.errors).map((err) => err)
+        : ["Ocurrió un error inesperado."];
+
       dispatch(setError(errors));
+
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: errors,
+        text: errors.join(", "),
         footer: "Error al actualizar objetivo",
       });
     } finally {
@@ -113,7 +129,6 @@ export const updateObjetivo = (id, data, navigate) => {
 
 export const toggleObjetivoActivo = (id, setActivo) => {
   return async (dispatch) => {
-    // dispatch(startLoading());
     try {
       const result = await Swal.fire({
         title: "¿Estás seguro?",
@@ -128,24 +143,24 @@ export const toggleObjetivoActivo = (id, setActivo) => {
         const { data } = await carampagueApi.put(`/api/objetivos/${id}/toggle`);
         const updatedObjetivo = {
           ...data.objetivo,
-          activo: data.activo ? 1 : 0, // Convertir true/false a 1/0
+          activo: data.activo ? 1 : 0,
         };
-        dispatch(setSelectedObjetivo(updatedObjetivo)); // Aquí pasas el asociado actualizado
-        setActivo(updatedObjetivo.activo); // Actualiza el estado local
+        dispatch(updateObjetivoEnStore(updatedObjetivo));
+        setActivo(updatedObjetivo.activo);
         dispatch(endLoading());
+
         Swal.fire({
           position: "top-end",
           icon: "success",
           title: "Estado del objetivo actualizado con éxito",
           showConfirmButton: true,
         });
-      } else {
-        // dispatch(endLoading());
       }
     } catch (error) {
-      const errors = Object.values(error.response.data.errors).map((err) => {
-        return err;
-      });
+      const errors = Object.values(error.response.data.errors).map(
+        (err) => err
+      );
+
       dispatch(setError(errors));
       Swal.fire({
         icon: "error",
