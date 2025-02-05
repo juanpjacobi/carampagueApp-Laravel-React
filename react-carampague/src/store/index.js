@@ -1,15 +1,54 @@
 import { configureStore } from "@reduxjs/toolkit";
-import {ClientesSlice} from "./slices/ClientesSlice";
-import { ObjetivosSlice } from "./slices/ObjetivosSlice";
-import { UiSlice } from "./slices/UiSlice";
-import { AsociadosSlice } from "./slices/AsociadosSlice";
+import {
+  AsociadosSlice,
+  ClientesSlice,
+  CondicionesIvaSlice,
+  DocumentacionSlice,
+  EntregaRopaSlice,
+  EstadosCivilesSlice,
+  EstadosDocumentacionSlice,
+  FeriadosSlice,
+  LineasDocumentacionSlice,
+  LineasEntregaRopaSlice,
+  LineasServicioSlice,
+  ModalidadesSlice,
+  MotivosSlice,
+  ObjetivosSlice,
+  PrendasSlice,
+  ServiciosSlice,
+  TiposDocumentacionSlice,
+  TiposMotivosSlice,
+  TiposTelefonosSlice,
+  UbicacionesSlice,
+  UiSlice,
+  valoresSlice,
+} from "./slices/zslices";
 
 export const store = configureStore({
-  reducer: { 
-    clientes: ClientesSlice.reducer,
-    objetivos: ObjetivosSlice.reducer,
+  reducer: {
+
     asociados: AsociadosSlice.reducer,
-    ui: UiSlice.reducer
-    
-},
+    clientes: ClientesSlice.reducer,
+    condicionesIva: CondicionesIvaSlice.reducer,
+    documentacion: DocumentacionSlice.reducer,
+    entregasRopa: EntregaRopaSlice.reducer,
+    estadosCiviles: EstadosCivilesSlice.reducer,
+    estadosDocumentacion: EstadosDocumentacionSlice.reducer,
+    feriados: FeriadosSlice.reducer,
+    lineasDocumentacion: LineasDocumentacionSlice.reducer,
+    lineasDocumentacion: LineasDocumentacionSlice.reducer,
+    lineasEntregaRopa: LineasEntregaRopaSlice.reducer,
+    lineasServicio: LineasServicioSlice.reducer,
+    modalidades: ModalidadesSlice.reducer,
+    motivos: MotivosSlice.reducer,
+    objetivos: ObjetivosSlice.reducer,
+    prendas: PrendasSlice.reducer,
+    servicios: ServiciosSlice.reducer,
+    tiposDocumentacion: TiposDocumentacionSlice.reducer,
+    tiposMotivos: TiposMotivosSlice.reducer,
+    tiposTelefonos: TiposTelefonosSlice.reducer,
+    ubicaciones: UbicacionesSlice.reducer,
+    ui: UiSlice.reducer,
+    valores: valoresSlice.reducer,
+  },
 });
