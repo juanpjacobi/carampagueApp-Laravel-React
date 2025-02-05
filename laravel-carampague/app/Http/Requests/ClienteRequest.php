@@ -27,14 +27,15 @@ class ClienteRequest extends FormRequest
             'cuit_cliente' => ['required', 'digits:11', 'numeric'],
             'email' => ['required', 'email'],
             'activo' => ['required', 'boolean'],
-            'condicion_iva_id'=>['required', 'integer'],
-            'numero_telefono'=>['required', 'string', 'regex:/^\d{7,15}$/'],
-            'tipo_telefono_id'=>['required', 'integer'],
-            'calle'=>['required', 'string'],
-            'numeracion'=>['required', 'numeric'],
-            'barrio_id'=>['required', 'integer'],
-            'piso'=>['nullable', 'string'],
-            'departamento'=>['nullable', 'string'],
+            'condicion_iva_id' => ['required', 'integer'],
+            'numero_telefono' => ['required', 'string', 'regex:/^\d{7,15}$/'],
+            'tipo_telefono_id' => ['required', 'integer'],
+            'calle' => ['required', 'string'],
+            'numeracion' => ['required', 'numeric'],
+            'barrio_id' => ['required', 'integer'],
+            'piso' => ['nullable', 'numeric'],
+            'departamento' => ['nullable', 'string'],
+
         ];
     }
 
@@ -66,6 +67,16 @@ class ClienteRequest extends FormRequest
             'barrio_id.integer' => 'El barrio debe ser un número entero',
             'piso.string' => 'El piso debe ser una cadena de caracteres',
             'departamento.string' => 'El departamento debe ser una cadena de caracteres',
+
+            // Nuevas validaciones
+            'valor_vigilador.required' => 'El valor para el vigilador es requerido',
+            'valor_vigilador.numeric' => 'El valor para el vigilador debe ser un número',
+            'valor_vigilador.min' => 'El valor para el vigilador debe ser mayor o igual a 0',
+            'valor_cliente.required' => 'El valor para el cliente es requerido',
+            'valor_cliente.numeric' => 'El valor para el cliente debe ser un número',
+            'valor_cliente.min' => 'El valor para el cliente debe ser mayor o igual a 0',
+            'periodo.required' => 'El periodo es requerido',
+            'periodo.date_format' => 'El formato del periodo debe ser YYYY-MM',
         ];
     }
 }

@@ -27,12 +27,10 @@ class ObjetivoRequest extends FormRequest
             'nombre_objetivo' => ['required', 'string', Rule::unique('objetivos')->ignore($this->objetivo)],
             'activo' => ['required', 'boolean'],
             'cliente_id' => ['required', 'integer'],
-            'valor_vigilador' => ['required', 'numeric'],
-            'valor_cliente' => ['required', 'numeric'],
             'calle'=>['required', 'string'],
             'numeracion'=>['required', 'numeric'],
             'barrio_id'=>['required', 'integer'],
-            'piso'=>['nullable', 'string'],
+            'piso'=>['nullable', 'numeric'],
             'departamento'=>['nullable', 'string'],
         ];
     }

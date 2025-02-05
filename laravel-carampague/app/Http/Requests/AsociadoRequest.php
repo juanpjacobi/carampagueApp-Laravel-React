@@ -37,7 +37,7 @@ class AsociadoRequest extends FormRequest
             'calle' => ['required', 'string'],
             'numeracion' => ['required', 'numeric'],
             'barrio_id' => ['required', 'integer'],
-            'piso' => ['nullable', 'string'],
+            'piso' => ['nullable', 'numeric'],
             'departamento' => ['nullable', 'string'],
         ];
     }
