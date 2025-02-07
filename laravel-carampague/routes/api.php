@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AjustesController;
 use App\Http\Controllers\AsociadosController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarrioController;
@@ -8,7 +9,6 @@ use App\Http\Controllers\CondicionIvaController;
 use App\Http\Controllers\DocumentacionController;
 use App\Http\Controllers\EntregaRopaController;
 use App\Http\Controllers\EstadoCivilController;
-use App\Http\Controllers\EstadoController;
 use App\Http\Controllers\EstadoDocumentacionController;
 use App\Http\Controllers\FeriadoController;
 use App\Http\Controllers\LineaDocumentacionController;
@@ -22,6 +22,7 @@ use App\Http\Controllers\PrendaController;
 use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\TalleController;
+use App\Http\Controllers\TipoAjusteController;
 use App\Http\Controllers\TipoDocumentacionController;
 use App\Http\Controllers\TipoMotivoController;
 use App\Http\Controllers\TipoPrendaController;
@@ -47,7 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
-
+    Route::apiResource('/ajustes', AjustesController::class);
     Route::apiResource('/asociados', AsociadosController::class);
     Route::apiResource('/barrios', BarrioController::class);
     Route::apiResource('/clientes', ClientesController::class);
@@ -69,6 +70,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/servicios', ServicioController::class);
     Route::apiResource('/talles', TalleController::class);
     Route::apiResource('/tipos-documentacion', TipoDocumentacionController::class);
+    Route::apiResource('/tipos-ajustes', TipoAjusteController::class);
     Route::apiResource('/tipos-motivos', TipoMotivoController::class);
     Route::apiResource('/tipos-prenda', TipoPrendaController::class);
     Route::apiResource('/tipos-telefono', TipoTelefonoController::class);
