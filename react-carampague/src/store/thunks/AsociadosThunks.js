@@ -14,7 +14,6 @@ export const getAsociados = () => {
   return async (dispatch) => {
     try {
       const { data } = await carampagueApi.get(`/api/asociados/`);
-      console.log(data)
       dispatch(setAsociados(data.asociados));
     } catch (error) {
       const errors = Object.values(error.response.data.errors).map(
@@ -70,7 +69,7 @@ export const createAsociado = (data, navigate) => {
       await Swal.fire({
         position: "top-end",
         icon: "success",
-        title: "Cliente creado con exito",
+        title: "Asociado creado con exito",
         showConfirmButton: true,
       });
       navigate("/asociados");
