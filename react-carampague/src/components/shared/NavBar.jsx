@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
 import { GiHamburgerMenu } from "react-icons/gi";
-
 import { clsx } from "clsx";
-
+import { useDispatch } from "react-redux";
+import { logout } from "../../store/thunks/AuthThunks";
 export const NavBar = () => {
-  const { logout } = useAuth({ middleware: "auth" });
+  const dispatch = useDispatch();
   const [hiddeNavbar, setHiddeNavbar] = useState(true);
 
   useEffect(() => {
@@ -21,10 +20,10 @@ export const NavBar = () => {
   }, []);
 
   return (
-    <nav className="uppercase text-sm xl:text-sm  text-slate-800 p-10">
+    <nav className="uppercase text-sm xl:text-sm text-slate-800 p-10">
       <div className={clsx(hiddeNavbar && "lg:hidden", "flex justify-center")}>
         <GiHamburgerMenu
-          className="cursor-pointer "
+          className="cursor-pointer"
           size={30}
           onClick={() => setHiddeNavbar(!hiddeNavbar)}
         />
@@ -45,11 +44,9 @@ export const NavBar = () => {
         <NavLink
           className="hover:bg-sky-800 hover:text-white p-2 rounded-lg"
           to={"/asociados"}
-
         >
           asociados
         </NavLink>
-
         <NavLink
           className="hover:bg-sky-800 hover:text-white p-2 rounded-lg"
           to={"/usuarios"}
@@ -74,7 +71,6 @@ export const NavBar = () => {
         >
           servicios
         </NavLink>
-
         <NavLink
           className="hover:bg-sky-800 hover:text-white p-2 rounded-lg"
           to={"/planes-diarios"}
@@ -85,7 +81,7 @@ export const NavBar = () => {
           className="hover:bg-sky-800 hover:text-white p-2 rounded-lg"
           to={"/computos"}
         >
-          Computos
+          cómputos
         </NavLink>
         <NavLink
           className="hover:bg-sky-800 hover:text-white p-2 rounded-lg"
@@ -99,10 +95,9 @@ export const NavBar = () => {
         >
           ajustes
         </NavLink>
-
         <button
-          onClick={logout}
-          className="bg-gray-600 hover:bg-gray-700  uppercase text-white w-full p-2 cursor-pointer rounded-lg ml-1"
+          onClick={() => dispatch(logout())}
+          className="bg-gray-600 hover:bg-gray-700 uppercase text-white w-full p-2 cursor-pointer rounded-lg ml-1"
         >
           Cerrar Sesión
         </button>

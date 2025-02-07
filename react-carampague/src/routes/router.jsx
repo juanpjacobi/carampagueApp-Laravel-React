@@ -3,60 +3,82 @@ import { Layout } from "../layouts/Layout";
 import { AuthLayout } from "../layouts/AuthLayout";
 import Inicio from "../views/Inicio";
 import Login from "../views/Login";
-import { ClienteRouter, ObjetivoRouter, UserRouter, AsociadosRouter, ServicioRouter, PlanDiarioRouter, ComputosRouter, AjustesRouter } from "./index";
-
+import { 
+  ClienteRouter, 
+  ObjetivoRouter, 
+  UserRouter, 
+  AsociadosRouter, 
+  ServicioRouter, 
+  PlanDiarioRouter, 
+  ComputosRouter, 
+  AjustesRouter,
+  ProtectedRoutes,
+  GuestRoutes
+} from "./index";
 
 const router = createBrowserRouter([
   {
+    // Rutas protegidas: si el usuario no está autenticado, se redirige a /auth
     path: "/",
-    element: <Layout />,
+    element: <ProtectedRoutes />,
     children: [
       {
-        index: true,
-        path: "/inicio/",
-        element: <Inicio />,
-      },
-      {
-        path: "/usuarios/*",
-        element: <UserRouter />,
-      },
-      {
-        path: "/clientes/*",
-        element: <ClienteRouter />,
-      },
-      {
-        path: "/objetivos/*",
-        element: <ObjetivoRouter />,
-      },
-      {
-        path: "/asociados/*",
-        element: <AsociadosRouter />,
-      },
-      {
-        path: "/servicios/*",
-        element: <ServicioRouter />,
-      },
-      {
-        path: "/planes-diarios/*",
-        element: <PlanDiarioRouter />,
-      },
-      {
-        path: "/computos/*",
-        element: <ComputosRouter />,
-      },
-            {
-        path: "/ajustes/*",
-        element: <AjustesRouter />,
+        element: <Layout />,
+        children: [
+          {
+            index: true,
+            path: "/inicio/",
+            element: <Inicio />,
+          },
+          {
+            path: "/usuarios/*",
+            element: <UserRouter />,
+          },
+          {
+            path: "/clientes/*",
+            element: <ClienteRouter />,
+          },
+          {
+            path: "/objetivos/*",
+            element: <ObjetivoRouter />,
+          },
+          {
+            path: "/asociados/*",
+            element: <AsociadosRouter />,
+          },
+          {
+            path: "/servicios/*",
+            element: <ServicioRouter />,
+          },
+          {
+            path: "/planes-diarios/*",
+            element: <PlanDiarioRouter />,
+          },
+          {
+            path: "/computos/*",
+            element: <ComputosRouter />,
+          },
+          {
+            path: "/ajustes/*",
+            element: <AjustesRouter />,
+          },
+        ],
       },
     ],
   },
   {
+    // Rutas públicas (para invitados) se envuelven en GuestRoute
     path: "/auth",
-    element: <AuthLayout />,
+    element: <GuestRoutes />,
     children: [
       {
-        index: true,
-        element: <Login />,
+        element: <AuthLayout />,
+        children: [
+          {
+            index: true,
+            element: <Login />,
+          },
+        ],
       },
     ],
   },
