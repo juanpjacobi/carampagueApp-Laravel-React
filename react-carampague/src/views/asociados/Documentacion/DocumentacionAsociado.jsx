@@ -7,21 +7,16 @@ import { makeSelectDocumentacionConLineasByDocumentacionId } from "../../../stor
 import { makeSelectAsociadoById } from "../../../store/selectors/AsociadosSelectors"; // Asegúrate de tener este selector
 
 export const DocumentacionAsociado = () => {
-  const { id } = useParams(); // id del asociado
+  const { id } = useParams(); 
   const navigate = useNavigate();
 
-  // Obtén el asociado a partir del id (esto se hace si tienes el slice de asociados normalizado)
   const asociado = useSelector(makeSelectAsociadoById(id));
-  
-  // Si no tienes selectedAsociado, usa el resultado del selector anterior.
-  // A partir del asociado, extrae el documentacion_id.
+
   const documentacionId = asociado ? asociado.documentacion_id : null;
-  
-  // Usa el selector enriquecido para obtener la documentación completa
+
   const documentacion = useSelector(
     makeSelectDocumentacionConLineasByDocumentacionId(documentacionId)
   );
-  console.log(documentacion)
   useEffect(() => {
     if (!documentacion) {
       navigate("/asociados", { replace: true });
@@ -29,8 +24,11 @@ export const DocumentacionAsociado = () => {
   }, [documentacion, navigate]);
 
   if (!documentacion) return null;
-  
-  if (!documentacion.lineas_documentacion || documentacion.lineas_documentacion.length === 0) {
+
+  if (
+    !documentacion.lineas_documentacion ||
+    documentacion.lineas_documentacion.length === 0
+  ) {
     return (
       <Empty
         message="No se ha solicitado documentación para este asociado todavía"

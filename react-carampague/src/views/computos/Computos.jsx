@@ -7,6 +7,8 @@ import MonthYearSelector from "../../components/utilities/month-year-selector/Mo
 import { Alerta } from "../../components/shared/Alerta";
 import { selectAllLineasServicio } from "../../store/selectors/ServiciosSelectors";
 import { ComputosResumen } from "../../components/computos/ComputosResumen";
+import { selectEnrichedAjustes } from "../../store/selectors/AjustesSelectors";
+import { AjustesResumen } from "../../components/ajustes/AjustesResumen";
 
 export const Computos = () => {
   const [month, setMonth] = useState("");
@@ -24,6 +26,8 @@ export const Computos = () => {
   } = useAsociados(asociados, selectedAsociado);
 
   const allLineas = useSelector(selectAllLineasServicio);
+  const enrichedAjustes = useSelector(selectEnrichedAjustes);
+
 
   const handleSelectAsociado = (id, fullName) => {
     setSelectedAsociado({ id, fullName });
@@ -41,7 +45,6 @@ export const Computos = () => {
   const filteredLineas = useMemo(() => {
     if (!selectedAsociado || !month || !year) return [];
     return allLineas.filter((linea) => {
-      // Se asume que linea.fecha es "YYYY-MM-DD"
       const [anio, mes] = linea.fecha.split("-");
       const lineaPeriod = `${anio}-${mes}`;
       return (
@@ -61,9 +64,9 @@ export const Computos = () => {
       return (
         Number(linea.asociado_id) === Number(selectedAsociado.id) &&
         lineaPeriod === targetPeriod &&
-        linea.is_planificado === false && // Consideramos solo líneas reales
-        linea.is_validado === false && // La línea fue invalidada
-        linea.is_justificado === true // Y se marcó como justificada
+        linea.is_planificado === false && 
+        linea.is_validado === false && 
+        linea.is_justificado === true
       );
     });
   }, [selectedAsociado, year, month, allLineas]);
@@ -118,6 +121,44 @@ export const Computos = () => {
     });
     return { grupos: Object.values(groups), totalBruto: totalBrutoJustificado };
   }, [filteredJustifiedLineas, valoresMapping]);
+
+  const filteredAjustesForDiscounts = useMemo(() => {
+    if (!year || !month) return [];
+    return enrichedAjustes
+      .filter((ajuste) => {
+        if (!ajuste.periodo_inicio) return false;
+        return (
+          targetPeriod >= ajuste.periodo_inicio &&
+          targetPeriod <= ajuste.periodo_fin
+        );
+      })
+      .filter((ajuste) => {
+        if (selectedAsociado) {
+          // Se incluyen ajustes globales o los que pertenecen al asociado seleccionado
+          return (
+            ajuste.global ||
+            Number(ajuste.asociado_id) === Number(selectedAsociado.id)
+          );
+        }
+        return true;
+      });
+  }, [enrichedAjustes, targetPeriod, selectedAsociado, year, month]);
+
+  const discountAdjustments = useMemo(() => {
+    return filteredAjustesForDiscounts.filter(
+      (ajuste) => !ajuste.tipo_ajuste.add
+    );
+  }, [filteredAjustesForDiscounts]);
+
+
+  const totalDescuentos = useMemo(() => {
+    return discountAdjustments.reduce((sum, ajuste) => {
+      const montoEffective =
+        Number(ajuste.monto) || Number(ajuste.tipo_ajuste.monto);
+      return sum + montoEffective;
+    }, 0);
+  }, [discountAdjustments]);
+
 
   return (
     <div>
@@ -192,6 +233,25 @@ export const Computos = () => {
           />
         )}
       </div>
+         {/* Sección de Descuentos */}
+         <hr className="my-8 border-t-2 border-dashed border-gray-400" />
+      <h2 className="text-2xl underline underline-offset-8 text-sky-700 font-semibold text-center mb-5 mt-5">
+        Descuentos
+      </h2>
+      {discountAdjustments.length > 0 ? (
+        <div className="mt-5">
+          <AjustesResumen
+           title={"Resumen de descuentos"}
+           descuentos={discountAdjustments}
+           totalDescuentos={totalDescuentos}
+          />
+        </div>
+      ) : (
+        <Alerta
+          className="mt-5"
+          error={"No hay descuentos para el asociado y periodo seleccionado."}
+        />
+      )}
     </div>
   );
 };
