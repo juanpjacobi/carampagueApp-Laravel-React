@@ -91,6 +91,14 @@ export const LineaListItem = ({
 
   return (
     <>
+          {showMotivoModal && (
+          <MotivoModal
+            onClose={() => setShowMotivoModal(false)}
+            onSubmit={handleGuardarMotivo}
+            tiposMotivos={tiposMotivos}
+            motivoEditable={motivoEditable}
+          />
+        )}
       <tr
         className={clsx(
           "p-5  bg-gray-100 flex flex-col md:table-row mb-2 shadow-md shadow-gray-700 ",
@@ -215,15 +223,9 @@ export const LineaListItem = ({
             handleEliminarLinea={handleEliminarLinea}
           />{" "}
         </td>
-        {showMotivoModal && (
-          <MotivoModal
-            onClose={() => setShowMotivoModal(false)}
-            onSubmit={handleGuardarMotivo}
-            tiposMotivos={tiposMotivos}
-            motivoEditable={motivoEditable}
-          />
-        )}
+
       </tr>
+
     </>
   );
 };

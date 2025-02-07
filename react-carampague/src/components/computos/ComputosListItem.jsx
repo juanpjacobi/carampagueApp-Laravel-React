@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import { formatFechaConDia } from "../utilities/hora-formatter/horaFormatter";
 import { EstadoBadge } from "../ui/lineas/EstadoBadge";
 import { useServicioObjetivo, useValorHora } from "../../hooks";
@@ -7,9 +6,9 @@ import { useSelector } from "react-redux";
 export const ComputosListItem = ({ linea }) => {
   const { servicios } = useSelector((state) => state.servicios);
   const { nombreObjetivo } = useServicioObjetivo(linea, servicios);
-  const periodo = `${linea.fecha.slice(0, 4)}-${linea.fecha.slice(5, 7)}`; // Calculamos el periodo a partir de la fecha de la línea
+  const periodo = `${linea.fecha.slice(0, 4)}-${linea.fecha.slice(5, 7)}`; 
 
-  const valorHora = useValorHora(linea.servicio_id, periodo); // Obtener el valor de la hora con el servicio_id y periodo
+  const valorHora = useValorHora(linea.servicio_id, periodo); 
 
   return (
     <tr

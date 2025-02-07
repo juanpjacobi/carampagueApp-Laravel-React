@@ -93,6 +93,12 @@ export const NavBar = () => {
         >
           ausentismo
         </NavLink>
+        <NavLink
+          className="hover:bg-sky-800 hover:text-white p-2 rounded-lg"
+          to={"/ajustes"}
+        >
+          ajustes
+        </NavLink>
 
         <button
           onClick={logout}

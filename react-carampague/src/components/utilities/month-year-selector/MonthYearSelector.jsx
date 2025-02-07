@@ -7,10 +7,9 @@ const MonthYearSelector = ({ month, year, setMonth, setYear }) => {
     };
   
     return (
-      <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-3">
-        <label htmlFor="monthYear" className="font-semibold text-lg text-gray-700">
-          Periodo:
-        </label>
+      <div className="flex flex-col items-center space-y-2 md:space-y-0 md:space-x-3">
+          <span className="font-bold text-md">Seleccione el Periodo:</span>
+
         <input
           id="monthYear"
           type="month"
