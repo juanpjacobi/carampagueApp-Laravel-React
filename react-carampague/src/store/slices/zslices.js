@@ -1,7 +1,9 @@
 
 
+
 export * from './AjustesSlice';
 export * from './AsociadosSlice';
+export * from './AuthSlice';
 export * from './ClientesSlice';
 export * from './CondicionesIvaSlice';
 export * from './DocumentacionSlice';
