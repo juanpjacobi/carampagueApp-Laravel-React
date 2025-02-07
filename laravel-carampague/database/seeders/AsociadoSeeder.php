@@ -43,7 +43,7 @@ class AsociadoSeeder extends Seeder
                 'fecha_nacimiento' => Carbon::now(),
                 'activo' => 1,
                 'estado_civil_id' => 2,
-                'direccion_id' => 2,
+                'direccion_id' => 1,
                 'documentacion_id' => 1,
                 'telefono_id' => 1
             ]);
@@ -59,7 +59,55 @@ class AsociadoSeeder extends Seeder
                 'fecha_nacimiento' => Carbon::now(),
                 'activo' => 1,
                 'estado_civil_id' => 2,
-                'direccion_id' => 3,
+                'direccion_id' => 1,
+                'documentacion_id' => 1,
+                'telefono_id' => 1
+            ]);
+            DB::table('asociados')->insert([
+                'nombre_asociado' => 'juan pablo',
+                'apellido_asociado' => 'jacobi',
+                'image_url' => 'url/uirl',
+
+                'fecha_alta' => Carbon::now(),
+                'fecha_baja' => Carbon::now(),
+                'numero_asociado' => 2525,
+                'cuit_asociado' => 20349094399,
+                'fecha_nacimiento' => Carbon::now(),
+                'activo' => 1,
+                'estado_civil_id' => 2,
+                'direccion_id' => 1,
+                'documentacion_id' => 1,
+                'telefono_id' => 1
+            ]);
+            DB::table('asociados')->insert([
+                'nombre_asociado' => 'ivan',
+                'apellido_asociado' => 'caules',
+                'image_url' => 'url/uirl',
+
+                'fecha_alta' => Carbon::now(),
+                'fecha_baja' => Carbon::now(),
+                'numero_asociado' => 1111,
+                'cuit_asociado' => 20349094399,
+                'fecha_nacimiento' => Carbon::now(),
+                'activo' => 1,
+                'estado_civil_id' => 2,
+                'direccion_id' => 1,
+                'documentacion_id' => 1,
+                'telefono_id' => 1
+            ]);
+            DB::table('asociados')->insert([
+                'nombre_asociado' => 'martin',
+                'apellido_asociado' => 'luter king',
+                'image_url' => 'url/uirl',
+
+                'fecha_alta' => Carbon::now(),
+                'fecha_baja' => Carbon::now(),
+                'numero_asociado' => 1354,
+                'cuit_asociado' => 20349094399,
+                'fecha_nacimiento' => Carbon::now(),
+                'activo' => 1,
+                'estado_civil_id' => 2,
+                'direccion_id' => 1,
                 'documentacion_id' => 1,
                 'telefono_id' => 1
             ]);

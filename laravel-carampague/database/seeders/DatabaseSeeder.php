@@ -31,6 +31,8 @@ class DatabaseSeeder extends Seeder
         $this->call(BarriosSeeder::class);
         $this->call(FeriadoSeeder::class);
         $this->call(TiposMotivosSeeder::class);
+        $this->call(TipoAjusteSeeder::class);
+
 
         // $this->call(AsociadoSeeder::class);
 
