@@ -3,10 +3,6 @@ import { toggleValidado } from "../store/thunks/LineasServiciosThunks";
 export const useValidacionLinea = (linea, dispatch) => {
   const handleToggleValidado = async (nuevaValidez, opciones = {}) => {
     try {
-      console.log("handleToggleValidado ejecutado:", {
-        nuevaValidez,
-        opciones,
-      });
 
       await dispatch(toggleValidado(
         linea.id,
