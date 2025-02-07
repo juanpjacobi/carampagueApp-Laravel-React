@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import {
+  AjustesSlice,
   AsociadosSlice,
   ClientesSlice,
   CondicionesIvaSlice,
@@ -16,6 +17,7 @@ import {
   ObjetivosSlice,
   PrendasSlice,
   ServiciosSlice,
+  TiposAjustesSlice,
   TiposDocumentacionSlice,
   TiposMotivosSlice,
   TiposTelefonosSlice,
@@ -26,7 +28,7 @@ import {
 
 export const store = configureStore({
   reducer: {
-
+    ajustes: AjustesSlice.reducer,
     asociados: AsociadosSlice.reducer,
     clientes: ClientesSlice.reducer,
     condicionesIva: CondicionesIvaSlice.reducer,
@@ -44,6 +46,7 @@ export const store = configureStore({
     objetivos: ObjetivosSlice.reducer,
     prendas: PrendasSlice.reducer,
     servicios: ServiciosSlice.reducer,
+    tiposAjustes: TiposAjustesSlice.reducer,
     tiposDocumentacion: TiposDocumentacionSlice.reducer,
     tiposMotivos: TiposMotivosSlice.reducer,
     tiposTelefonos: TiposTelefonosSlice.reducer,
