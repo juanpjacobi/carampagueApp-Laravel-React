@@ -41,8 +41,7 @@ export const MotivosSlice = createSlice({
     },
     removeMotivosByLineaId: (state, action) => {
       const lineaId = action.payload;
-      // Iteramos sobre los IDs existentes y eliminamos aquellos cuyo motivo
-      // tenga linea_servicio_id igual a lineaId.
+
       state.allIds = state.allIds.filter((motivoId) => {
         if (state.motivos[motivoId]?.linea_servicio_id === Number(lineaId)) {
           delete state.motivos[motivoId];

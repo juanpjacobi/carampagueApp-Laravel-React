@@ -1,13 +1,6 @@
 
 
-
-
-
-
-
-
-
-
+export * from './AjustesSlice';
 export * from './AsociadosSlice';
 export * from './ClientesSlice';
 export * from './CondicionesIvaSlice';
@@ -24,6 +17,7 @@ export * from './MotivosSlices';
 export * from './ObjetivosSlice';
 export * from './PrendasSlice';
 export * from './ServiciosSlice';
+export * from './TiposAjusteSlice';
 export * from './TiposDocumentacionSlice';
 export * from './TiposMotivosSlice';
 export * from './TipoTelefonosSlice';
