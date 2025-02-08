@@ -9,6 +9,10 @@ export { ComputosRouter } from "./ComputosRouter"
 export { AjustesRouter } from "./AjustesRouter"
 export { ProtectedRoutes } from "./ProtectedRoutes"
 export { GuestRoutes } from "./GuestRoutes"
+export { AusentismoRouter } from "./AusentismoRouter"
+
+
+
 
 
 

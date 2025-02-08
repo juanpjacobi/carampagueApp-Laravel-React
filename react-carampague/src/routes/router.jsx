@@ -13,7 +13,8 @@ import {
   ComputosRouter, 
   AjustesRouter,
   ProtectedRoutes,
-  GuestRoutes
+  GuestRoutes,
+  AusentismoRouter
 } from "./index";
 
 const router = createBrowserRouter([
@@ -27,7 +28,7 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            path: "/inicio/",
+            path: "/",
             element: <Inicio />,
           },
           {
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
           {
             path: "/computos/*",
             element: <ComputosRouter />,
+          },
+          {
+            path: "/ausentismo/*",
+            element: <AusentismoRouter />,
           },
           {
             path: "/ajustes/*",
