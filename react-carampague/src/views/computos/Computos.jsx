@@ -28,7 +28,6 @@ export const Computos = () => {
   const allLineas = useSelector(selectAllLineasServicio);
   const enrichedAjustes = useSelector(selectEnrichedAjustes);
 
-
   const handleSelectAsociado = (id, fullName) => {
     setSelectedAsociado({ id, fullName });
     setAsociadoQuery(fullName);
@@ -64,8 +63,8 @@ export const Computos = () => {
       return (
         Number(linea.asociado_id) === Number(selectedAsociado.id) &&
         lineaPeriod === targetPeriod &&
-        linea.is_planificado === false && 
-        linea.is_validado === false && 
+        linea.is_planificado === false &&
+        linea.is_validado === false &&
         linea.is_justificado === true
       );
     });
@@ -150,7 +149,6 @@ export const Computos = () => {
     );
   }, [filteredAjustesForDiscounts]);
 
-
   const totalDescuentos = useMemo(() => {
     return discountAdjustments.reduce((sum, ajuste) => {
       const montoEffective =
@@ -159,6 +157,13 @@ export const Computos = () => {
     }, 0);
   }, [discountAdjustments]);
 
+  const totalAjustes = useMemo(() => {
+    return filteredAjustesForDiscounts.reduce((sum, ajuste) => {
+      const montoEffective =
+        Number(ajuste.monto) || Number(ajuste.tipo_ajuste.monto);
+      return ajuste.tipo_ajuste.add ? sum + montoEffective : sum - montoEffective;
+    }, 0);
+  }, [filteredAjustesForDiscounts]);
 
   return (
     <div>
@@ -208,8 +213,8 @@ export const Computos = () => {
             }
           />
         )}
-      <hr className="my-8 border-t-2 border-dashed border-gray-400" />
-      <h2 className="text-2xl underline underline-offset-8 text-sky-700 font-semibold text-center mb-5 mt-5">
+        <hr className="my-8 border-t-2 border-dashed border-gray-400" />
+        <h2 className="text-2xl underline underline-offset-8 text-sky-700 font-semibold text-center mb-5 mt-5">
           Ausentismo
         </h2>
         {filteredJustifiedLineas.length > 0 ? (
@@ -233,17 +238,17 @@ export const Computos = () => {
           />
         )}
       </div>
-         {/* Sección de Descuentos */}
-         <hr className="my-8 border-t-2 border-dashed border-gray-400" />
+      {/* Sección de Descuentos */}
+      <hr className="my-8 border-t-2 border-dashed border-gray-400" />
       <h2 className="text-2xl underline underline-offset-8 text-sky-700 font-semibold text-center mb-5 mt-5">
         Descuentos
       </h2>
       {discountAdjustments.length > 0 ? (
         <div className="mt-5">
           <AjustesResumen
-           title={"Resumen de descuentos"}
-           descuentos={discountAdjustments}
-           totalDescuentos={totalDescuentos}
+            title={"Resumen de descuentos"}
+            ajustes={filteredAjustesForDiscounts}
+            totalNeto={totalAjustes}
           />
         </div>
       ) : (
@@ -252,6 +257,12 @@ export const Computos = () => {
           error={"No hay descuentos para el asociado y periodo seleccionado."}
         />
       )}
+      {/* Sección de Total Neto (líneas trabajadas - descuentos) */}
+      <div className="flex items-center justify-center my-10">
+        <span className="bg-green-700 text-white rounded-full px-4 py-2 text-lg font-bold">
+        Total Neto: ${ (calculos.totalBruto - totalAjustes).toLocaleString() }
+        </span>
+      </div>
     </div>
   );
 };

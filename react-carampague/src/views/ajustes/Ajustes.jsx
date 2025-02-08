@@ -27,12 +27,9 @@ export const Ajustes = () => {
     inputRef,
   } = useAsociados(asociados, selectedAsociado);
 
-  const openGlobalModal = () => {
-    setModalInitialData({ global: true });
-    setIsModalOpen(true);
-  };
 
-  const openIndividualModal = () => {
+
+  const openModal = () => {
     setModalInitialData({
       global: false,
       asociado: selectedAsociado,
@@ -168,20 +165,13 @@ export const Ajustes = () => {
       </div>
       <div className="flex justify-center items-center gap-4 mt-10">
   
-          <button
-            onClick={openGlobalModal}
-            className="bg-sky-800 hover:bg-sky-950 text-sm text-white p-2 uppercase font-bold cursor-pointer rounded"
-          >
-            Agregar Descuento Global
-          </button>
-          {selectedAsociado && (
+
             <button
-              onClick={openIndividualModal}
+              onClick={openModal}
               className="bg-sky-800 hover:bg-sky-950 text-sm text-white p-2 uppercase font-bold cursor-pointer rounded"
             >
-              Agregar Descuento Individual
+              Agregar Ajuste
             </button>
-          )}
         </div>
 
       <div className="mt-8">
@@ -191,8 +181,7 @@ export const Ajustes = () => {
           <h2 className="text-2xl underline underline-offset-8 text-sky-700 font-semibold text-start mb-5 mt-5">
             Ajustes Globales
           </h2>
-     
-
+    
           <AjusteList lineas={globalAjustes} />
         </>
       )}
