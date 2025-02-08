@@ -9,20 +9,30 @@ import Swal from "sweetalert2";
 export const AjusteFormModal = ({ isOpen, onClose, initialData = {} }) => {
   const dispatch = useDispatch();
   const tiposAjustesState = useSelector(selectAllTiposAjustes);
-  const tiposArray = tiposAjustesState.allIds.map(id => tiposAjustesState.tiposAjustes[id]);
+  const tiposArray = tiposAjustesState.allIds.map(
+    (id) => tiposAjustesState.tiposAjustes[id]
+  );
 
   // Estados del formulario
   const [global, setGlobal] = useState(initialData.global || false);
-  const [tipoAjusteId, setTipoAjusteId] = useState(initialData.tipoAjusteId || "");
+  const [tipoAjusteId, setTipoAjusteId] = useState(
+    initialData.tipoAjusteId || ""
+  );
   const [monto, setMonto] = useState(initialData.monto || "");
-  const [periodoInicio, setPeriodoInicio] = useState(initialData.periodoInicio || "");
-  const [duracionMeses, setDuracionMeses] = useState(initialData.duracionMeses || 1);
-  const [selectedAsociado, setSelectedAsociado] = useState(initialData.asociado || null);
+  const [periodoInicio, setPeriodoInicio] = useState(
+    initialData.periodoInicio || ""
+  );
+  const [duracionMeses, setDuracionMeses] = useState(
+    initialData.duracionMeses || 1
+  );
+  const [selectedAsociado, setSelectedAsociado] = useState(
+    initialData.asociado || null
+  );
 
   // Si se cambia el tipo, se puede prellenar el monto con el valor por defecto
   useEffect(() => {
     if (tipoAjusteId && !monto) {
-      const tipo = tiposArray.find(t => t.id === Number(tipoAjusteId));
+      const tipo = tiposArray.find((t) => t.id === Number(tipoAjusteId));
       if (tipo) {
         setMonto(tipo.monto);
       }
@@ -40,7 +50,11 @@ export const AjusteFormModal = ({ isOpen, onClose, initialData = {} }) => {
       periodo_inicio: periodoInicio,
       duracion_meses: duracionMeses,
       // Solo se envía asociado si no es global
-      asociado_id: global ? null : (selectedAsociado ? selectedAsociado.id : null),
+      asociado_id: global
+        ? null
+        : selectedAsociado
+        ? selectedAsociado.id
+        : null,
     };
 
     try {
@@ -99,7 +113,9 @@ export const AjusteFormModal = ({ isOpen, onClose, initialData = {} }) => {
 
           {/* Periodo de Inicio */}
           <div>
-            <label className="block font-semibold mb-1">Periodo de Inicio (YYYY-MM)</label>
+            <label className="block font-semibold mb-1">
+              Periodo de Inicio (YYYY-MM)
+            </label>
             <input
               type="month"
               value={periodoInicio}
@@ -137,19 +153,12 @@ export const AjusteFormModal = ({ isOpen, onClose, initialData = {} }) => {
           {/* Si no es global, se muestra el selector de asociado */}
           {!global && (
             <div>
-              <label className="block font-semibold mb-1">Asociado</label>
-              <AsociadoDropdown
-                asociadoQuery={selectedAsociado ? selectedAsociado.fullName : ""}
-                setAsociadoQuery={() => {}}
-                filteredAsociados={[]} // Puedes reutilizar tu hook o componente según corresponda
-                handleSelectAsociado={(id, fullName) =>
-                  setSelectedAsociado({ id, fullName })
-                }
-                handleDesasignarAsociado={() => setSelectedAsociado(null)}
-                showDropdown={true}
-                setShowDropdown={() => {}}
-                inputRef={null}
-              />
+              {selectedAsociado && (
+                <>
+                  <label className="block font-semibold mb-1">Asociado</label>
+                  <span>{selectedAsociado.fullName}</span>
+                </>
+              )}
             </div>
           )}
 
