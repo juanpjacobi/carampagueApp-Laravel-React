@@ -85,7 +85,7 @@ export const NavBar = () => {
         </NavLink>
         <NavLink
           className="hover:bg-sky-800 hover:text-white p-2 rounded-lg"
-          to={"/asociados/ausentismo"}
+          to={"/ausentismo"}
         >
           ausentismo
         </NavLink>
