@@ -34,7 +34,6 @@ export const AsociadosRouter = () => {
       <Route path="/entrega-ropa/edit/:id" element={<EditarEntregaRopa />} />
 
       <Route path="/entrega-ropa/detalle/:id" element={<VerEntregaRopa />} />
-      <Route path="/ausentismo" element={<Ausentismo />} />
 
 
     </Routes>
