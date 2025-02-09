@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AsociadoDropdown } from "../../components/ui/lineas/AsociadoDropdown";
 import { useAsociados, useValoresMapping } from "../../hooks";
 import { ComputosList } from "../../components/computos/ComputosList";
@@ -9,10 +9,14 @@ import { selectAllLineasServicio } from "../../store/selectors/ServiciosSelector
 import { ComputosResumen } from "../../components/computos/ComputosResumen";
 import { selectEnrichedAjustes } from "../../store/selectors/AjustesSelectors";
 import { AjustesResumen } from "../../components/ajustes/AjustesResumen";
+import { createRecibo } from "../../store/thunks/RecibosThunks";
+import Swal from 'sweetalert2';
+
 
 export const Computos = () => {
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
+  const dispatch = useDispatch();
   const { asociados } = useSelector((state) => state.asociados);
   const [selectedAsociado, setSelectedAsociado] = useState(null);
 
@@ -36,7 +40,6 @@ export const Computos = () => {
 
   const handleDesasignarAsociado = async () => {
     setSelectedAsociado(null);
-
     setAsociadoQuery("");
   };
   const formattedMonth = month.padStart(2, "0");
@@ -102,7 +105,6 @@ export const Computos = () => {
     const groups = {};
     let totalBrutoJustificado = 0;
     filteredJustifiedLineas.forEach((linea) => {
-      // Obtenemos el valor base para el servicio y lo ajustamos al 67%
       const valorBase = Number(valoresMapping[linea.servicio_id]) || 0;
       const valorJustificado = valorBase * 0.67;
       const horas = Number(linea.horas_reales) || 0;
@@ -122,7 +124,7 @@ export const Computos = () => {
   }, [filteredJustifiedLineas, valoresMapping]);
 
   const filteredAjustesForDiscounts = useMemo(() => {
-    if (!year || !month) return [];
+    if (!selectedAsociado || !year || !month) return [];
     return enrichedAjustes
       .filter((ajuste) => {
         if (!ajuste.periodo_inicio) return false;
@@ -149,7 +151,6 @@ export const Computos = () => {
     );
   }, [filteredAjustesForDiscounts]);
 
- 
 
   const totalAjustes = useMemo(() => {
     return filteredAjustesForDiscounts.reduce((sum, ajuste) => {
@@ -158,6 +159,36 @@ export const Computos = () => {
       return ajuste.tipo_ajuste.add ? sum + montoEffective : sum - montoEffective;
     }, 0);
   }, [filteredAjustesForDiscounts]);
+
+  const linea_ids = useMemo(() => {
+    return filteredLineas.map((linea) => linea.id);
+  }, [filteredLineas]);
+
+  const ajuste_ids = useMemo(() => {
+    return filteredAjustesForDiscounts.map((ajuste) => ajuste.id);
+  }, [filteredAjustesForDiscounts]);
+
+  const handleGenerarRecibo = async () => {
+    if (!selectedAsociado || !month || !year) {
+      Swal.fire({
+        icon: 'error',
+        title: "Debe seleccionar un asociado y un período válido",
+        text: 'Error',
+      });
+      return;
+    }
+
+    const payload = {
+      asociado_id: selectedAsociado.id,
+      periodo: `${year}-${month.padStart(2, "0")}`,
+      linea_ids,
+      ajuste_ids,
+    };
+
+      const recibo = await dispatch(createRecibo(payload));
+
+  };
+  
 
   return (
     <div>
@@ -256,6 +287,14 @@ export const Computos = () => {
         <span className="bg-green-700 text-white rounded-full px-4 py-2 text-lg font-bold">
         Total Neto: ${ (calculos.totalBruto + totalAjustes).toLocaleString() }
         </span>
+      </div>
+      <div className="flex justify-center my-10">
+        <button
+          onClick={handleGenerarRecibo}
+          className="bg-sky-600 hover:bg-sky-800 text-white px-6 py-3 rounded uppercase font-bold"
+        >
+          Generar Recibo
+        </button>
       </div>
     </div>
   );
