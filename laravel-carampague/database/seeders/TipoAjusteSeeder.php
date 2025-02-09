@@ -12,24 +12,29 @@ class TipoAjusteSeeder extends Seeder
         // Definimos una lista de tipos de ajuste con su concepto, bandera 'add' y monto por defecto.
         $tiposAjuste = [
             [
+                'concepto' => 'Acciones',
+                'add'      => false, // Se resta
+                'monto'    => 5000.00, // Ejemplo de monto
+            ],
+            [
                 'concepto' => 'Anticipo',
                 'add'      => false, // Se resta
-                'monto'    => 100.00, // Ejemplo de monto
+                'monto'    => 100000, // Ejemplo de monto
             ],
             [
                 'concepto' => 'Monotributo',
                 'add'      => false, // Se resta
-                'monto'    => 150.00,
+                'monto'    => 27800,
             ],
             [
                 'concepto' => 'Estudios Médicos',
                 'add'      => false, // Se resta (en cuotas, por ejemplo)
-                'monto'    => 50.00,
+                'monto'    => 12500,
             ],
             [
                 'concepto' => 'Pasajes de Colectivo',
-                'add'      => true,  // Se suma
-                'monto'    => 75.00,
+                'add'      => true,
+                'monto'    => 00.00,
             ],
             // Puedes agregar más registros según tus necesidades...
         ];

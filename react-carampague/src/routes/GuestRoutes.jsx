@@ -14,7 +14,7 @@ export const GuestRoutes = () => {
 
   // Si ya se cargó la info y el usuario existe, redirige a /inicio
   if (token && user) {
-    return <Navigate to="/inicio" replace />;
+    return <Navigate to="/" replace />;
   }
 
   // Si no hay token o la carga ya terminó y no hay usuario, renderiza las rutas públicas

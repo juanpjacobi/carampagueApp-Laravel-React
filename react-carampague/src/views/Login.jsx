@@ -19,7 +19,7 @@ export default function Login() {
   
     try {
       const response = await dispatch(login(datos));
-      navigate("/inicio"); 
+      navigate("/"); 
     } catch (error) {
       const erroresCapturados = Array.isArray(error) ? error : [error];
       setErrores(erroresCapturados);

@@ -149,13 +149,7 @@ export const Computos = () => {
     );
   }, [filteredAjustesForDiscounts]);
 
-  const totalDescuentos = useMemo(() => {
-    return discountAdjustments.reduce((sum, ajuste) => {
-      const montoEffective =
-        Number(ajuste.monto) || Number(ajuste.tipo_ajuste.monto);
-      return sum + montoEffective;
-    }, 0);
-  }, [discountAdjustments]);
+ 
 
   const totalAjustes = useMemo(() => {
     return filteredAjustesForDiscounts.reduce((sum, ajuste) => {
@@ -260,7 +254,7 @@ export const Computos = () => {
       {/* Sección de Total Neto (líneas trabajadas - descuentos) */}
       <div className="flex items-center justify-center my-10">
         <span className="bg-green-700 text-white rounded-full px-4 py-2 text-lg font-bold">
-        Total Neto: ${ (calculos.totalBruto - totalAjustes).toLocaleString() }
+        Total Neto: ${ (calculos.totalBruto + totalAjustes).toLocaleString() }
         </span>
       </div>
     </div>

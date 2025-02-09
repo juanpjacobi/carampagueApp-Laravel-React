@@ -20,6 +20,7 @@ use App\Http\Controllers\MotivoController;
 use App\Http\Controllers\ObjetivosController;
 use App\Http\Controllers\PrendaController;
 use App\Http\Controllers\ProvinciaController;
+use App\Http\Controllers\ReciboController;
 use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\TalleController;
 use App\Http\Controllers\TipoAjusteController;
@@ -67,6 +68,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/objetivos', ObjetivosController::class);
     Route::apiResource('/prendas', PrendaController::class);
     Route::apiResource('/provincias', ProvinciaController::class);
+    Route::apiResource('/recibos', ReciboController::class);
     Route::apiResource('/servicios', ServicioController::class);
     Route::apiResource('/talles', TalleController::class);
     Route::apiResource('/tipos-documentacion', TipoDocumentacionController::class);
