@@ -1,6 +1,4 @@
 
-
-
 export * from './AjustesSlice';
 export * from './AsociadosSlice';
 export * from './AuthSlice';
@@ -18,6 +16,7 @@ export * from './ModalidadesSlice';
 export * from './MotivosSlices';
 export * from './ObjetivosSlice';
 export * from './PrendasSlice';
+export * from './RecibosSlice';
 export * from './ServiciosSlice';
 export * from './TiposAjusteSlice';
 export * from './TiposDocumentacionSlice';
