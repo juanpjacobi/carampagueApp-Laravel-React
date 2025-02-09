@@ -95,6 +95,12 @@ export const NavBar = () => {
         >
           ajustes
         </NavLink>
+        <NavLink
+          className="hover:bg-sky-800 hover:text-white p-2 rounded-lg"
+          to={"/recibos"}
+        >
+          recibos
+        </NavLink>
         <button
           onClick={() => dispatch(logout())}
           className="bg-gray-600 hover:bg-gray-700 uppercase text-white w-full p-2 cursor-pointer rounded-lg ml-1"
