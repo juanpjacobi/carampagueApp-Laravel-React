@@ -4,10 +4,11 @@ import { AsociadoDropdown } from "../../components/ui/lineas/AsociadoDropdown";
 import { useAsociados } from "../../hooks";
 import MonthYearSelector from "../../components/utilities/month-year-selector/MonthYearSelector";
 import { Alerta } from "../../components/shared/Alerta";
-import { selectAllRecibos } from "../../store/selectors/RecibosSelectors";
 import { RecibosList } from "../../components/recibos/RecibosList";
+import { selectAllCarpetasMedicas } from "../../store/selectors/CarpetasMedicasSelectors";
+import { CarpetasMedicasList } from "../../components/carpetas_medicas/CarpetasMedicasList";
 
-export const Recibos = () => {
+export const CarpetasMedicas = () => {
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
   const { asociados } = useSelector((state) => state.asociados);
@@ -22,7 +23,7 @@ export const Recibos = () => {
     inputRef,
   } = useAsociados(asociados, selectedAsociado);
 
-  const allRecibos = useSelector(selectAllRecibos);
+  const allCarpetas = useSelector(selectAllCarpetasMedicas);
 
   const handleSelectAsociado = (id, fullName) => {
     setSelectedAsociado({ id, fullName });
@@ -37,21 +38,21 @@ export const Recibos = () => {
   const formattedMonth = month.padStart(2, "0");
   const targetPeriod = `${year}-${formattedMonth}`;
 
-  const filteredRecibos = useMemo(() => {
+  const filteredCarpetas = useMemo(() => {
     if (!month || !year) return [];
-    return allRecibos.filter((recibo) => {
-      const matchPeriodo = recibo.periodo === targetPeriod;
+    return allCarpetas.filter((carpeta) => {
+      const matchPeriodo = carpeta.periodo === targetPeriod;
       if (selectedAsociado) {
-        return matchPeriodo && Number(recibo.asociado_id) === Number(selectedAsociado.id);
+        return matchPeriodo && Number(carpeta.asociado_id) === Number(selectedAsociado.id);
       }
       return matchPeriodo;
     });
-  }, [allRecibos, selectedAsociado, month, year]);
+  }, [allCarpetas, selectedAsociado, month, year]);
 
   return (
     <div>
       <h1 className="text-3xl underline underline-offset-8 text-sky-700 font-semibold text-center mb-5">
-        Recibos
+        Carpetas médicas
       </h1>
       <div className="flex flex-col md:flex-row justify-between items-center">
         <div className="relative w-full md:w-1/3">
@@ -76,14 +77,14 @@ export const Recibos = () => {
       </div>
 
       <div>
-        {filteredRecibos.length > 0 ? (
+        {filteredCarpetas.length > 0 ? (
           <div className="flex flex-col mt-2">
-            <RecibosList recibos={filteredRecibos} />
+            <CarpetasMedicasList carpetas={filteredCarpetas} />
           </div>
         ) : (
           <Alerta
             error={
-              "No hay recibos para este asociado en el periodo seleccionado."
+              "No hay carpetas para este asociado en el periodo seleccionado."
             }
           />
         )}

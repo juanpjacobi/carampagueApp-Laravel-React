@@ -11,6 +11,7 @@ import { selectEnrichedAjustes } from "../../store/selectors/AjustesSelectors";
 import { AjustesResumen } from "../../components/ajustes/AjustesResumen";
 import { createRecibo } from "../../store/thunks/RecibosThunks";
 import Swal from 'sweetalert2';
+import { createCarpetaMedica } from "../../store/thunks/CarpetasMedicasThunks";
 
 
 export const Computos = () => {
@@ -135,7 +136,6 @@ export const Computos = () => {
       })
       .filter((ajuste) => {
         if (selectedAsociado) {
-          // Se incluyen ajustes globales o los que pertenecen al asociado seleccionado
           return (
             ajuste.global ||
             Number(ajuste.asociado_id) === Number(selectedAsociado.id)
@@ -168,6 +168,10 @@ export const Computos = () => {
     return filteredAjustesForDiscounts.map((ajuste) => ajuste.id);
   }, [filteredAjustesForDiscounts]);
 
+  const ausentismo_ids = useMemo(() => {
+    return filteredJustifiedLineas.map((linea) => linea.id);
+  }, [filteredJustifiedLineas]);
+
   const handleGenerarRecibo = async () => {
     if (!selectedAsociado || !month || !year) {
       Swal.fire({
@@ -178,6 +182,7 @@ export const Computos = () => {
       return;
     }
 
+
     const payload = {
       asociado_id: selectedAsociado.id,
       periodo: `${year}-${month.padStart(2, "0")}`,
@@ -187,6 +192,38 @@ export const Computos = () => {
 
       const recibo = await dispatch(createRecibo(payload));
 
+  };
+
+  const handleGenerarCarpetaMedica = async () => {
+    if (!selectedAsociado || !month || !year) {
+      Swal.fire({
+        icon: 'error',
+        title: "Debe seleccionar un asociado y un período válido",
+      });
+      return;
+    }
+
+    if (ausentismo_ids.length === 0) {
+      Swal.fire({
+        icon: 'error',
+        title: "No hay ausentismo para generar carpeta médica",
+      });
+      return;
+    }
+
+    const payload = {
+      asociado_id: selectedAsociado.id,
+      periodo: `${year}-${month.padStart(2, "0")}`,
+      linea_ids: ausentismo_ids,
+    };
+
+
+      await dispatch(createCarpetaMedica(payload));
+      Swal.fire({
+        icon: 'success',
+        title: "Carpeta médica generada correctamente",
+      });
+   
   };
   
 
@@ -288,6 +325,8 @@ export const Computos = () => {
         Total Neto: ${ (calculos.totalBruto + totalAjustes).toLocaleString() }
         </span>
       </div>
+      <div className="flex justify-between">
+
       <div className="flex justify-center my-10">
         <button
           onClick={handleGenerarRecibo}
@@ -295,6 +334,18 @@ export const Computos = () => {
         >
           Generar Recibo
         </button>
+      </div>
+       {/* Botón para generar carpeta médica (solo se muestra si hay ausentismo) */}
+       {filteredJustifiedLineas.length > 0 && (
+        <div className="flex justify-center my-10">
+          <button
+            onClick={handleGenerarCarpetaMedica}
+            className="bg-red-600 hover:bg-red-800 text-white px-6 py-3 rounded uppercase font-bold"
+          >
+            Generar Carpeta Médica
+          </button>
+        </div>
+      )}
       </div>
     </div>
   );
