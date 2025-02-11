@@ -2,12 +2,14 @@
 
 export * from "./AjustesThunks";
 export * from "./AsociadosThunks";
+export * from "./CarpetasMedicasThunks";
 export * from "./ClientesThunks";
 export * from "./CondicionesIvaThunks";
 export * from "./DocumentacionThunks";
 export * from "./EntregaRopathunks";
 export * from "./EstadosCivilesThunks";
 export * from "./EstadosDocumentacionThunks";
+export * from "./FacturasThunks";
 export * from "./FeriadosThunks";
 export * from "./LineasDocumentacionThunks";
 export * from "./LineasDocumentacionThunks";

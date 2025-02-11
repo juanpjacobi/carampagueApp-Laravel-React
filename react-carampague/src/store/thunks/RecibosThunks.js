@@ -30,6 +30,7 @@ export const createRecibo = (reciboData) => {
     try {
       const { data } = await carampagueApi.post('/api/recibos', reciboData);
       dispatch(addRecibo(data.recibo));
+      console.log(data)
       Swal.fire({
         position: 'top-end',
         icon: 'success',
