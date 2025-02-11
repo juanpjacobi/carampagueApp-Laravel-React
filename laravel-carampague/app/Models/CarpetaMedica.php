@@ -4,22 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Recibo extends Model
-{
-    protected $casts = ['total' => 'float'];
+class CarpetaMedica extends Model
+{    protected $table = 'carpetas_medicas';
+    protected $casts = ['monto' => 'float'];
+
 
     protected $fillable = [
         'asociado_id',
         'periodo',
-        'total',
-        'pdf_url',
+        'monto',
     ];
 
-    public function lineas()
-    {
-        return $this->hasMany(LineaRecibo::class);
-    }
-
+    /**
+     * Relación: Una carpeta médica pertenece a un asociado.
+     */
     public function asociado()
     {
         return $this->belongsTo(Asociado::class);
