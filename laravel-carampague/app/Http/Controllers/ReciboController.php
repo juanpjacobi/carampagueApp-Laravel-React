@@ -19,8 +19,7 @@ class ReciboController extends Controller
      */
     public function index(Request $request)
     {
-        // Aquí puedes agregar filtros por asociado, periodo, etc.
-        $recibos = Recibo::with(['lineas', 'asociado'])->get();
+        $recibos = Recibo::all();
         return response()->json(['recibos' => $recibos], 200);
     }
 
@@ -146,8 +145,6 @@ if (!empty($data['ajuste_ids'])) {
     $recibo->total = $totalServicios + $totalAjustes;
 
 }
-
-
             // Generamos el PDF a partir de la vista Blade
             $pdf = PDF::loadView('recibos.pdf', compact('recibo'));
             $pdfName = 'recibo_' . $recibo->id . '.pdf';
