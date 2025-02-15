@@ -34,7 +34,10 @@ class DatabaseSeeder extends Seeder
         // $this->call(TipoAjusteSeeder::class);
 
 
-        $this->call(AsociadoSeeder::class);
+        // $this->call(AsociadoSeeder::class);
+        // $this->call(ClienteSeeder::class);
+        $this->call(ObjetivoSeeder::class);
+
 
     }
 }
