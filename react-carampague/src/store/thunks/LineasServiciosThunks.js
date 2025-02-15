@@ -161,13 +161,21 @@ export const createLineaServicio = (lineaData, navigate) => async (dispatch) => 
   export const eliminarLineaServicio = (id) => {
   return async (dispatch) => {
     try {
-      const response = await carampagueApi.delete(`/api/lineas-servicio/${id}`);
-      if (response.status === 200) {
-        console.log(response.data.message);
-        dispatch(removeLineaServicio(id));
-      } else {
-        console.error("No se eliminó la línea correctamente.");
-      }
+      await Swal.fire({
+        title: "¿Estás seguro?",
+        text: "Esta acción eliminará la linea",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          carampagueApi.delete(`/api/lineas-servicio/${id}`);         
+           dispatch(removeLineaServicio(id));
+        }
+      });
+
+
     } catch (error) {
       console.error("Error eliminando la línea de servicio:", error);
       throw error;

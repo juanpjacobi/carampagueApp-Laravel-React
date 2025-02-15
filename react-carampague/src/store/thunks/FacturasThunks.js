@@ -27,7 +27,7 @@ export const getFacturas = () => async (dispatch) => {
     dispatch(startLoading());
     try {
       const { data: response } = await carampagueApi.post("/api/facturas", data);
-      dispatch(addFactura(response.ajuste));
+      dispatch(addFactura(response.factura));
       Swal.fire({
         icon: "success",
         title: "Factura creada correctamente",

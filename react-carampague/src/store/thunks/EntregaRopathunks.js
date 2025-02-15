@@ -98,7 +98,6 @@ export const createEntregaRopa = (entregaData, navigate) => {
     try {
       dispatch(startLoading());
       const { data } = await carampagueApi.post(`/api/entrega-ropa`, entregaData);
-      console.log('data, sede thunks', data.entregaRopa)
       
       dispatch(addEntregaRopa(data.entregaRopa));
       if (data.entregaRopa.id) {

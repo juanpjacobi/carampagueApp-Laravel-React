@@ -82,8 +82,19 @@ export const getAjustes = () => async (dispatch) => {
   export const deleteAjuste = (ajusteId) => async (dispatch) => {
     dispatch(startLoading());
     try {
-      await carampagueApi.delete(`/api/ajustes/${ajusteId}`);
+      await Swal.fire({
+        title: "¿Estás seguro?",
+        text: "Esta acción eliminará el ajuste",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          carampagueApi.delete(`/api/ajustes/${ajusteId}`);
       dispatch(removeAjuste(ajusteId));
+        }
+      });
       Swal.fire({
         icon: "success",
         title: "Ajuste eliminado correctamente",

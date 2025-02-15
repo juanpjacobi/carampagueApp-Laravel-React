@@ -36,7 +36,7 @@ export const getValores = () => {
 /**
  * Thunk para crear un nuevo valor.
  */
-export const createValor = (valorData) => {
+export const createValor = (valorData, navigate) => {
   return async (dispatch) => {
     try {
       dispatch(startLoading());
@@ -44,11 +44,12 @@ export const createValor = (valorData) => {
 
       dispatch(addValor(data.valor));
 
-      Swal.fire({
+      await Swal.fire({
         icon: "success",
         title: "¡Éxito!",
         text: "Valor creado correctamente.",
       });
+      navigate(-1)
 
     } catch (error) {
       const errors = error.response?.data?.errors
@@ -76,7 +77,7 @@ export const updateValor = (id, valorData, navigate) => {
     try {
       dispatch(startLoading());
       const { data } = await carampagueApi.put(`/api/valores/${id}`, valorData);
-
+      console.log(data)
 
       // Actualizar el valor en el store
       dispatch(updateValorEnStore(data.valor));
