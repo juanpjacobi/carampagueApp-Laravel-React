@@ -122,18 +122,17 @@ export const createLineaServicio = (lineaData, navigate) => async (dispatch) => 
   
         const response = await carampagueApi.put(`/api/lineas-servicio/${lineaId}/toggle-validado`, payload);
         const { linea, nueva_linea, message, motivo } = response.data;
-        
+  
         // Actualizamos la línea existente en el store
         dispatch(updateLineaServicioEnStore(linea));
   
-        // Si se creó una nueva línea (por ejemplo, para las horas reales), la agregamos
+        // Si se creó una nueva línea (por ejemplo, al invalidar), la agregamos
         if (nueva_linea) {
           dispatch(addLineaServicio(nueva_linea));
         }
         if (options.revertir) {
           dispatch(removeMotivosByLineaId(lineaId));
         } else if (motivo) {
-          // En otro caso, si se creó o actualizó un motivo, lo actualizamos en el store
           dispatch(addMotivo(motivo));
         }
   
@@ -145,11 +144,11 @@ export const createLineaServicio = (lineaData, navigate) => async (dispatch) => 
           timer: 1500,
         });
       } catch (error) {
-        console.error("Error al togglear validado:", error);
+        // Si el error es por validar una línea sin asociado, mostramos una alerta específica
         const msg = error?.response?.data?.message || "No se pudo actualizar la línea";
         Swal.fire({
           icon: "error",
-          title: "Oops...",
+          title: "Error",
           text: msg,
         });
       } finally {
@@ -157,6 +156,7 @@ export const createLineaServicio = (lineaData, navigate) => async (dispatch) => 
       }
     };
   };
+  
 
   export const eliminarLineaServicio = (id) => {
   return async (dispatch) => {

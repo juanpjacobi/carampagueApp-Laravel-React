@@ -163,24 +163,41 @@ export const createCobertura = (data, id) => {
   };
 };
 
-export const createPlanDiario = (data, id) => {
+export const createPlanDiario = (data, id, confirm = false) => {
   return async (dispatch) => {
     try {
-      const response = await carampagueApi.post(`/api/servicios/${id}/generar-lineas-plan-diario`, data);
-      const { lineas, total } = response.data;
+      // Agregar confirm al payload si es true
+      const payload = confirm ? { ...data, confirm: true } : data;
+      const response = await carampagueApi.post(`/api/servicios/${id}/generar-lineas-plan-diario`, payload);
+
+      // Si se requiere confirmación, se muestra el SweetAlert
+      if (response.data.needsConfirmation) {
+        const result = await Swal.fire({
+          title: response.data.message,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Sí, continuar",
+          cancelButtonText: "Cancelar",
+        });
+        if (!result.isConfirmed) {
+          return; // El usuario canceló
+        }
+        // Si confirma, volvemos a llamar al thunk con confirm=true
+        return dispatch(createPlanDiario(data, id, true));
+      }
+
+      // Si se crearon líneas, se despachan al store y se muestra el mensaje final
+      const { message, lineas, total, omitted } = response.data;
       lineas.forEach((linea) => {
         dispatch(addLineaServicio(linea));
       });
       
-
       await Swal.fire({
         position: "top-end",
         icon: "success",
-        title: `${total} líneas generadas con éxito`,
+        title: message,
         showConfirmButton: true,
       });
-
-
     } catch (error) {
       Swal.fire({
         icon: "error",
@@ -191,5 +208,3 @@ export const createPlanDiario = (data, id) => {
     }
   };
 };
-
-
