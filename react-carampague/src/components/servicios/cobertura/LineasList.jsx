@@ -150,13 +150,13 @@ export const LineasList = ({
 
               <button
                 onClick={handleGenerarLineas}
-                className="bg-green-600 text-white text-sm font-semibold px-3 py-2.5 rounded hover:bg-green-700"
+                className="bg-teal-600 text-white text-sm font-semibold px-3 py-2.5 rounded hover:bg-teal-700"
               >
                 Generar
               </button>
               <button
                 onClick={handleGenerarPlanDiario}
-                className="bg-green-600 text-white text-sm font-semibold px-3 py-2.5 rounded hover:bg-green-700"
+                className="bg-sky-600 text-white text-sm font-semibold px-3 py-2.5 rounded hover:bg-sky-700"
               >
                 Generar plan diario
               </button>

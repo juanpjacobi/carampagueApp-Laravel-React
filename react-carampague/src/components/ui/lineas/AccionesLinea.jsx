@@ -29,11 +29,20 @@ export const AccionesLinea = ({
         )}
         {isPlanDiario && (
           <>
-            {/* Validar */}
             {linea.is_validado === null && (
               <button
                 className="bg-green-600 text-white px-2 py-1 rounded"
-                onClick={() => handleToggleValidado(true)}
+                onClick={() => {
+                  if (!linea.asociado_id) {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Línea sin asociado",
+                      text: "No se puede validar una línea sin asociado.",
+                    });
+                    return;
+                  }
+                  handleToggleValidado(true);
+                }}
               >
                 Validar
               </button>
@@ -74,35 +83,34 @@ export const AccionesLinea = ({
             )}
           </>
         )}
-{/* Eliminar en planificación (si es una línea planificada) */}
-{!isPlanDiario && linea.is_planificado === true && (
-  <button
-    onClick={handleEliminarLinea}
-    className={clsx(
-      "text-white",
-      isPlanDiario
-        ? "bg-red-600 px-2 py-1 rounded"
-        : "bg-red-600 p-2 hover:bg-red-800 rounded-full"
-    )}
-  >
-    <AiOutlineDelete size={20} /> 
-  </button>
-)}
+        {/* Eliminar en planificación (si es una línea planificada) */}
+        {!isPlanDiario && linea.is_planificado === true && (
+          <button
+            onClick={handleEliminarLinea}
+            className={clsx(
+              "text-white",
+              isPlanDiario
+                ? "bg-red-600 px-2 py-1 rounded"
+                : "bg-red-600 p-2 hover:bg-red-800 rounded-full"
+            )}
+          >
+            <AiOutlineDelete size={20} />
+          </button>
+        )}
 
-{isPlanDiario && isLineaGenerada && (
-  <button
-    onClick={handleEliminarLinea}
-    className={clsx(
-      "text-white",
-      isPlanDiario
-        ? "bg-red-600 px-2 py-1 rounded"
-        : "bg-red-600 p-2 hover:bg-red-800 rounded-full"
-    )}
-  >
-Eliminar
-  </button>
-)}
-
+        {isPlanDiario && isLineaGenerada && (
+          <button
+            onClick={handleEliminarLinea}
+            className={clsx(
+              "text-white",
+              isPlanDiario
+                ? "bg-red-600 px-2 py-1 rounded"
+                : "bg-red-600 p-2 hover:bg-red-800 rounded-full"
+            )}
+          >
+            Eliminar
+          </button>
+        )}
       </div>
     </div>
   );
