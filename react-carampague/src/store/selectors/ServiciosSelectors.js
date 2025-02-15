@@ -64,3 +64,27 @@ export const makeSelectServicioById = (servicioId) =>
         [selectAllLineasServicio],
         (lineas) => lineas.filter((linea) => Number(linea.servicio_id) === Number(servicioId))
       );
+
+      export const selectAllLineasServicioEnriquecidas = createSelector(
+        [selectAllLineasServicio, selectAllServicios, selectObjetivos],
+        (lineas, servicios, objetivos) => {
+          return lineas.map((linea) => {
+            // Buscamos el servicio asociado a la línea
+            const servicio = servicios.find(
+              (s) => Number(s.id) === Number(linea.servicio_id)
+            );
+            // Si encontramos el servicio, buscamos su objetivo (usando servicio.objetivo_id)
+            let objetivo = null;
+            if (servicio) {
+              objetivo = objetivos.find(
+                (obj) => Number(obj.id) === Number(servicio.objetivo_id)
+              );
+            }
+            return {
+              ...linea,
+              servicio,    // Agrega la información completa del servicio
+              objetivo     // Agrega el objetivo relacionado, o null si no se encontró
+            };
+          });
+        }
+      );

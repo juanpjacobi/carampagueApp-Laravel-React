@@ -5,6 +5,8 @@ import { selectAllTiposAjustes } from "./TiposAjustesSelectors";
 
 // Selector que retorna el estado completo del slice de ajustes
 export const selectAjustesState = (state) => state.ajustes;
+export const selectAllAsociados = (state) => state.asociados;
+
 
 // Selector memoizado que retorna un arreglo con todos los ajustes (desnormalizados)
 export const selectAllAjustes = createSelector(
@@ -28,12 +30,20 @@ export const makeSelectAjusteById = () =>
   );
 
   export const selectEnrichedAjustes = createSelector(
-    [selectAllAjustes, selectAllTiposAjustes],
-    (ajustes, tiposAjustesState) => {
+    [
+      selectAllAjustes,
+      selectAllTiposAjustes,
+      // Suponemos que el slice de asociados tiene la propiedad "asociados" que es un arreglo
+      (state) => state.asociados.asociados 
+    ],
+    (ajustes, tiposAjustesState, asociados) => {
       const tiposMap = tiposAjustesState.tiposAjustes;
       return ajustes.map((ajuste) => ({
         ...ajuste,
-        // Se agrega la información completa del tipo a partir del ID
+        // Buscamos en el arreglo de asociados aquel cuyo id coincida con ajuste.asociado_id
+        asociado: asociados.find(
+          (a) => String(a.id) === String(ajuste.asociado_id)
+        ) || null,
         tipo_ajuste: tiposMap[ajuste.tipo_ajuste_id] || null,
       }));
     }
