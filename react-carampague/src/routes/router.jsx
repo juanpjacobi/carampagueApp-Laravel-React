@@ -16,7 +16,8 @@ import {
   GuestRoutes,
   AusentismoRouter,
   RecibosRouter,
-  CarpetasMedicasRouter
+  CarpetasMedicasRouter,
+  FacturasRouter
 } from "./index";
 
 const router = createBrowserRouter([
@@ -76,6 +77,10 @@ const router = createBrowserRouter([
           {
             path: "/carpetas-medicas/*",
             element: <CarpetasMedicasRouter />,
+          },
+          {
+            path: "/facturas/*",
+            element: <FacturasRouter />,
           },
         ],
       },

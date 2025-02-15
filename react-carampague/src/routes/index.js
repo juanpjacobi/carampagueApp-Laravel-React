@@ -13,3 +13,5 @@ export { ProtectedRoutes } from "./ProtectedRoutes"
 export { RecibosRouter } from "./RecibosRouter"
 export { ServicioRouter } from "./ServiciosRouter";
 export { UserRouter } from "./UserRouter";
+export { FacturasRouter } from "./FacturasRouter";
+
