@@ -51,7 +51,7 @@ class AjustesController extends Controller
     {
         $ajuste = Ajuste::findOrFail($id);
         $ajuste->update($request->validated());
-        return new AjusteResource($ajuste);
+        return response(['ajuste' => new AjusteResource($ajuste)], 201);
     }
 
     /**

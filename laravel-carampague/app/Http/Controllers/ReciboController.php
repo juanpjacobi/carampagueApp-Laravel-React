@@ -61,14 +61,23 @@ class ReciboController extends Controller
 
                 $servicio = $linea->servicio;
                 $cliente_id = $servicio->objetivo->cliente_id;
+                $objetivo_id = $servicio->objetivo->id;
 
                 $valorRecord = Valor::where('cliente_id', $cliente_id)
-                    ->where('periodo', $data['periodo'])
-                    ->first();
+                ->where('periodo', $data['periodo'])
+                ->where('objetivo_id', $objetivo_id)
+                ->first();
 
-                if (!$valorRecord) {
-                    throw new \Exception("No se encontró el valor de hora para el cliente {$cliente_id} en el periodo {$data['periodo']}.");
-                }
+            if (!$valorRecord) {
+                // Si no se encontró un registro especial, se utiliza el valor general
+                $valorRecord = Valor::where('cliente_id', $cliente_id)
+                    ->where('periodo', $data['periodo'])
+                    ->whereNull('objetivo_id')
+                    ->first();
+            }
+            if (!$valorRecord) {
+                throw new \Exception("No se encontró el valor de hora para el cliente {$cliente_id} en el período {$data['periodo']} y objetivo {$objetivo_id}.");
+            }
 
                 // Usamos el valor correcto (valor_vigilador)
                 $valorHora = $valorRecord->valor_vigilador;
@@ -101,50 +110,49 @@ class ReciboController extends Controller
                 $totalServicios += $subtotal;
             }
 
- // Procesamos los ajustes
-$totalAjustes = 0;
-if (!empty($data['ajuste_ids'])) {
-    // Recuperamos los ajustes (individuales y globales) y cargamos la relación 'tipoAjuste'
-    $ajustes = Ajuste::with('tipoAjuste')
-        ->whereIn('id', $data['ajuste_ids'])
-        ->where(function ($query) use ($data) {
-            $query->where(function($q) use ($data) {
-                // Ajustes individuales: global = false y asociado_id igual al enviado
-                $q->where('global', false)
-                  ->where('asociado_id', $data['asociado_id']);
-            })->orWhere('global', true);
-        })
-        ->get();
+            // Procesamos los ajustes
+            $totalAjustes = 0;
+            if (!empty($data['ajuste_ids'])) {
+                // Recuperamos los ajustes (individuales y globales) y cargamos la relación 'tipoAjuste'
+                $ajustes = Ajuste::with('tipoAjuste')
+                    ->whereIn('id', $data['ajuste_ids'])
+                    ->where(function ($query) use ($data) {
+                        $query->where(function ($q) use ($data) {
+                            // Ajustes individuales: global = false y asociado_id igual al enviado
+                            $q->where('global', false)
+                                ->where('asociado_id', $data['asociado_id']);
+                        })->orWhere('global', true);
+                    })
+                    ->get();
 
-    foreach ($ajustes as $ajuste) {
-        // Verificamos que la relación tipoAjuste esté cargada
-        if (!$ajuste->tipoAjuste) {
-            throw new \Exception("El ajuste con ID {$ajuste->id} no tiene tipo de ajuste asociado.");
-        }
-        // Obtenemos el monto: si está definido en el ajuste, lo usamos; si no, usamos el monto predeterminado del tipo
-        $monto = $ajuste->monto ?? $ajuste->tipoAjuste->monto;
+                foreach ($ajustes as $ajuste) {
+                    // Verificamos que la relación tipoAjuste esté cargada
+                    if (!$ajuste->tipoAjuste) {
+                        throw new \Exception("El ajuste con ID {$ajuste->id} no tiene tipo de ajuste asociado.");
+                    }
+                    // Obtenemos el monto: si está definido en el ajuste, lo usamos; si no, usamos el monto predeterminado del tipo
+                    $monto = $ajuste->monto ?? $ajuste->tipoAjuste->monto;
 
-        // Aplicamos la lógica: si el ajuste es extra (add == true), se suma; si es descuento (add == false), se resta.
-        if ($ajuste->tipoAjuste->add) {
-            $totalAjustes += $monto;
-        } else {
-            $totalAjustes -= $monto;
-        }
+                    // Aplicamos la lógica: si el ajuste es extra (add == true), se suma; si es descuento (add == false), se resta.
+                    if ($ajuste->tipoAjuste->add) {
+                        $totalAjustes += $monto;
+                    } else {
+                        $totalAjustes -= $monto;
+                    }
 
-        // Creamos la línea de recibo para el ajuste
-        $lineaRecibo = new LineaRecibo([
-            'descripcion' => $ajuste->tipoAjuste->concepto,
-            'horas'       => 0,
-            'valor_hora'  => 0,
-            'subtotal'    => $monto,
-            'es_ajuste'   => true,
-        ]);
-        $lineaRecibo->recibo()->associate($recibo);
-        $lineaRecibo->save();
-    }
-    $recibo->total = $totalServicios + $totalAjustes;
-
-}
+                    // Creamos la línea de recibo para el ajuste
+                    $lineaRecibo = new LineaRecibo([
+                        'descripcion' => $ajuste->tipoAjuste->concepto,
+                        'horas'       => 0,
+                        'valor_hora'  => 0,
+                        'subtotal'    => $monto,
+                        'es_ajuste'   => true,
+                    ]);
+                    $lineaRecibo->recibo()->associate($recibo);
+                    $lineaRecibo->save();
+                }
+                $recibo->total = $totalServicios + $totalAjustes;
+            }
             // Generamos el PDF a partir de la vista Blade
             $pdf = PDF::loadView('recibos.pdf', compact('recibo'));
             $pdfName = 'recibo_' . $recibo->id . '.pdf';

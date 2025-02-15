@@ -71,11 +71,19 @@ class FacturaController extends Controller
 
                 // Buscamos el valor a cobrar para el cliente y período usando valor_cliente.
                 $valorRecord = Valor::where('cliente_id', $cliente_id)
-                    ->where('periodo', $data['periodo'])
-                    ->first();
+                ->where('periodo', $data['periodo'])
+                ->where('objetivo_id', $data['objetivo_id'])
+                ->first();
 
                 if (!$valorRecord) {
-                    throw new \Exception("No se encontró el valor de hora para el cliente {$cliente_id} en el periodo {$data['periodo']}.");
+                    // Si no hay registro especial para el objetivo, se toma el valor general (objetivo_id NULL)
+                    $valorRecord = Valor::where('cliente_id', $cliente_id)
+                        ->where('periodo', $data['periodo'])
+                        ->whereNull('objetivo_id')
+                        ->first();
+                }
+                if (!$valorRecord) {
+                    throw new \Exception("No se encontró el valor de hora para el cliente {$cliente_id} en el período {$data['periodo']} y objetivo {$data['objetivo_id']}.");
                 }
 
                 $valorHora = $valorRecord->valor_cliente;

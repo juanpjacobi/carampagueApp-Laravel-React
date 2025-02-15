@@ -31,22 +31,22 @@ class ValorController extends Controller
         $validatedData = $request->validate([
             'valor_vigilador' => 'required|numeric|min:0',
             'valor_cliente' => 'required|numeric|min:0|gt:valor_vigilador',
-            'periodo' => 'required|string|size:7|regex:/^\d{4}-\d{2}$/', // Valida el formato YYYY-MM
+            'periodo' => 'required|string|size:7|regex:/^\d{4}-\d{2}$/',
             'cliente_id' => 'required|exists:clientes,id',
             'objetivo_id' => 'nullable|exists:objetivos,id,cliente_id,' . $request->cliente_id, // Validar que el objetivo_id pertenece al cliente
         ]);
 
         // Verificar si ya existe un valor para este cliente, periodo y objetivo_id
         $existeValor = Valor::where('cliente_id', $request->cliente_id)
-                            ->where('periodo', $request->periodo)
-                            ->where(function ($query) use ($request) {
-                                if ($request->has('objetivo_id') && $request->objetivo_id !== null) {
-                                    $query->where('objetivo_id', $request->objetivo_id);
-                                } else {
-                                    $query->whereNull('objetivo_id');
-                                }
-                            })
-                            ->exists();
+            ->where('periodo', $request->periodo)
+            ->where(function ($query) use ($request) {
+                if ($request->has('objetivo_id') && $request->objetivo_id !== null) {
+                    $query->where('objetivo_id', $request->objetivo_id);
+                } else {
+                    $query->whereNull('objetivo_id');
+                }
+            })
+            ->exists();
 
         if ($existeValor) {
             return response()->json(['message' => 'Ya existe un valor para este cliente y periodo con el objetivo especificado.'], 400);
@@ -101,7 +101,7 @@ class ValorController extends Controller
         //
     }
 
-    public function update(Request $request, Valor $valor)
+    public function update(Request $request, string $id)
     {
         $data = $request->validate([
             'valor_vigilador' => 'required|numeric',
@@ -111,6 +111,7 @@ class ValorController extends Controller
         ]);
 
         try {
+            $valor = Valor::findOrFail($id);
             // Actualizamos el valor
             $valor->update([
                 'valor_vigilador' => $data['valor_vigilador'],
