@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 
 
 const initialState = {
@@ -31,6 +31,7 @@ export const AjustesSlice = createSlice({
     },
     updateAjusteEnStore: (state, action) => {
       const ajuste = action.payload;
+      console.log(current(state))
       if (state.ajustes[ajuste.id]) {
         state.ajustes[ajuste.id] = ajuste;
       }
