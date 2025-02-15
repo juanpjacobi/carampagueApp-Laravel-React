@@ -110,10 +110,10 @@ export const ClienteCard = ({ selectedCliente }) => {
               Editar
             </Link>
             <Link
-              to={`/clientes/administrar/${selectedCliente?.id}`}
+              to={`/clientes/valores/${selectedCliente?.id}`}
               className="p-2 w-full text-sm text-center bg-teal-600 hover:bg-teal-950 text-white rounded"
             >
-              Administrar
+              Valores
             </Link>
             <button
               onClick={handleToggleActivo}

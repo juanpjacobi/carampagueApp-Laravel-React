@@ -95,7 +95,9 @@ export const AusentismoListItem = ({
           <span className="text-red-500">Sin motivo</span>
         )}
       </td>
-      <td className="px-4 py-2">
+      <td className="p-2 border-b flex justify-between border-slate-300 md:border-none text-left md:table-cell">
+      <span className="inline-block w-1/3 md:hidden font-bold">Acciones</span>
+
         <button
           onClick={handleToggleJustificado}
           className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"

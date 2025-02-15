@@ -1,72 +1,71 @@
 import { useFormik } from "formik";
-import { useDispatch, useSelector,  } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { valorSchema } from "../../utilities/validator/valor/valorSchema";
 import { Alerta } from "../../shared/Alerta";
-import { createValor } from "../../../store/thunks/ValoresThunks";
+import { createValor, updateValor } from "../../../store/thunks/ValoresThunks";
+import { useNavigate, useParams } from "react-router-dom";
+import { selectValoresConRelaciones } from "../../../store/selectors/ValoresSelectors";
 
 export const ValorForm = ({ selectedCliente, editMode }) => {
+  const { valorId } = useParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const valrId = parseInt(valorId, 10);
 
-  const objetivosConRelaciones = useSelector((state) => state.objetivos.objetivos);
-  const valoresConRelaciones = useSelector((state) => state.valores.valores);
+  const objetivosConRelaciones = useSelector(
+    (state) => state.objetivos.objetivos
+  );
+  const valores = useSelector(selectValoresConRelaciones);
 
   const objetivosFiltrados = objetivosConRelaciones.filter(
     (obj) => obj.cliente_id === selectedCliente.id
   );
 
-  const valoresFiltrados = valoresConRelaciones.filter(
-    (valor) => valor.cliente_id === selectedCliente.id
-  );
-
+  const valor = valores.find((valor) => Number(valor.id) === Number(valrId));
   const [isApplyToObjective, setIsApplyToObjective] = useState(false);
 
-
   const initialState = {
-    valor_vigilador:
-      valoresFiltrados.length > 0 && editMode
-        ? valoresFiltrados[0].valor_vigilador
-        : "",
-    valor_cliente:
-      valoresFiltrados.length > 0 && editMode
-        ? valoresFiltrados[0].valor_cliente
-        : "",
-    periodo:
-      valoresFiltrados.length > 0 && editMode
-        ? valoresFiltrados[0].periodo
-        : "",
-    objetivo_id: "", // Lo manejamos con un checkbox
+    valor_vigilador: valor && editMode ? valor.valor_vigilador : "",
+    valor_cliente: valor && editMode ? valor.valor_cliente : "",
+    periodo: valor && editMode ? valor.periodo : "",
+    objetivo_id: valor && editMode ? valor.objetivo_id : "",
     cliente_id: selectedCliente.id,
   };
 
+  console.log({ initialState });
+  const handleSubmit = () => {
+    if (!editMode) {
+      if (isApplyToObjective && !formik.values.objetivo_id) {
+        formik.setErrors({
+          objetivo_id:
+            "El objetivo es requerido si se aplica a un objetivo específico",
+        });
+        return;
+      }
+      dispatch(createValor(formik.values, navigate));
+    } else {
+      dispatch(updateValor(valorId, formik.values, navigate));
+    }
+  };
 
   const formik = useFormik({
     initialValues: initialState,
     validationSchema: valorSchema,
     validateOnChange: false,
     validateOnBlur: false,
-    onSubmit: (values) => {
-        if (isApplyToObjective && !values.objetivo_id) {
-          formik.setErrors({
-            objetivo_id: "El objetivo es requerido si se aplica a un objetivo específico"
-          });
-          return;
-        }
-        dispatch(createValor(values));
-      },
-    });
+    onSubmit: handleSubmit,
+  });
 
   useEffect(() => {
     if (!isApplyToObjective) {
-      formik.setFieldValue("objetivo_id", ""); 
+      formik.setFieldValue("objetivo_id", "");
     }
-  }, [isApplyToObjective]); 
-  
+  }, [isApplyToObjective]);
 
   const handleApplyToObjectiveChange = () => {
-    setIsApplyToObjective(prev => !prev); // Cambiar el estado del checkbox
+    setIsApplyToObjective((prev) => !prev);
   };
-  
 
   return (
     <form onSubmit={formik.handleSubmit} noValidate>
@@ -118,24 +117,26 @@ export const ValorForm = ({ selectedCliente, editMode }) => {
           name="periodo"
           onChange={formik.handleChange}
           value={formik.values.periodo ?? ""}
+          disabled={editMode}
         />
         {formik.errors.periodo ? (
           <Alerta error={formik.errors.periodo} />
         ) : null}
       </div>
-
-      <div className="mb-4">
-        <input
-          type="checkbox"
-          id="applyToObjective"
-          name="applyToObjective"
-          checked={isApplyToObjective}
-          onChange={handleApplyToObjectiveChange}
-        />
-        <label className="text-slate-800" htmlFor="applyToObjective">
-          Aplicar a objetivo específico
-        </label>
-      </div>
+      {!editMode && (
+        <div className="mb-4">
+          <input
+            type="checkbox"
+            id="applyToObjective"
+            name="applyToObjective"
+            checked={isApplyToObjective}
+            onChange={handleApplyToObjectiveChange}
+          />
+          <label className="text-slate-800" htmlFor="applyToObjective">
+            Aplicar a objetivo específico
+          </label>
+        </div>
+      )}
 
       {isApplyToObjective && objetivosFiltrados.length > 0 && (
         <div className="mb-4">
@@ -163,10 +164,11 @@ export const ValorForm = ({ selectedCliente, editMode }) => {
           ) : null}
         </div>
       )}
+      {editMode && valor.objetivo_id && <span className="font-bold text-xl">Objetivo: {valor.objetivo.nombre}</span>}
 
       <input
         type="submit"
-        value="Crear valor"
+        value={editMode ? "Actualizar valor" : "Crear valor"}
         className="bg-sky-800 hover:bg-sky-950 text-white w-full mt-5 p-3 uppercase font-bold cursor-pointer"
       />
     </form>

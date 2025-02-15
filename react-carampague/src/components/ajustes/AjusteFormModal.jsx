@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createAjuste } from "../../store/thunks/AjustesThunks";
+import { createAjuste, updateAjuste } from "../../store/thunks/AjustesThunks";
 import { selectAllTiposAjustes } from "../../store/selectors/TiposAjustesSelectors";
-import { AsociadoDropdown } from "../../components/ui/lineas/AsociadoDropdown";
-import MonthYearSelector from "../../components/utilities/month-year-selector/MonthYearSelector";
 import Swal from "sweetalert2";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { Alerta } from "../../components/shared/Alerta";
 
 export const AjusteFormModal = ({ isOpen, onClose, initialData = {} }) => {
   const dispatch = useDispatch();
@@ -13,64 +13,96 @@ export const AjusteFormModal = ({ isOpen, onClose, initialData = {} }) => {
     (id) => tiposAjustesState.tiposAjustes[id]
   );
 
-  // Estados del formulario
-  const [global, setGlobal] = useState(initialData.global || false);
-  const [tipoAjusteId, setTipoAjusteId] = useState(
-    initialData.tipoAjusteId || ""
-  );
-  const [monto, setMonto] = useState(initialData.monto || "");
-  const [periodoInicio, setPeriodoInicio] = useState(
-    initialData.periodoInicio || ""
-  );
-  const [duracionMeses, setDuracionMeses] = useState(
-    initialData.duracionMeses || 1
-  );
-  const [selectedAsociado, setSelectedAsociado] = useState(
-    initialData.asociado || null
-  );
+  // Obtenemos la lista de asociados para buscar el detalle del asociado
+  const { asociados } = useSelector((state) => state.asociados);
 
-  // Si se cambia el tipo, se puede prellenar el monto con el valor por defecto
-  useEffect(() => {
-    if (tipoAjusteId && !monto) {
-      const tipo = tiposArray.find((t) => t.id === Number(tipoAjusteId));
+  // Modo edición si existe initialData.id
+  const isEditing = Boolean(initialData.id);
+
+  // Esquema de validación con Yup
+  const ajusteSchema = Yup.object().shape({
+    tipoAjusteId: Yup.string().required("El tipo de ajuste es requerido"),
+    monto: Yup.number()
+      .typeError("El monto debe ser un número")
+      .required("El monto es requerido"),
+    periodoInicio: Yup.string().required("El periodo de inicio es requerido"),
+    duracionMeses: Yup.number()
+      .typeError("La duración debe ser un número")
+      .min(1, "La duración debe ser al menos 1 mes")
+      .required("La duración es requerida"),
+    asociado_id: Yup.string(),
+  });
+
+  // Calculamos el asociado_id inicial usando asociado o asociado_id
+  const initialAsociadoId = initialData.asociado
+    ? initialData.asociado.id
+    : initialData.asociado_id || "";
+
+  const formik = useFormik({
+    initialValues: {
+      tipoAjusteId: initialData.tipoAjusteId || "",
+      monto: initialData.monto || "",
+      periodoInicio: initialData.periodoInicio || "",
+      duracionMeses: initialData.duracionMeses || 1,
+      asociado_id: initialAsociadoId,
+    },
+    enableReinitialize: true,
+    validationSchema: ajusteSchema,
+    validateOnBlur: false,
+    validateOnChange: false,
+    onSubmit: async (values) => {
+      const data = {
+        tipo_ajuste_id: values.tipoAjusteId,
+        monto: values.monto,
+        periodo_inicio: values.periodoInicio,
+        duracion_meses: values.duracionMeses,
+        asociado_id: values.asociado_id ? values.asociado_id : null,
+        global: !values.asociado_id,
+      };
+
+      try {
+        if (isEditing) {
+          await dispatch(updateAjuste(initialData.id, data));
+          Swal.fire({
+            icon: "success",
+            title: "Ajuste actualizado correctamente",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } else {
+          await dispatch(createAjuste(data));
+          Swal.fire({
+            icon: "success",
+            title: "Ajuste creado correctamente",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+        onClose();
+      } catch (error) {
+        console.error(error);
+      }
+    },
+  });
+
+  // Manejador para el cambio en el select de Tipo de Ajuste.
+  const handleTipoAjusteChange = (e) => {
+    const value = e.target.value;
+    formik.setFieldValue("tipoAjusteId", value);
+    if (!formik.values.monto) {
+      const tipo = tiposArray.find((t) => String(t.id) === value);
       if (tipo) {
-        setMonto(tipo.monto);
+        formik.setFieldValue("monto", tipo.monto);
       }
     }
-  }, [tipoAjusteId, monto, tiposArray]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Preparar la data a enviar
-    const data = {
-      global,
-      tipo_ajuste_id: tipoAjusteId,
-      monto,
-      periodo_inicio: periodoInicio,
-      duracion_meses: duracionMeses,
-      // Solo se envía asociado si no es global
-      asociado_id: global
-        ? null
-        : selectedAsociado
-        ? selectedAsociado.id
-        : null,
-    };
-
-    try {
-      await dispatch(createAjuste(data));
-      Swal.fire({
-        icon: "success",
-        title: "Ajuste creado correctamente",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-      onClose(); // Cerrar el modal al finalizar
-    } catch (error) {
-      // El error ya lo maneja el thunk con SweetAlert
-      console.error(error);
-    }
   };
+
+  // Buscar el objeto asociado según el ID en Formik
+  const asociadoObj = formik.values.asociado_id
+    ? asociados.find(
+        (a) => String(a.id) === String(formik.values.asociado_id)
+      )
+    : null;
 
   if (!isOpen) return null;
 
@@ -78,17 +110,26 @@ export const AjusteFormModal = ({ isOpen, onClose, initialData = {} }) => {
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
       <div className="bg-white rounded shadow-lg p-6 w-11/12 md:w-1/2">
         <h2 className="text-2xl font-bold mb-4">
-          {global ? "Agregar Descuento Global" : "Asignar Descuento Individual"}
+          {isEditing ? "Editar Ajuste" : "Crear Ajuste"}
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Selector de Tipo de Ajuste */}
+        <div className="text-gray-700 text-sm text-center mb-2">
+          <span>Los campos marcados con * son obligatorios</span>
+        </div>
+        <form onSubmit={formik.handleSubmit} noValidate className="space-y-4">
+          {/* Tipo de Ajuste */}
           <div>
-            <label className="block font-semibold mb-1">Tipo de Ajuste</label>
+            <label
+              className="block font-semibold mb-1"
+              htmlFor="tipoAjusteId"
+            >
+              Tipo de Ajuste *
+            </label>
             <select
-              value={tipoAjusteId}
-              onChange={(e) => setTipoAjusteId(e.target.value)}
-              className="w-full border rounded p-2"
-              required
+              id="tipoAjusteId"
+              name="tipoAjusteId"
+              value={formik.values.tipoAjusteId}
+              onChange={handleTipoAjusteChange}
+              className="w-full border rounded p-2 bg-gray-200"
             >
               <option value="">Seleccione un tipo</option>
               {tiposArray.map((tipo) => (
@@ -97,70 +138,86 @@ export const AjusteFormModal = ({ isOpen, onClose, initialData = {} }) => {
                 </option>
               ))}
             </select>
+            {formik.errors.tipoAjusteId && (
+              <Alerta error={formik.errors.tipoAjusteId} />
+            )}
           </div>
 
           {/* Monto */}
           <div>
-            <label className="block font-semibold mb-1">Monto</label>
+            <label className="block font-semibold mb-1" htmlFor="monto">
+              Monto *
+            </label>
             <input
               type="number"
-              value={monto}
-              onChange={(e) => setMonto(e.target.value)}
-              className="w-full border rounded p-2"
-              required
+              id="monto"
+              name="monto"
+              value={formik.values.monto}
+              onChange={formik.handleChange}
+              className="w-full border rounded p-2 bg-gray-200"
             />
+            {formik.errors.monto && <Alerta error={formik.errors.monto} />}
           </div>
 
           {/* Periodo de Inicio */}
           <div>
-            <label className="block font-semibold mb-1">
-              Periodo de Inicio (YYYY-MM)
+            <label
+              className="block font-semibold mb-1"
+              htmlFor="periodoInicio"
+            >
+              Periodo de Inicio (YYYY-MM) *
             </label>
             <input
               type="month"
-              value={periodoInicio}
-              onChange={(e) => setPeriodoInicio(e.target.value)}
-              className="w-full border rounded p-2"
-              required
+              id="periodoInicio"
+              name="periodoInicio"
+              value={formik.values.periodoInicio}
+              onChange={formik.handleChange}
+              className="w-full border rounded p-2 bg-gray-200"
             />
+            {formik.errors.periodoInicio && (
+              <Alerta error={formik.errors.periodoInicio} />
+            )}
           </div>
 
           {/* Duración en Meses */}
           <div>
-            <label className="block font-semibold mb-1">Duración (meses)</label>
+            <label
+              className="block font-semibold mb-1"
+              htmlFor="duracionMeses"
+            >
+              Duración (meses) *
+            </label>
             <input
               type="number"
-              value={duracionMeses}
-              onChange={(e) => setDuracionMeses(e.target.value)}
-              className="w-full border rounded p-2"
+              id="duracionMeses"
+              name="duracionMeses"
+              value={formik.values.duracionMeses}
+              onChange={formik.handleChange}
+              className="w-full border rounded p-2 bg-gray-200"
               min="1"
-              required
             />
+            {formik.errors.duracionMeses && (
+              <Alerta error={formik.errors.duracionMeses} />
+            )}
           </div>
 
-          {/* Checkbox para indicar si es global */}
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="global"
-              checked={global}
-              onChange={(e) => setGlobal(e.target.checked)}
-              className="mr-2"
-            />
-            <label htmlFor="global">Aplicar a todos (Global)</label>
+          {/* Mostrar la asignación */}
+          <div>
+            <label className="block font-semibold mb-1">Asignación</label>
+            {formik.values.asociado_id ? (
+              <span className="text-green-600 font-bold">
+                {asociadoObj
+                  ? `${asociadoObj.nombre} ${asociadoObj.apellido}`
+                  : "Individual"}
+              </span>
+            ) : (
+              <span className="text-blue-600 font-bold">Global</span>
+            )}
+            {formik.errors.asociado_id && (
+              <Alerta error={formik.errors.asociado_id} />
+            )}
           </div>
-
-          {/* Si no es global, se muestra el selector de asociado */}
-          {!global && (
-            <div>
-              {selectedAsociado && (
-                <>
-                  <label className="block font-semibold mb-1">Asociado</label>
-                  <span>{selectedAsociado.fullName}</span>
-                </>
-              )}
-            </div>
-          )}
 
           <div className="flex justify-end gap-4 mt-6">
             <button

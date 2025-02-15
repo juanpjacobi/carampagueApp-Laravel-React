@@ -1,38 +1,36 @@
 
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
-export const RecibosListItem = ({ recibo }) => {
-  const navigate = useNavigate();
-  const { asociados } = useSelector((state) => state.asociados);
+export const FacturaClienteListItem = ({ factura }) => {
+  const { objetivos } = useSelector((state) => state.objetivos);
 
-  const asociado = asociados.find(
-    (a) => Number(a.id) === Number(recibo.asociado_id)
+  const objetivo = objetivos.find(
+    (o) => Number(o.id) === Number(factura.objetivo_id)
   );
 
   const backendHost = "http://localhost:8080";
 
   const handleViewPDF = () => {
-    window.open(`${backendHost}${recibo.pdf_url}`, "_blank");
+    window.open(`${backendHost}${factura.pdf_url}`, "_blank");
   };
 
   return (
     <tr className="p-5 bg-gray-100 flex flex-col md:table-row mb-2 shadow-md shadow-gray-700">
       <td className="p-2 border-b flex justify-between border-slate-300 md:border-none text-left md:table-cell">
-        <span className="inline-block w-1/3 md:hidden font-bold">Recibo</span>
-        #{recibo.id}
+        <span className="inline-block w-1/3 md:hidden font-bold">factura</span>
+        #{factura.id}
       </td>
       <td className="p-2 border-b flex justify-between border-slate-300 md:border-none text-left md:table-cell">
-        <span className="inline-block w-1/3 md:hidden font-bold">Asociado</span>
-        {asociado ? `${asociado.nombre} ${asociado.apellido}` : "Sin Datos"}
+        <span className="inline-block w-1/3 md:hidden font-bold">Objetivo</span>
+        {objetivo ? `${objetivo.nombre}` : "Sin Datos"}
       </td>
       <td className="p-2 border-b flex justify-between border-slate-300 md:border-none text-left md:table-cell">
         <span className="inline-block w-1/3 md:hidden font-bold">Periodo</span>
-        {recibo.periodo}
+        {factura.periodo}
       </td>
       <td className="p-2 border-b flex justify-between border-slate-300 md:border-none text-left md:table-cell">
         <span className="inline-block w-1/3 md:hidden font-bold">Monto</span>
-        $ {recibo.total.toLocaleString()}
+        $ {factura.total.toLocaleString()}
       </td>
       <td className="p-2 border-b flex justify-between border-slate-300 md:border-none text-left md:table-cell">
         <span className="inline-block w-1/3 md:hidden font-bold">PDF</span>

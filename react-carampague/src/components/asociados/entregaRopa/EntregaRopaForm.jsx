@@ -18,15 +18,12 @@ export const EntregaRopaForm = ({ editMode }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
-  // Si estamos en edición, obtenemos el id numérico de la entrega
   const entregaRopaId = editMode ? parseInt(id, 10) : null;
   
-  // Seleccionamos la entrega en modo edición (en caso de que editMode sea true)
   const entregaRopa = editMode 
     ? useSelector(makeSelectEntregaRopaById(entregaRopaId))
     : null;
   
-  // Selector para obtener las líneas enriquecidas de la entrega (usando el helper que ya las enriquece)
   const selectLineasEnriquecidas = useMemo(
     () => (entregaRopaId ? makeSelectLineasEnriquecidasByEntregaRopaId(entregaRopaId) : () => []),
     [entregaRopaId]

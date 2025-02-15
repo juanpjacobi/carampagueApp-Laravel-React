@@ -1,6 +1,6 @@
-import { AjusteListItem } from "./AjusteListItem";
+import { FacturasListItem } from "./FacturasListItem";
 
-export const AjusteList = ({ lineas, onEdit }) => {
+export const FacturasList = ({ lineas }) => {
   return (
     <div className="flex flex-col mt-2 space-y-4">
       <div className="flex flex-col shadow-md md:shadow-gray-500">
@@ -11,41 +11,60 @@ export const AjusteList = ({ lineas, onEdit }) => {
                 scope="col"
                 className="p-2 font-bold md:border md:border-grey-500 block md:table-cell"
               >
-                Asociado
+                Fecha
+              </th>
+
+              <>
+                <th
+                  scope="col"
+                  className="p-2 font-bold md:border md:border-grey-500 block md:table-cell"
+                >
+                  Asociado
+                </th>
+
+                <th
+                  scope="col"
+                  className="p-2 font-bold md:border md:border-grey-500 block md:table-cell"
+                >
+                  Objetivo
+                </th>
+              </>
+
+              <th
+                scope="col"
+                className="p-2 font-bold md:border md:border-grey-500 block md:table-cell"
+              >
+                Hora Inicio
               </th>
               <th
                 scope="col"
                 className="p-2 font-bold md:border md:border-grey-500 block md:table-cell"
               >
-                Concepto
+                Hora Fin
               </th>
               <th
                 scope="col"
                 className="p-2 font-bold md:border md:border-grey-500 block md:table-cell"
               >
-                Vigencia
+                Total Horas
               </th>
               <th
                 scope="col"
                 className="p-2 font-bold md:border md:border-grey-500 block md:table-cell"
               >
-                Monto
+                Valor Hora
               </th>
               <th
                 scope="col"
                 className="p-2 font-bold md:border md:border-grey-500 block md:table-cell"
               >
-                Acciones
+                SubTotal
               </th>
             </tr>
           </thead>
           <tbody className="block md:table-row-group">
             {lineas?.map((linea) => (
-              <AjusteListItem
-                linea={linea}
-                key={linea.id}
-                onEdit={onEdit}
-              />
+              <FacturasListItem linea={linea} key={linea.id}/>
             ))}
           </tbody>
         </table>

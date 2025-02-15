@@ -69,6 +69,14 @@ export const NavBar = () => {
       ],
     },
     {
+      title: "Facturación",
+      items: [
+        { to: "/facturas/diagramas", label: "Diagramas" },
+        { to: "/facturas/all", label: "Facturas" },
+
+      ],
+    },
+    {
       title: "Admin",
       items: [
         { to: "/usuarios", label: "Usuarios" },
@@ -127,7 +135,7 @@ export const NavBar = () => {
                       onClick={() => setOpenDropdown(null)} 
                       className={({ isActive }) =>
                         clsx(
-                          "block px-4 py-2 hover:bg-sky-800 hover:text-white",
+                          "block px-4 py-2 hover:bg-sky-800 hover:text-white rounded-md",
                           isActive && "bg-sky-800 text-white"
                         )
                       }
