@@ -32,7 +32,7 @@ export const Layout = () => {
         <img src="/img/logo.jpg" alt="imagen logotipo" className="max-w-2xl" />
         <NavBar />
       </div>
-      <div className="md:max-w-6xl flex flex-col md:p-10 w-full">
+      <div className="md:max-w-7xl flex flex-col md:p-10 w-full">
         <Outlet />
       </div>
     </main>
