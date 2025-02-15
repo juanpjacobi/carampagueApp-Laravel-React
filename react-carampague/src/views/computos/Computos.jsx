@@ -10,9 +10,9 @@ import { ComputosResumen } from "../../components/computos/ComputosResumen";
 import { selectEnrichedAjustes } from "../../store/selectors/AjustesSelectors";
 import { AjustesResumen } from "../../components/ajustes/AjustesResumen";
 import { createRecibo } from "../../store/thunks/RecibosThunks";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 import { createCarpetaMedica } from "../../store/thunks/CarpetasMedicasThunks";
-
+import { Info } from "../../components/shared/Info";
 
 export const Computos = () => {
   const [month, setMonth] = useState("");
@@ -43,7 +43,7 @@ export const Computos = () => {
     setSelectedAsociado(null);
     setAsociadoQuery("");
   };
-  const formattedMonth = month.padStart(2, "0");
+  const formattedMonth = (month || "").padStart(2, "0");
   const targetPeriod = `${year}-${formattedMonth}`;
   const filteredLineas = useMemo(() => {
     if (!selectedAsociado || !month || !year) return [];
@@ -82,8 +82,12 @@ export const Computos = () => {
     return Array.from(ids);
   }, [filteredLineas]);
 
-  const periodo = `${year}-${month.padStart(2, "0")}`;
-  const valoresMapping = useValoresMapping(uniqueServiceIds, periodo);
+  const periodo = `${year}-${(month || "").padStart(2, "0")}`;
+  const valoresMapping = useValoresMapping(
+    uniqueServiceIds,
+    periodo,
+    "vigilador"
+  );
 
   const calculos = useMemo(() => {
     const groups = {};
@@ -151,12 +155,13 @@ export const Computos = () => {
     );
   }, [filteredAjustesForDiscounts]);
 
-
   const totalAjustes = useMemo(() => {
     return filteredAjustesForDiscounts.reduce((sum, ajuste) => {
       const montoEffective =
         Number(ajuste.monto) || Number(ajuste.tipo_ajuste.monto);
-      return ajuste.tipo_ajuste.add ? sum + montoEffective : sum - montoEffective;
+      return ajuste.tipo_ajuste.add
+        ? sum + montoEffective
+        : sum - montoEffective;
     }, 0);
   }, [filteredAjustesForDiscounts]);
 
@@ -175,13 +180,12 @@ export const Computos = () => {
   const handleGenerarRecibo = async () => {
     if (!selectedAsociado || !month || !year) {
       Swal.fire({
-        icon: 'error',
+        icon: "error",
         title: "Debe seleccionar un asociado y un período válido",
-        text: 'Error',
+        text: "Error",
       });
       return;
     }
-
 
     const payload = {
       asociado_id: selectedAsociado.id,
@@ -190,14 +194,13 @@ export const Computos = () => {
       ajuste_ids,
     };
 
-      const recibo = await dispatch(createRecibo(payload));
-
+    const recibo = await dispatch(createRecibo(payload));
   };
 
   const handleGenerarCarpetaMedica = async () => {
     if (!selectedAsociado || !month || !year) {
       Swal.fire({
-        icon: 'error',
+        icon: "error",
         title: "Debe seleccionar un asociado y un período válido",
       });
       return;
@@ -205,7 +208,7 @@ export const Computos = () => {
 
     if (ausentismo_ids.length === 0) {
       Swal.fire({
-        icon: 'error',
+        icon: "error",
         title: "No hay ausentismo para generar carpeta médica",
       });
       return;
@@ -217,15 +220,12 @@ export const Computos = () => {
       linea_ids: ausentismo_ids,
     };
 
-
-      await dispatch(createCarpetaMedica(payload));
-      Swal.fire({
-        icon: 'success',
-        title: "Carpeta médica generada correctamente",
-      });
-   
+    await dispatch(createCarpetaMedica(payload));
+    Swal.fire({
+      icon: "success",
+      title: "Carpeta médica generada correctamente",
+    });
   };
-  
 
   return (
     <div>
@@ -253,100 +253,113 @@ export const Computos = () => {
           setYear={setYear}
         />
       </div>
-
-      <div>
-        {filteredLineas.length > 0 ? (
-          <div className="flex flex-col mt-2">
-            <ComputosList
-              lineas={filteredLineas}
-              valoresMapping={valoresMapping}
-            />
-
-            <ComputosResumen
-              title={"Resumen de cómputos"}
-              grupos={calculos.grupos}
-              totalBruto={calculos.totalBruto}
-            />
-          </div>
-        ) : (
-          <Alerta
-            error={
-              "No hay líneas para este asociado en el periodo seleccionado."
-            }
-          />
-        )}
-        <hr className="my-8 border-t-2 border-dashed border-gray-400" />
-        <h2 className="text-2xl underline underline-offset-8 text-sky-700 font-semibold text-center mb-5 mt-5">
-          Ausentismo
-        </h2>
-        {filteredJustifiedLineas.length > 0 ? (
-          <div className="mt-5">
-            <ComputosList
-              lineas={filteredJustifiedLineas}
-              valoresMapping={valoresMapping}
-            />
-            <ComputosResumen
-              title={"Resumen de ausentismo"}
-              grupos={calculosJustificados.grupos}
-              totalBruto={calculosJustificados.totalBruto}
-            />
-          </div>
-        ) : (
-          <Alerta
-            className="mt-5"
-            error={
-              "No hay líneas de ausentismo en el periodo y asociado seleccionado."
-            }
-          />
-        )}
-      </div>
-      {/* Sección de Descuentos */}
-      <hr className="my-8 border-t-2 border-dashed border-gray-400" />
-      <h2 className="text-2xl underline underline-offset-8 text-sky-700 font-semibold text-center mb-5 mt-5">
-        Descuentos
-      </h2>
-      {discountAdjustments.length > 0 ? (
-        <div className="mt-5">
-          <AjustesResumen
-            title={"Resumen de descuentos"}
-            ajustes={filteredAjustesForDiscounts}
-            totalNeto={totalAjustes}
-          />
-        </div>
+      {!selectedAsociado || !month || !year ? (
+        <Info message={"Elige un periodo y un asociado"} />
       ) : (
-        <Alerta
-          className="mt-5"
-          error={"No hay descuentos para el asociado y periodo seleccionado."}
-        />
-      )}
-      {/* Sección de Total Neto (líneas trabajadas - descuentos) */}
-      <div className="flex items-center justify-center my-10">
-        <span className="bg-green-700 text-white rounded-full px-4 py-2 text-lg font-bold">
-        Total Neto: ${ (calculos.totalBruto + totalAjustes).toLocaleString() }
-        </span>
-      </div>
-      <div className="flex justify-between">
+        <div>
+          <h2 className="text-2xl underline underline-offset-8 text-sky-700 font-semibold text-center mb-5 mt-5">
+            Horas trabajadas
+          </h2>
+          {filteredLineas.length > 0 ? (
+            <div className="flex flex-col mt-2">
+              <ComputosList
+                lineas={filteredLineas}
+                valoresMapping={valoresMapping}
+              />
 
-      <div className="flex justify-center my-10">
-        <button
-          onClick={handleGenerarRecibo}
-          className="bg-sky-600 hover:bg-sky-800 text-white px-6 py-3 rounded uppercase font-bold"
-        >
-          Generar Recibo
-        </button>
-      </div>
-       {/* Botón para generar carpeta médica (solo se muestra si hay ausentismo) */}
-       {filteredJustifiedLineas.length > 0 && (
-        <div className="flex justify-center my-10">
-          <button
-            onClick={handleGenerarCarpetaMedica}
-            className="bg-red-600 hover:bg-red-800 text-white px-6 py-3 rounded uppercase font-bold"
-          >
-            Generar Carpeta Médica
-          </button>
+              <ComputosResumen
+                title={"Resumen de cómputos"}
+                grupos={calculos.grupos}
+                totalBruto={calculos.totalBruto}
+              />
+            </div>
+          ) : (
+            <div className="flex justify-center">
+              <Alerta
+                error={
+                  "No hay horas trabajadas para este asociado en el periodo seleccionado."
+                }
+              />
+            </div>
+          )}
+          <hr className="my-8 border-t-2 border-dashed border-gray-400" />
+          <h2 className="text-2xl underline underline-offset-8 text-sky-700 font-semibold text-center mb-5 mt-5">
+            Ausentismo
+          </h2>
+          {filteredJustifiedLineas.length > 0 ? (
+            <div className="mt-5">
+              <ComputosList
+                lineas={filteredJustifiedLineas}
+                valoresMapping={valoresMapping}
+              />
+              <ComputosResumen
+                title={"Resumen de ausentismo"}
+                grupos={calculosJustificados.grupos}
+                totalBruto={calculosJustificados.totalBruto}
+              />
+            </div>
+          ) : (
+            <div className="flex justify-center">
+              <Alerta
+                className="mt-5"
+                error={
+                  "No hay ausentismo en el periodo y asociado seleccionado."
+                }
+              />
+            </div>
+          )}
+          {/* Sección de Descuentos */}
+          <hr className="my-8 border-t-2 border-dashed border-gray-400" />
+          <h2 className="text-2xl underline underline-offset-8 text-sky-700 font-semibold text-center mb-5 mt-5">
+            Descuentos
+          </h2>
+          {discountAdjustments.length > 0 ? (
+            <div className="mt-5">
+              <AjustesResumen
+                title={"Resumen de descuentos"}
+                ajustes={filteredAjustesForDiscounts}
+                totalNeto={totalAjustes}
+              />
+            </div>
+          ) : (
+            <div className="flex justify-center">
+              <Alerta
+                className="mt-5"
+                error={
+                  "No hay descuentos para el asociado y periodo seleccionado."
+                }
+              />
+            </div>
+          )}
+          <div className="flex items-center justify-center my-10">
+            <span className="bg-green-700 text-white rounded-full px-4 py-2 text-lg font-bold">
+              Total Neto: $
+              {(calculos.totalBruto + totalAjustes).toLocaleString()}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <div className="flex justify-center my-10">
+              <button
+                onClick={handleGenerarRecibo}
+                className="bg-sky-600 hover:bg-sky-800 text-white px-6 py-3 rounded uppercase font-bold"
+              >
+                Generar Recibo
+              </button>
+            </div>
+            {/* Botón para generar carpeta médica (solo se muestra si hay ausentismo) */}
+            {filteredJustifiedLineas.length > 0 && (
+              <div className="flex justify-center my-10">
+                <button
+                  onClick={handleGenerarCarpetaMedica}
+                  className="bg-red-600 hover:bg-red-800 text-white px-6 py-3 rounded uppercase font-bold"
+                >
+                  Generar Carpeta Médica
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
-      </div>
     </div>
   );
 };

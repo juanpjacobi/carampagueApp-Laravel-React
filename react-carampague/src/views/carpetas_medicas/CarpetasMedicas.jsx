@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { AsociadoDropdown } from "../../components/ui/lineas/AsociadoDropdown";
 import { useAsociados } from "../../hooks";
 import MonthYearSelector from "../../components/utilities/month-year-selector/MonthYearSelector";
@@ -7,6 +7,7 @@ import { Alerta } from "../../components/shared/Alerta";
 import { RecibosList } from "../../components/recibos/RecibosList";
 import { selectAllCarpetasMedicas } from "../../store/selectors/CarpetasMedicasSelectors";
 import { CarpetasMedicasList } from "../../components/carpetas_medicas/CarpetasMedicasList";
+import { Info } from "../../components/shared/Info";
 
 export const CarpetasMedicas = () => {
   const [month, setMonth] = useState("");
@@ -35,7 +36,7 @@ export const CarpetasMedicas = () => {
     setSelectedAsociado(null);
     setAsociadoQuery("");
   };
-  const formattedMonth = month.padStart(2, "0");
+  const formattedMonth = (month || "").padStart(2, "0");
   const targetPeriod = `${year}-${formattedMonth}`;
 
   const filteredCarpetas = useMemo(() => {
@@ -43,7 +44,10 @@ export const CarpetasMedicas = () => {
     return allCarpetas.filter((carpeta) => {
       const matchPeriodo = carpeta.periodo === targetPeriod;
       if (selectedAsociado) {
-        return matchPeriodo && Number(carpeta.asociado_id) === Number(selectedAsociado.id);
+        return (
+          matchPeriodo &&
+          Number(carpeta.asociado_id) === Number(selectedAsociado.id)
+        );
       }
       return matchPeriodo;
     });
@@ -75,20 +79,25 @@ export const CarpetasMedicas = () => {
           setYear={setYear}
         />
       </div>
-
-      <div>
-        {filteredCarpetas.length > 0 ? (
-          <div className="flex flex-col mt-2">
-            <CarpetasMedicasList carpetas={filteredCarpetas} />
-          </div>
-        ) : (
-          <Alerta
-            error={
-              "No hay carpetas para este asociado en el periodo seleccionado."
-            }
-          />
-        )}
-      </div>
+      {!month || !year ? (
+        <Info message={"Elige un periodo"} />
+      ) : (
+        <div>
+          {filteredCarpetas.length > 0 ? (
+            <div className="flex flex-col mt-2">
+              <CarpetasMedicasList carpetas={filteredCarpetas} />
+            </div>
+          ) : (
+            <div className="flex justify-center">
+              <Alerta
+                error={
+                  "No hay carpetas para el periodo/asociado seleccionado."
+                }
+              />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

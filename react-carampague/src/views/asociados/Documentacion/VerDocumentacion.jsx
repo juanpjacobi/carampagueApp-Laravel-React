@@ -9,7 +9,6 @@ export const VerDocumentacion = () => {
   const navigate = useNavigate();
   
   const linea = useSelector(makeSelectLineaDocumentacionById(id));
-  console.log(linea)
 
   useEffect(() => {
     if (!linea) {

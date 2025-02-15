@@ -1,11 +1,11 @@
 import { useSelector } from "react-redux";
-import { ValorForm } from "../../components/clientes/valores/ValorForm";
 import {  useNavigate, useParams } from "react-router-dom";
 import { useEffect, useMemo } from "react";
-import { NotFound } from "../../components/shared/NotFound";
-import { makeSelectClienteById } from "../../store/selectors/ClientesSelectors";
+import { ValorForm } from "../../../components/clientes/valores/ValorForm";
+import { NotFound } from "../../../components/shared/NotFound";
+import { makeSelectClienteById } from "../../../store/selectors/ClientesSelectors";
 
-export const AdministrarCliente = () => {
+export const CrearValor = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const clienteId = parseInt(id, 10);
@@ -26,7 +26,8 @@ export const AdministrarCliente = () => {
 
   return (
     <div>
-      <h1>Administrar cliente</h1>
+            <h1 className="text-2xl underline-offset-8 text-sky-700 font-semibold text-center">
+            Crear valor</h1>
       <ValorForm selectedCliente={cliente} editMode={false}/>
     </div>
   );

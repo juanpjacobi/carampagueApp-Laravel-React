@@ -12,8 +12,6 @@ export const Asociados = () => {
   const {  hasLoaded } = useSelector((state) => state.asociados);
   const { isLoading } = useSelector((state) => state.ui);
 
-
-
   if (isLoading) {
     return <Spinner />;
   }

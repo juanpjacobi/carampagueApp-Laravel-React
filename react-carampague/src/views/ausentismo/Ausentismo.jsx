@@ -6,6 +6,7 @@ import { Alerta } from "../../components/shared/Alerta";
 import { AusentismoList } from "../../components/ausentismo/AusentismoList";
 import { useAsociados } from "../../hooks";
 import { selectAllLineasServicio } from "../../store/selectors/ServiciosSelectors";
+import { Info } from "../../components/shared/Info";
 
 export const Ausentismo = () => {
   const [month, setMonth] = useState("");
@@ -53,8 +54,6 @@ export const Ausentismo = () => {
     });
   }, [month, year, allLineas, selectedAsociado]);
 
-
-
   const handleToggleJustificado = (linea) => {
     // Llama a tu thunk para actualizar is_justificado en esa línea
     console.log("Toggle justificado para la línea:", linea.id);
@@ -64,21 +63,21 @@ export const Ausentismo = () => {
     <div>
       <h1 className="text-3xl underline underline-offset-8 text-sky-700 font-semibold text-center mb-5">
         Ausentismo
-      </h1>      
+      </h1>
       <div className="flex flex-col md:flex-row justify-between items-center">
         <div className="relative w-full md:w-1/3">
-        <span className="font-bold text-md">Seleccione un Asociado:</span>
+          <span className="font-bold text-md">Seleccione un Asociado:</span>
 
-        <AsociadoDropdown
-              asociadoQuery={asociadoQuery}
-              setAsociadoQuery={setAsociadoQuery}
-              filteredAsociados={filteredAsociados}
-              handleSelectAsociado={handleSelectAsociado}
-              handleDesasignarAsociado={handleDesasignarAsociado}
-              showDropdown={showDropdown}
-              setShowDropdown={setShowDropdown}
-              inputRef={inputRef}
-            />
+          <AsociadoDropdown
+            asociadoQuery={asociadoQuery}
+            setAsociadoQuery={setAsociadoQuery}
+            filteredAsociados={filteredAsociados}
+            handleSelectAsociado={handleSelectAsociado}
+            handleDesasignarAsociado={handleDesasignarAsociado}
+            showDropdown={showDropdown}
+            setShowDropdown={setShowDropdown}
+            inputRef={inputRef}
+          />
         </div>
         <MonthYearSelector
           month={month}
@@ -87,18 +86,22 @@ export const Ausentismo = () => {
           setYear={setYear}
         />
       </div>
-
-      <div>
-        
-        {filteredLineas.length > 0 ? (
-          <AusentismoList
-            lineas={filteredLineas}
-            onToggleJustificado={handleToggleJustificado}
-          />
-        ) : (
-          <Alerta error="No hay líneas de ausentismo para el período seleccionado." />
-        )}
-      </div>
+      {!month || !year ? (
+        <Info message={"Elige un periodo"} />
+      ) : (
+        <>
+          {filteredLineas.length > 0 ? (
+            <AusentismoList
+              lineas={filteredLineas}
+              onToggleJustificado={handleToggleJustificado}
+            />
+          ) : (
+            <div className="flex justify-center">
+              <Alerta error="No hay líneas de ausentismo para el período y asociado seleccionado." />
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 };
