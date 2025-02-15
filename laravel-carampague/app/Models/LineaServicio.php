@@ -137,55 +137,61 @@ class LineaServicio extends Model
         return $lineas;
     }
 
-    public static function copiarLineasParaPlanDiario($servicio, $fechaInicio, $fechaFin)
+    public static function copiarLineasParaPlanDiario($servicio, $fechaInicio, $fechaFin, $create = true)
     {
         $lineasCopiadas = [];
+        $omittedCount = 0;
 
         // Obtener todas las líneas planificadas en el rango de fechas
         $lineasPlanificadas = self::where('servicio_id', $servicio->id)
             ->whereDate('fecha', '>=', $fechaInicio->toDateString())
             ->whereDate('fecha', '<=', $fechaFin->toDateString())
-            ->where('is_planificado', true)  // Asegúrate de que sólo sean las planificadas
+            ->where('is_planificado', true)
             ->get();
 
         foreach ($lineasPlanificadas as $linea) {
-            // Verifica si la línea tiene un asociado_id
-            $asociadoId = $linea->asociado_id ?? null;  // Si no tiene, dejamos null
+            // Si la línea no tiene asociado, se omite
+            if (is_null($linea->asociado_id)) {
+                $omittedCount++;
+                continue;
+            }
 
-            // Validación para evitar duplicados: buscamos si ya existe una línea con los mismos datos en el plan diario
+            // Verificar duplicados: existe una línea similar en el plan diario
             $existeLinea = self::where('servicio_id', $linea->servicio_id)
                 ->whereDate('fecha', $linea->fecha)
                 ->where('hora_inicio', $linea->hora_inicio)
                 ->where('hora_fin', $linea->hora_fin)
-                ->where('is_planificado', false)  // Solo verificamos en plan diario (is_planificado = false)
+                ->where('is_planificado', false)
                 ->exists();
 
             if (!$existeLinea) {
-                // Crear una nueva línea para el plan diario
                 $nuevaLineaData = [
-                    'servicio_id' => $linea->servicio_id,
-                    'fecha' => $linea->fecha,
-                    'hora_inicio' => $linea->hora_inicio,
-                    'hora_fin' => $linea->hora_fin,
-                    'hora_real_inicio' => $linea->hora_real_inicio,
-                    'hora_real_fin' => $linea->hora_real_fin,
+                    'servicio_id'        => $linea->servicio_id,
+                    'fecha'              => $linea->fecha,
+                    'hora_inicio'        => $linea->hora_inicio,
+                    'hora_fin'           => $linea->hora_fin,
+                    'hora_real_inicio'   => $linea->hora_real_inicio,
+                    'hora_real_fin'      => $linea->hora_real_fin,
                     'horas_planificadas' => $linea->horas_planificadas,
-                    'horas_reales' => $linea->horas_reales,
-                    'is_planificado' => false,  // Es una línea de plan diario
-                    'is_validado' => true,  // Se valida directamente
-                    'linea_original_id' => $linea->id,  // Asignamos el ID de la línea original
-                    'asociado_id' => $asociadoId,  // Asignamos el asociado_id de la línea original
+                    'horas_reales'       => $linea->horas_reales,
+                    'is_planificado'     => false,
+                    'is_validado'        => true,
+                    'linea_original_id'  => $linea->id,
+                    'asociado_id'        => $linea->asociado_id,
                 ];
 
-                // Insertamos la nueva línea en la base de datos
-                $lineaCreada = self::generarLineasPlanDiario($nuevaLineaData);  // Aquí estamos usando el método para crear la línea
-
-                // Añadir la línea creada al array
-                $lineasCopiadas[] = $lineaCreada;
+                if ($create) {
+                    // Método real de creación (puede ser create() o un método propio)
+                    $lineaCreada = self::create($nuevaLineaData);
+                    $lineasCopiadas[] = $lineaCreada;
+                }
             }
         }
 
-        return $lineasCopiadas;
+        return [
+            'lineasCopiadas' => $lineasCopiadas,
+            'omittedCount'   => $omittedCount,
+        ];
     }
 
 
