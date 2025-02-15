@@ -112,33 +112,61 @@ class ServicioController extends Controller
     }
 
     public function generarLineasPlanDiario(Request $request, $id)
-    {
-        $data = $request->validate([
-            'fecha_inicio_servicio' => 'required|date',
-            'fecha_fin_servicio' => 'required|date',
-        ]);
+{
+    $data = $request->validate([
+        'fecha_inicio_servicio' => 'required|date',
+        'fecha_fin_servicio'    => 'required|date',
+    ]);
 
-        $servicio = Servicio::findOrFail($id);
-        $fechaInicio = Carbon::parse($data['fecha_inicio_servicio']);
-        $fechaFin = Carbon::parse($data['fecha_fin_servicio']);
+    $servicio = Servicio::findOrFail($id);
+    $fechaInicio = Carbon::parse($data['fecha_inicio_servicio']);
+    $fechaFin    = Carbon::parse($data['fecha_fin_servicio']);
 
-        // Llamamos al método que copia las líneas para el plan diario
-        $lineasCopiadas = LineaServicio::copiarLineasParaPlanDiario($servicio, $fechaInicio, $fechaFin);
-
-        if (empty($lineasCopiadas)) {
+    // Si no se confirma, realizamos una simulación sin crear las líneas reales.
+    if (!$request->has('confirm')) {
+        $resultado = LineaServicio::copiarLineasParaPlanDiario($servicio, $fechaInicio, $fechaFin, false);
+        $omittedCount = $resultado['omittedCount'];
+        // En la simulación, no se crean líneas, por lo que total generado es 0
+        if ($omittedCount > 0) {
             return response()->json([
-                'message' => 'No se generaron líneas nuevas para el plan diario.',
-                'lineas' => [],
-                'total' => 0,
+                'needsConfirmation' => true,
+                'omittedCount'      => $omittedCount,
+                'message'           => "Dentro del rango seleccionado se encontraron {$omittedCount} línea(s) sin asociado. ¿Desea continuar?",
+                'lineas'            => [],
+                'total'             => 0,
             ]);
         }
+        // Si no se omiten, continuar con la creación real
+    }
 
+    // Se confirma o no hay líneas omitidas: creamos las líneas reales
+    $resultado = LineaServicio::copiarLineasParaPlanDiario($servicio, $fechaInicio, $fechaFin, true);
+    $lineasCopiadas = $resultado['lineasCopiadas'];
+    $omittedCount   = $resultado['omittedCount'];
+    $countGenerated = count($lineasCopiadas);
+
+    if ($countGenerated === 0) {
         return response()->json([
-            'message' => 'Líneas de plan diario generadas exitosamente.',
-            'lineas' => LineaServicioResource::collection($lineasCopiadas),
-            'total' => count($lineasCopiadas),
+            'message' => 'No se generaron líneas nuevas para el plan diario.',
+            'lineas'  => [],
+            'total'   => 0,
+            'omitted' => $omittedCount,
         ]);
     }
+
+    $mensaje = "Se generaron {$countGenerated} línea(s) para el plan diario.";
+    if ($omittedCount > 0) {
+        $mensaje .= " Se omitieron {$omittedCount} línea(s) sin asociado.";
+    }
+
+    return response()->json([
+        'message' => $mensaje,
+        'lineas'  => LineaServicioResource::collection($lineasCopiadas),
+        'total'   => $countGenerated,
+        'omitted' => $omittedCount,
+    ]);
+}
+
 
 
 

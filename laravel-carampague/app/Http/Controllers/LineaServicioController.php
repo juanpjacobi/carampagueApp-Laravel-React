@@ -103,7 +103,14 @@ class LineaServicioController extends Controller
         $data = $request->validated();
         $linea = LineaServicio::findOrFail($id);
 
-        // Revertir lógica
+        // Evitar validar una línea sin asociado
+        if ($data['is_validado'] === true && empty($linea->asociado_id)) {
+            return response()->json([
+                'message' => 'No se puede validar una línea sin asociado.'
+            ], 422);
+        }
+
+        // Si se está revirtiendo la validación...
         if (isset($data['revertir']) && $data['revertir'] === true) {
             if ($linea->is_validado === false) {
                 DB::transaction(function () use ($linea) {
@@ -124,12 +131,12 @@ class LineaServicioController extends Controller
         $nuevaLinea = null;
         $motivoCreado= null;
 
-        // Crear nueva línea si es necesario
+        // Crear nueva línea si es necesario (por ejemplo, al invalidar)
         if ($data['is_validado'] === false && $data['crear_linea_real']) {
             $nuevaLinea = $linea->crearNuevaLinea();
         }
 
-        // Agregar motivo y actualizar is_justificadoy
+        // Agregar motivo y actualizar is_validado
         if (isset($data['tipo_motivo_id'])) {
             $motivoCreado = $linea->agregarMotivo([
                 'tipo_motivo_id' => $data['tipo_motivo_id'],
@@ -137,7 +144,6 @@ class LineaServicioController extends Controller
             ]);
         }
 
-        // Actualizar el campo is_validado
         $linea->update(['is_validado' => $data['is_validado']]);
 
         return response()->json([
@@ -145,9 +151,9 @@ class LineaServicioController extends Controller
             'linea' => new LineaServicioResource($linea),
             'nueva_linea' => $nuevaLinea ? new LineaServicioResource($nuevaLinea) : null,
             'motivo' => $motivoCreado ? new MotivoResource($motivoCreado) : null,
-
         ]);
     }
+
 
     public function toggleJustificado(Request $request, $id)
     {
