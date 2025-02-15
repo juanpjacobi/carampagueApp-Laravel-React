@@ -12,7 +12,6 @@ export const Cobertura = () => {
 
   const selectedServicio = useSelector(makeSelectServicioById(id));
 
-  // Obtenemos las líneas asociadas al servicio a partir del slice de lineasServicio
   const lineasServicio = useSelector(makeSelectLineasServicioByServicioId(id));
 
   useEffect(() => {
@@ -23,9 +22,7 @@ export const Cobertura = () => {
 
   if (!selectedServicio) return null;
 
-  // Filtramos las líneas que sean planificadas
   const lineasPlan = lineasServicio.filter((l) => l.is_planificado);
-  // Estados para el modal (crear/editar)
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [lineaData, setLineaData] = useState(null);
