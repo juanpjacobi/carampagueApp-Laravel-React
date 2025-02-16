@@ -10,6 +10,7 @@ import { FacturaResumen } from "../../components/facturas/FacturaResumen";
 import Swal from "sweetalert2";
 import { Info } from "../../components/shared/Info";
 import { ObjetivoDropdown } from "../../components/objetivos/ObjetivoDropDown";
+import { selectObjetivos } from "../../store/selectors/ObjetivosSelectors";
 
 export const Facturas = () => {
   const dispatch = useDispatch();
@@ -40,9 +41,7 @@ export const Facturas = () => {
 
   };
 
-  const objetivos = useSelector((state) =>
-    Object.values(state.objetivos.objetivos || {})
-  );
+  const objetivos = useSelector(selectObjetivos);
 
   const allLineas = useSelector(selectAllLineasServicioEnriquecidas);
 
