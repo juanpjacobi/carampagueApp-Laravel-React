@@ -1,7 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { mapObjetivoRealations } from "../../components/utilities/mappers/mapObjetivoRelations";
 
-const selectObjetivos = state => state.objetivos.objetivos;
+export const selectObjetivos = state => state.objetivos.objetivos;
 const selectClientes = state => state.clientes.clientes;
 const selectBarrios = state => state.ubicaciones.barrios;
 const selectLocalidades = state => state.ubicaciones.localidades;
