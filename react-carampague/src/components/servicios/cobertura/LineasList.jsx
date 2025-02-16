@@ -3,7 +3,11 @@ import { LineaListItem } from "./LineaListItem";
 
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { createCobertura, createPlanDiario } from "../../../store/thunks/ServiciosThunks";
+import {
+  createCobertura,
+  createPlanDiario,
+} from "../../../store/thunks/ServiciosThunks";
+import { Alerta } from "../../shared/Alerta";
 
 export const LineasList = ({
   lineas,
@@ -20,12 +24,13 @@ export const LineasList = ({
   const [fechaDesde, setFechaDesde] = useState(
     primerDiaMes.toISOString().split("T")[0]
   );
-  const [fechaHasta, setFechaHasta] = useState();
-  const [fechaInicioServicio, setFechaInicioServicio] = useState();
-  const [fechaFinServicio, setFechafinServicio] = useState();
+  const [fechaHasta, setFechaHasta] = useState("");
+  const [fechaInicioServicio, setFechaInicioServicio] = useState("");
+  const [fechaFinServicio, setFechafinServicio] = useState("");
   const [lineasFiltradas, setLineasFiltradas] = useState([]);
+  const [dateError, setDateError] = useState("");
 
-  const {feriados} = useSelector(state => state.feriados)
+  const { feriados } = useSelector((state) => state.feriados);
 
   useEffect(() => {
     handleFiltrar();
@@ -46,6 +51,21 @@ export const LineasList = ({
   };
 
   const handleGenerarLineas = async () => {
+    // Validar que ambas fechas del servicio estén definidas
+    if (!fechaInicioServicio || !fechaFinServicio) {
+      setDateError("Debe ingresar la fecha de inicio y fin del servicio.");
+      return;
+    }
+    // Validar que la fecha fin no sea menor que la fecha inicio
+    if (new Date(fechaFinServicio) < new Date(fechaInicioServicio)) {
+      setDateError(
+        "La fecha fin del servicio no puede ser menor que la fecha de inicio."
+      );
+      return;
+    }
+    // Si la validación es correcta, limpiar el error y proceder
+    setDateError("");
+
     const data = {
       fecha_inicio_servicio: fechaInicioServicio,
       fecha_fin_servicio: fechaFinServicio,
@@ -56,14 +76,28 @@ export const LineasList = ({
   };
 
   const handleGenerarPlanDiario = async () => {
+    // Validar que ambas fechas del servicio estén definidas
+    if (!fechaInicioServicio || !fechaFinServicio) {
+      setDateError("Debe ingresar la fecha de inicio y fin del servicio.");
+      return;
+    }
+    // Validar que la fecha fin no sea menor que la fecha inicio
+    if (new Date(fechaFinServicio) < new Date(fechaInicioServicio)) {
+      setDateError(
+        "La fecha fin del servicio no puede ser menor que la fecha de inicio."
+      );
+      return;
+    }
+    // Si la validación es correcta, limpiar el error y proceder
+    setDateError("");
     const data = {
       fecha_inicio_servicio: fechaInicioServicio,
       fecha_fin_servicio: fechaFinServicio,
     };
-  
+
     const theId = servicioId || id;
     if (!theId) return;
-  
+
     await dispatch(createPlanDiario(data, theId));
   };
   return (
@@ -73,7 +107,13 @@ export const LineasList = ({
           <h1 className="text-3xl text-sky-700 font-semibold text-center mb-5">
             Cobertura (Servicio)
           </h1>
+          <div className="flex justify-center">
+
+          {dateError && <Alerta error={dateError} />}
+          </div>
+
           <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-3">
+            
             <div className="flex items-end  gap-2">
               <div className="flex flex-col">
                 <label
@@ -92,6 +132,7 @@ export const LineasList = ({
               </div>
 
               <div className="flex flex-col">
+                
                 <label
                   htmlFor="fechaHasta"
                   className="text-sm font-medium text-slate-700"
@@ -114,9 +155,12 @@ export const LineasList = ({
                 Filtrar
               </button>
             </div>
-            <div className="p-2"></div>
+            <div>
+              
+            </div>
             <div className="flex items-end  gap-2">
               <div className="flex flex-col">
+                
                 <label
                   htmlFor="fechaInicioServicio"
                   className="text-sm font-medium text-slate-700"

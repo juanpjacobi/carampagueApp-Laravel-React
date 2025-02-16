@@ -1,25 +1,33 @@
+// MonthYearSelector.jsx
+import React from "react";
 
 const MonthYearSelector = ({ month, year, setMonth, setYear }) => {
-    const handleChange = (e) => {
-      const [yearSelected, monthSelected] = e.target.value.split("-");
-      setMonth(monthSelected);
-      setYear(yearSelected);
-    };
-  
-    return (
-      <div className="flex flex-col items-center space-y-2 md:space-y-0 md:space-x-3">
-          <span className="font-bold text-md">Seleccione el Periodo:</span>
+  const value = month && year ? `${year}-${month.padStart(2, "0")}` : "";
 
-        <input
-          id="monthYear"
-          type="month"
-          value={`${year}-${month}`} 
-          onChange={handleChange}
-          className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-    );
+  const handleChange = (e) => {
+    const newValue = e.target.value; 
+    if (newValue) {
+      const [selectedYear, selectedMonth] = newValue.split("-");
+      setYear(selectedYear);
+      setMonth(selectedMonth);
+    } else {
+      setYear("");
+      setMonth("");
+    }
   };
-  
-  export default MonthYearSelector;
+
+  return (
+    <input
+      type="month"
+      value={value}
+      onChange={handleChange}
+      className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+  );
+};
+
+export default MonthYearSelector;
+
+
+
   

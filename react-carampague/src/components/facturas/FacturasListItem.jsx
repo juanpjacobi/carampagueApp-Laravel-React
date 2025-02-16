@@ -1,15 +1,15 @@
 import { formatFechaConDia } from "../utilities/hora-formatter/horaFormatter";
 import { useServicioObjetivo, useValorHora } from "../../hooks";
 import { useSelector } from "react-redux";
+import clsx from "clsx";
 
 export const FacturasListItem = ({ linea }) => {
   const { servicios } = useSelector((state) => state.servicios);
   const { asociados } = useSelector((state) => state.asociados);
-const asociado = asociados.find((asoc) => asoc.id === linea.asociado_id)
+  const asociado = asociados.find((asoc) => asoc.id === linea.asociado_id);
   const { nombreObjetivo } = useServicioObjetivo(linea, servicios);
-  const periodo = `${linea.fecha.slice(0, 4)}-${linea.fecha.slice(5, 7)}`; 
-
-  const valorHora = useValorHora(linea.servicio_id, periodo, 'cliente'); 
+  const periodo = `${linea.fecha.slice(0, 4)}-${linea.fecha.slice(5, 7)}`;
+  const valorHora = useValorHora(linea.servicio_id, periodo, "cliente");
 
   return (
     <tr
@@ -28,9 +28,17 @@ const asociado = asociados.find((asoc) => asoc.id === linea.asociado_id)
 
       <>
         <td className="p-2 border-b flex justify-between border-slate-300 md:border-none text-left md:table-cell">
-          <span className="inline-block w-1/3 md:hidden font-bold">Asociado</span>
-          <div className="mt-1">
-            {`${asociado.nombre} ${asociado.apellido} `} 
+          <span className="inline-block w-1/3 md:hidden font-bold">
+            Asociado
+          </span>
+          <div
+            className={clsx("mt-1", {
+              "text-red-600 font-bold": !asociado,
+            })}
+          >
+            {asociado
+              ? `${asociado.nombre} ${asociado.apellido} `
+              : "Asociado sin asignar"}
           </div>
         </td>
         <td className="p-2 border-b flex justify-between border-slate-300 md:border-none text-left md:table-cell">
@@ -64,12 +72,9 @@ const asociado = asociados.find((asoc) => asoc.id === linea.asociado_id)
           Valor hora
         </span>
         {valorHora ? `$ ${valorHora.toLocaleString()}` : "00.00"}
-
       </td>
       <td className="p-2 border-b flex justify-between border-slate-300 md:border-none text-left md:table-cell">
-        <span className="inline-block w-1/3 md:hidden font-bold">
-          Subtotal
-        </span>
+        <span className="inline-block w-1/3 md:hidden font-bold">Subtotal</span>
         {valorHora && linea.horas_planificadas
           ? `$ ${(valorHora * linea.horas_planificadas).toLocaleString()}`
           : "00.00"}

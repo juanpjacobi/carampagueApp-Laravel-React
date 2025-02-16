@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useMotivos } from "../../hooks";
 import { MotivoModal } from "../servicios/MotivoModal";
 import { toggleJustificado } from "../../store/thunks/LineasServiciosThunks";
+import { makeSelectMotivosByLineaId } from "../../store/selectors/MotivosSelectors";
 
 export const AusentismoListItem = ({
   linea,
@@ -11,10 +12,8 @@ export const AusentismoListItem = ({
 }) => {
     const dispatch = useDispatch();
 
-    const motivos = useSelector((state) => Object.values(state.motivos.motivos || {}));
-    const motivosForLinea = motivos.filter(
-        (motivo) => Number(motivo.linea_servicio_id) === Number(linea.id)
-      );
+    const motivosForLinea = useSelector(makeSelectMotivosByLineaId(linea.id));
+
 
       const tieneMotivo = motivosForLinea.length > 0;
       const asociados = useSelector((state) => state.asociados.asociados);

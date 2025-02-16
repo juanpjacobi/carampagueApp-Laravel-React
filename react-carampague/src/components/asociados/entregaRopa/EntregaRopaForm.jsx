@@ -12,6 +12,8 @@ import { makeSelectEntregaRopaById } from "../../../store/selectors/EntregaRopaS
 import { makeSelectLineasEnriquecidasByEntregaRopaId } from "../../../store/selectors/LineasEntregaRopaSelectors";
 import { mapLineaEntregaRopa } from "../../utilities/mappers/mapLineaEntregaRopa";
 import { createEntregaRopa, updateEntregaRopa } from "../../../store/thunks/EntregaRopathunks";
+import isEqual from "lodash.isequal";
+
 
 export const EntregaRopaForm = ({ editMode }) => {
   const { id } = useParams(); 
@@ -24,11 +26,15 @@ export const EntregaRopaForm = ({ editMode }) => {
     ? useSelector(makeSelectEntregaRopaById(entregaRopaId))
     : null;
   
-  const selectLineasEnriquecidas = useMemo(
-    () => (entregaRopaId ? makeSelectLineasEnriquecidasByEntregaRopaId(entregaRopaId) : () => []),
-    [entregaRopaId]
-  );
-  const enrichedLineas = useSelector(selectLineasEnriquecidas);
+    const selectLineasEnriquecidas = useMemo(
+      () =>
+        entregaRopaId
+          ? makeSelectLineasEnriquecidasByEntregaRopaId(entregaRopaId)
+          : () => [],
+      [entregaRopaId]
+    );
+    // Usamos isEqual para evitar que se genere un nuevo array si no hay cambios
+    const enrichedLineas = useSelector(selectLineasEnriquecidas, isEqual);
   
   // Obtenemos las listas de prendas, tipos de prendas y talles de una sola vez
   const { prendas, tiposPrendas, talles } = useSelector((state) => state.prendas);
