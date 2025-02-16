@@ -5,14 +5,32 @@ import { Alerta } from "../../components/shared/Alerta";
 import { selectAllFacturas } from "../../store/selectors/FacturasSelectors";
 import { FacturaClienteList } from "../../components/facturas/FacturaClienteList";
 import { Info } from "../../components/shared/Info";
-
+import { ClienteDropdown } from "../../components/clientes/ClienteDropDown";
+import { useClientes } from "../../hooks";
 
 export const AllFacturas = () => {
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
-  const [selectedCliente, setSelectedCliente] = useState(null);
 
   const { clientes } = useSelector((state) => state.clientes);
+  const {
+    clienteQuery,
+    setClienteQuery,
+    filteredClientes,
+    showDropdown,
+    setShowDropdown,
+    inputRef,
+    clienteSeleccionado,
+  } = useClientes(null);
+
+  const handleSelectCliente = (id, razon_social) => {
+    setClienteQuery(razon_social);
+    setShowDropdown(false);
+  };
+
+  const handleDesasignarCliente = () => {
+    setClienteQuery("");
+  };
 
   const allFacturas = useSelector(selectAllFacturas);
 
@@ -23,20 +41,20 @@ export const AllFacturas = () => {
     if (!month || !year) return [];
     return allFacturas.filter((factura) => {
       const matchPeriodo = factura.periodo === targetPeriod;
-      if (selectedCliente) {
+      if (clienteSeleccionado) {
         return (
           matchPeriodo &&
-          Number(factura.cliente_id) === Number(selectedCliente.id)
+          Number(factura.cliente_id) === Number(clienteSeleccionado.id)
         );
       }
       return matchPeriodo;
     });
-  }, [allFacturas, selectedCliente, month, year]);
+  }, [allFacturas, clienteSeleccionado, month, year]);
 
   const handleClienteChange = (e) => {
     const id = e.target.value;
     const cli = clientes.find((c) => Number(c.id) === Number(id));
-    setSelectedCliente(cli || null);
+    setclienteSeleccionado(cli || null);
   };
 
   return (
@@ -47,18 +65,15 @@ export const AllFacturas = () => {
       <div className="flex flex-col md:flex-row justify-between items-center">
         <div className="relative w-full md:w-1/3">
           <label className="font-bold text-md">Seleccione un cliente:</label>
-          <select
-            value={selectedCliente ? selectedCliente.id : ""}
-            onChange={handleClienteChange}
-            className="w-full p-2 border rounded"
-          >
-            <option value="">-- Seleccione un cliente --</option>
-            {clientes.map((cli) => (
-              <option key={cli.id} value={cli.id}>
-                {cli.razon_social}
-              </option>
-            ))}
-          </select>
+          <ClienteDropdown
+            clienteQuery={clienteQuery}
+            setClienteQuery={setClienteQuery}
+            filteredClientes={filteredClientes}
+            handleSelectCliente={handleSelectCliente}
+            handleDesasignarCliente={handleDesasignarCliente}
+            showDropdown={showDropdown}
+            setShowDropdown={setShowDropdown}
+          />
         </div>
         <MonthYearSelector
           month={month}
@@ -70,21 +85,19 @@ export const AllFacturas = () => {
       {!month || !year ? (
         <Info message={"Elige un periodo"} />
       ) : (
-      <div>
-        {filteredFacturas.length > 0 ? (
-          <div className="flex flex-col mt-2">
-            <FacturaClienteList facturas={filteredFacturas} />
-          </div>
-        ) : (
-          <div className="flex justify-center mt-2">
-            <Alerta
-              error={
-                "No hay recibos para el periodo/cliente seleccionado."
-              }
-            />
-          </div>
-        )}
-      </div>
+        <div>
+          {filteredFacturas.length > 0 ? (
+            <div className="flex flex-col mt-2">
+              <FacturaClienteList facturas={filteredFacturas} />
+            </div>
+          ) : (
+            <div className="flex justify-center mt-2">
+              <Alerta
+                error={"No hay recibos para el periodo/cliente seleccionado."}
+              />
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

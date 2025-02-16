@@ -15,7 +15,7 @@ export const EntregaRopa = () => {
   if (hasLoaded && entregaRopa.length === 0) {
     return (
       <Empty
-        message={"Aun no hay asociados registrados, crea uno para continuar"}
+        message={"Aun no hay entregas de ropa registradas, crea una para continuar"}
         link={`/asociados/${id}/entrega-ropa/crear`}      />
     );
   }

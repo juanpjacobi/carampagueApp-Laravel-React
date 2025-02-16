@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useValoresMapping } from "../../hooks";
+import { useObjetivos, useValoresMapping } from "../../hooks";
 import MonthYearSelector from "../../components/utilities/month-year-selector/MonthYearSelector";
 import { Alerta } from "../../components/shared/Alerta";
 import { selectAllLineasServicioEnriquecidas } from "../../store/selectors/ServiciosSelectors";
@@ -9,12 +9,36 @@ import { FacturasList } from "../../components/facturas/FacturasList";
 import { FacturaResumen } from "../../components/facturas/FacturaResumen";
 import Swal from "sweetalert2";
 import { Info } from "../../components/shared/Info";
+import { ObjetivoDropdown } from "../../components/objetivos/ObjetivoDropDown";
 
 export const Facturas = () => {
   const dispatch = useDispatch();
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
-  const [selectedObjetivo, setSelectedObjetivo] = useState(null);
+  const {
+    objetivoQuery,
+    setObjetivoQuery,
+    filteredObjetivos,
+    showDropdown,
+    setShowDropdown,
+    inputRef,
+    objetivoSeleccionado,
+    setObjetivoSeleccionado,
+  } = useObjetivos(null);
+
+  const handleSelectObjetivo = (id, nombre) => {
+    const obj = objetivos.find((o) => Number(o.id) === Number(id));
+    setObjetivoQuery(nombre);
+    setObjetivoSeleccionado(obj); 
+
+    setShowDropdown(false);
+  };
+
+  const handleDesasignarObjetivo = () => {
+    setObjetivoQuery("");
+    setObjetivoSeleccionado(null);
+
+  };
 
   const objetivos = useSelector((state) =>
     Object.values(state.objetivos.objetivos || {})
@@ -26,17 +50,17 @@ export const Facturas = () => {
   const targetPeriod = `${year}-${formattedMonth}`;
 
   const filteredLineas = useMemo(() => {
-    if (!selectedObjetivo || !month || !year) return [];
+    if (!objetivoSeleccionado || !month || !year) return [];
     return allLineas.filter((linea) => {
       const [anio, mes] = linea.fecha.split("-");
       const lineaPeriod = `${anio}-${mes}`;
       return (
-        Number(linea.servicio.objetivo_id) === Number(selectedObjetivo.id) &&
+        Number(linea.servicio.objetivo_id) === Number(objetivoSeleccionado.id) &&
         lineaPeriod === targetPeriod &&
         linea.is_planificado === true
       );
     });
-  }, [selectedObjetivo, month, year, allLineas]);
+  }, [objetivoSeleccionado, month, year, allLineas]);
 
   const uniqueServiceIds = useMemo(() => {
     const ids = new Set();
@@ -75,7 +99,7 @@ export const Facturas = () => {
   }, [filteredLineas]);
 
   const handleGenerarFactura = async () => {
-    if (!selectedObjetivo || !month || !year) {
+    if (!objetivoSeleccionado || !month || !year) {
       Swal.fire({
         icon: "error",
         title: "Debe seleccionar un objetivo y un período válido",
@@ -85,8 +109,8 @@ export const Facturas = () => {
     }
 
     const payload = {
-      objetivo_id: selectedObjetivo.id,
-      cliente_id: selectedObjetivo.cliente_id,
+      objetivo_id: objetivoSeleccionado.id,
+      cliente_id: objetivoSeleccionado.cliente_id,
       periodo: `${year}-${month.padStart(2, "0")}`,
       linea_ids,
     };
@@ -94,11 +118,7 @@ export const Facturas = () => {
     const factura = await dispatch(createFactura(payload));
   };
 
-  const handleObjetivoChange = (e) => {
-    const id = e.target.value;
-    const obj = objetivos.find((o) => Number(o.id) === Number(id));
-    setSelectedObjetivo(obj || null);
-  };
+
 
   return (
     <div>
@@ -108,18 +128,16 @@ export const Facturas = () => {
       <div className="flex flex-col md:flex-row justify-between items-center">
         <div className="relative w-full md:w-1/3">
           <label className="font-bold text-md">Seleccione un Objetivo:</label>
-          <select
-            value={selectedObjetivo ? selectedObjetivo.id : ""}
-            onChange={handleObjetivoChange}
-            className="w-full p-2 border rounded"
-          >
-            <option value="">-- Seleccione un Objetivo --</option>
-            {objetivos.map((obj) => (
-              <option key={obj.id} value={obj.id}>
-                {obj.nombre}
-              </option>
-            ))}
-          </select>
+          <ObjetivoDropdown
+            objetivoQuery={objetivoQuery}
+            setObjetivoQuery={setObjetivoQuery}
+            filteredObjetivos={filteredObjetivos}
+            handleSelectObjetivo={handleSelectObjetivo}
+            handleDesasignarObjetivo={handleDesasignarObjetivo}
+            showDropdown={showDropdown}
+            setShowDropdown={setShowDropdown}
+            inputRef={inputRef}
+          />
         </div>
         <MonthYearSelector
           month={month}
@@ -128,7 +146,7 @@ export const Facturas = () => {
           setYear={setYear}
         />
       </div>
-      {!selectedObjetivo || !month || !year ? (
+      {!objetivoSeleccionado || !month || !year ? (
         <Info message={"Elige un periodo y un objetivo"} />
       ) : (
         <>
