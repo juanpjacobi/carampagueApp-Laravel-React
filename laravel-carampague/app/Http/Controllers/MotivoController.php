@@ -6,6 +6,7 @@ use App\Http\Resources\LineaServicioResource;
 use App\Http\Resources\MotivoCollection;
 use App\Models\LineaServicio;
 use App\Models\Motivo;
+use App\Models\TipoMotivo;
 use Illuminate\Http\Request;
 
 class MotivoController extends Controller
@@ -63,22 +64,36 @@ class MotivoController extends Controller
     {
         //
     }
-
     public function update(Request $request, $id)
     {
         $data = $request->validate([
             'tipo_motivo_id' => 'required|exists:tipos_motivos,id',
-            'observaciones' => 'nullable|string|max:255',
+            'observaciones'  => 'nullable|string|max:255',
         ]);
 
         $motivo = Motivo::findOrFail($id);
         $motivo->update($data);
 
+        // Obtener el nuevo tipo de motivo para conocer si es pagable
+        $tipoMotivo = \App\Models\TipoMotivo::find($data['tipo_motivo_id']);
+        $updatedLinea = null;
+
+        // Si el motivo está vinculado a una línea, actualizamos is_justificado
+        if ($motivo->lineaServicio) {
+            $motivo->lineaServicio->update([
+                'is_justificado' => $tipoMotivo->is_pagable ? true : false,
+            ]);
+            $updatedLinea = $motivo->lineaServicio;
+        }
+
         return response()->json([
             'message' => 'Motivo actualizado correctamente.',
-            'motivo' => $motivo,
+            'motivo'  => $motivo,
+            'linea'   => $updatedLinea ? new LineaServicioResource($updatedLinea) : null,
         ]);
     }
+
+
 
 
     /**
