@@ -7,7 +7,7 @@ export const useValoresMapping = (serviceIds, periodo, mode = "vigilador") => {
   // Obtenemos todos los servicios (como arreglo) usando el selector
   const servicios = useSelector(selectAllServicios);
   // Obtenemos los objetivos (se asume que están normalizados en el slice "objetivos")
-  const objetivos = useSelector((state) => Object.values(state.objetivos.objetivos || {}));
+  const objetivos = useSelector((state) => state.objetivos.objetivos);
   // Obtenemos los valores desde el slice "valores" (se espera que sean un arreglo)
   const valores = useSelector((state) => state.valores.valores);
 

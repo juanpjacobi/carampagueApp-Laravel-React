@@ -10,5 +10,9 @@ export { useHorasReales } from "./useHorasReales";
 export { useMotivos } from "./useMotivos";
 export { useValidacionLinea } from "./useValidacionLinea";
 export { useValorHora } from "./useValorHora";
+export { useClientes } from "./useClientes";
+export { useObjetivos } from "./useObjetivos";
+
+
 
 
