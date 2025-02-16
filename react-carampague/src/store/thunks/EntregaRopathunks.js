@@ -102,7 +102,6 @@ export const createEntregaRopa = (entregaData, navigate) => {
       dispatch(addEntregaRopa(data.entregaRopa));
       if (data.entregaRopa.id) {
         dispatch(getLineasPorEntrega(data.entregaRopa.id));
-        console.log(data.entregaRopa.id)
       }
       await Swal.fire({
         icon: "success",
