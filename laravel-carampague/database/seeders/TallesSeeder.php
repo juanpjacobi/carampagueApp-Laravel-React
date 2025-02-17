@@ -15,7 +15,7 @@ class TallesSeeder extends Seeder
     public function run(): void
     {
         DB::table('talles')->insert([
-            'nombre_talle' => '42',
+            'nombre_talle' => '40',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);

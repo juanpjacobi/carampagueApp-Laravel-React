@@ -13,7 +13,7 @@ class FeriadoSeeder extends Seeder
      */
     public function run(): void
     {
-        $startDate = Carbon::create(2024, 12, 10);
+        $startDate = Carbon::create(2025, 02, 01);
 
         for ($i = 1; $i <= 5; $i++) {
             $randomDays = rand(0, 60);
