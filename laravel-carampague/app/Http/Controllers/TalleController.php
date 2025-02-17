@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\TalleCollection;
+use App\Http\Resources\TalleResource;
 use App\Models\Talle;
 use Illuminate\Http\Request;
 
@@ -17,20 +18,16 @@ class TalleController extends Controller
         return response(['talles' => $talles], 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'nombre_talle' => 'required|string|max:255',
+            // Agrega otros campos si es necesario
+        ]);
+
+        $talle = Talle::create($data);
+
+        return response()->json(['talle' => new TalleResource($talle)], 201);
     }
 
     /**
@@ -38,15 +35,7 @@ class TalleController extends Controller
      */
     public function show(Talle $talle)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Talle $talle)
-    {
-        //
+        return response()->json(['talle' => new TalleResource($talle)], 200);
     }
 
     /**
@@ -54,7 +43,13 @@ class TalleController extends Controller
      */
     public function update(Request $request, Talle $talle)
     {
-        //
+        $data = $request->validate([
+            'nombre_talle' => 'required|string|max:255',
+        ]);
+
+        $talle->update($data);
+
+        return response()->json(['talle' => new TalleResource($talle)], 200);
     }
 
     /**
@@ -62,6 +57,7 @@ class TalleController extends Controller
      */
     public function destroy(Talle $talle)
     {
-        //
+        $talle->delete();
+        return response()->json(['message' => 'Talle eliminado correctamente.'], 200);
     }
 }
