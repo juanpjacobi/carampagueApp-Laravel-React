@@ -20,6 +20,8 @@ export { EditarValor } from "./clientes/valores/EditarValor";
 export { EntregaRopa } from "./asociados/EntregaRopa/EntregaRopa";
 export { Objetivos } from "./objetivos/Objetivos";
 export { PlanDiario } from "./planes_diarios/PlanDiario";
+export { Prendas } from "./prendas/Prendas";
+
 export { RegistrarDocumentacionAsociado } from "./asociados/Documentacion/RegistrarDocumentacionAsociado";
 export { RegistrarEntregaRopa } from "./asociados/EntregaRopa/RegistrarEntregaRopa";
 export { Servicios } from "./servicios/Servicios";
