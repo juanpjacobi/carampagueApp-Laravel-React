@@ -80,6 +80,7 @@ export const NavBar = () => {
       title: "Admin",
       items: [
         { to: "/usuarios", label: "Usuarios" },
+        { to: "/prendas", label: "Prendas" },
       ],
     },
   ];
