@@ -33,7 +33,6 @@ export const ValorForm = ({ selectedCliente, editMode }) => {
     cliente_id: selectedCliente.id,
   };
 
-  console.log({ initialState });
   const handleSubmit = () => {
     if (!editMode) {
       if (isApplyToObjective && !formik.values.objetivo_id) {

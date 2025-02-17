@@ -17,12 +17,16 @@ const MonthYearSelector = ({ month, year, setMonth, setYear }) => {
   };
 
   return (
-    <input
-      type="month"
-      value={value}
-      onChange={handleChange}
-      className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+    <div className="flex flex-col">
+          <span className="font-bold text-md">Periodo:</span>
+
+      <input
+        type="month"
+        value={value}
+        onChange={handleChange}
+        className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+    </div>
   );
 };
 
