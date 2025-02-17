@@ -19,6 +19,7 @@ import {
   CarpetasMedicasRouter,
   FacturasRouter
 } from "./index";
+import { PrendasRouter } from "./PrendasRouter";
 
 const router = createBrowserRouter([
   {
@@ -81,6 +82,10 @@ const router = createBrowserRouter([
           {
             path: "/facturas/*",
             element: <FacturasRouter />,
+          },
+          {
+            path: "/prendas/*",
+            element: <PrendasRouter />,
           },
         ],
       },
