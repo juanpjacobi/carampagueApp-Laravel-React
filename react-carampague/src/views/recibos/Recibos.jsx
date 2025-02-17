@@ -59,7 +59,7 @@ export const Recibos = () => {
       </h1>
       <div className="flex flex-col md:flex-row justify-between items-center">
         <div className="relative w-full md:w-1/3">
-          <span className="font-bold text-md">Seleccione un Asociado:</span>
+          <span className="font-bold text-md">Asociado:</span>
           <AsociadoDropdown
             asociadoQuery={asociadoQuery}
             setAsociadoQuery={setAsociadoQuery}

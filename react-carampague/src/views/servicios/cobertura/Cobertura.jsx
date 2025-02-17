@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { LineasList } from "../../../components/servicios/cobertura/LineasList";
 import { AddLineaModal } from "../../../components/servicios/AddLineaModal";
-import { makeSelectLineasServicioByServicioId, makeSelectServicioById } from "../../../store/selectors/ServiciosSelectors";
+import { makeSelectLineasServicioByServicioId, makeSelectServicioById, selectSortedLineasPlanEnriquecidas } from "../../../store/selectors/ServiciosSelectors";
 
 export const Cobertura = () => {
   const { id } = useParams(); // id del servicio
@@ -12,7 +12,7 @@ export const Cobertura = () => {
 
   const selectedServicio = useSelector(makeSelectServicioById(id));
 
-  const lineasServicio = useSelector(makeSelectLineasServicioByServicioId(id));
+  const lineasServicio = useSelector(selectSortedLineasPlanEnriquecidas);
 
   useEffect(() => {
     if (!selectedServicio) {

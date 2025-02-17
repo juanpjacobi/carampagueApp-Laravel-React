@@ -1,34 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getPrendas,
   createPrenda,
   updatePrenda,
   createTalle,
   createTipoPrenda,
-  getTalles,
-  getTiposPrendas,
+
 } from "../../store/thunks/PrendasThunks";
 
 import { Alerta } from "../../components/shared/Alerta";
-import {selectEnrichedPrendas} from "../../store/selectors/PrendasSelectors";
+import { selectSortedPrendas} from "../../store/selectors/PrendasSelectors";
 
 
 export const Prendas = () => {
   const dispatch = useDispatch();
 
-  // Usamos el selector enriquecido para obtener las prendas con información completa
-  const enrichedPrendas = useSelector(selectEnrichedPrendas);
+  const enrichedPrendas = useSelector(selectSortedPrendas);
   const tiposPrendas = useSelector((state) => state.prendas.tiposPrendas);
   const talles = useSelector((state) => state.prendas.talles);
 
-  // Estado para el formulario de agregar nueva prenda (ingresamos nombre de tipo y talle como texto)
   const [tipoInput, setTipoInput] = useState("");
   const [talleInput, setTalleInput] = useState("");
   const [stock, setStock] = useState("");
   const [error, setError] = useState("");
 
-  // Estados para actualizar el stock de una prenda existente
   const [editingPrenda, setEditingPrenda] = useState(null);
   const [newStock, setNewStock] = useState("");
 
@@ -209,7 +204,7 @@ export const Prendas = () => {
                     {prenda.talle ? prenda.talle.nombre_talle : prenda.talle_id}
                   </td>
                   <td className="border p-2">{prenda.stock}</td>
-                  <td className="border p-2">
+                  <td className="flex border p-2 justify-center">
                     <button
                       onClick={() => handleEditClick(prenda)}
                       className="bg-green-500 text-white px-3 py-1 rounded"

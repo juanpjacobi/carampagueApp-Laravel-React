@@ -64,7 +64,7 @@ export const AllFacturas = () => {
       </h1>
       <div className="flex flex-col md:flex-row justify-between items-center">
         <div className="relative w-full md:w-1/3">
-          <label className="font-bold text-md">Seleccione un cliente:</label>
+          <label className="font-bold text-md">Cliente:</label>
           <ClienteDropdown
             clienteQuery={clienteQuery}
             setClienteQuery={setClienteQuery}

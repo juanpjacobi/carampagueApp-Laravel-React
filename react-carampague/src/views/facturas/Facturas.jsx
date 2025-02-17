@@ -126,7 +126,7 @@ export const Facturas = () => {
       </h1>
       <div className="flex flex-col md:flex-row justify-between items-center">
         <div className="relative w-full md:w-1/3">
-          <label className="font-bold text-md">Seleccione un Objetivo:</label>
+          <label className="font-bold text-md">Objetivo:</label>
           <ObjetivoDropdown
             objetivoQuery={objetivoQuery}
             setObjetivoQuery={setObjetivoQuery}

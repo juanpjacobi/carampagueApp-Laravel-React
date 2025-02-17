@@ -123,14 +123,14 @@ export const Ajustes = () => {
   }, [filteredAjustes]);
 
   return (
-    <div className="p-4">
+    <div>
       <h1 className="text-3xl underline underline-offset-8 text-sky-700 font-semibold text-center mb-5">
         Gestión de Ajustes
       </h1>
 
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
         <div className="relative w-full md:w-1/3">
-          <span className="font-bold text-md">Seleccione un Asociado:</span>
+          <span className="font-bold text-md">Asociado:</span>
           <AsociadoDropdown
             asociadoQuery={asociadoQuery}
             setAsociadoQuery={setAsociadoQuery}
@@ -142,7 +142,7 @@ export const Ajustes = () => {
             inputRef={inputRef}
           />
         </div>
-        <div className="w-full md:w-1/3 text-center">
+        <div className="w-full md:w-1/3">
           <MonthYearSelector
             month={month}
             year={year}
@@ -152,7 +152,7 @@ export const Ajustes = () => {
         </div>
 
         <div className="w-full md:w-1/3">
-          <span className="font-bold text-md">Filtrar por Concepto:</span>
+          <span className="font-bold text-md">Concepto:</span>
           <select
             className="w-full border border-gray-300 rounded p-2"
             value={selectedTipo ? selectedTipo.id : ""}
@@ -176,7 +176,10 @@ export const Ajustes = () => {
         </div>
       </div>
       {!month || !year ? (
-        <Info message={"Elige un periodo"} />
+        <div className="flex justify-center">
+
+          <Info message={"Elige un periodo"} />
+        </div>
       ) : (
         <>
           <div className="flex items-center justify-center my-10">
