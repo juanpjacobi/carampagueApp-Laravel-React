@@ -1,6 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
 
-// Selectores base (suponiendo que tus slices tienen arrays para prendas, tiposPrendas y talles)
 const selectPrendasEntities = (state) => state.prendas.prendas;
 const selectTiposPrendasEntities = (state) => state.prendas.tiposPrendas;
 const selectTallesEntities = (state) => state.prendas.talles;
@@ -13,9 +12,20 @@ export const selectEnrichedPrendas = createSelector(
       const talle = talles.find((t) => t.id === prenda.talle_id);
       return {
         ...prenda,
-        tipo_prenda: tipo,  // Agregamos la información completa del tipo
-        talle: talle,       // Agregamos la información completa del talle
+        tipo_prenda: tipo,
+        talle: talle,
       };
+    });
+  }
+);
+
+export const selectSortedPrendas = createSelector(
+  [selectEnrichedPrendas],
+  (prendas) => {
+    return [...prendas].sort((a, b) => {
+      if (a.tipo_prenda?.id < b.tipo_prenda?.id) return -1;
+      if (a.tipo_prenda?.id > b.tipo_prenda?.id) return 1;
+      return (a.talle?.id || 0) - (b.talle?.id || 0);
     });
   }
 );

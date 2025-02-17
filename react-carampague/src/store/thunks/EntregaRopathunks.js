@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import { setEntregaRopa, addEntregaRopa, updateEntregaRopaEnStore } from "../slices/EntregaRopaSlice";
 import { setError, startLoading, endLoading } from "../slices/UiSlice";
 import {  setLineasEntregaRopa } from "../slices/LineasEntregaRopaSlice";
+import { getPrendas } from "./PrendasThunks";
 
 
 
@@ -103,6 +104,7 @@ export const createEntregaRopa = (entregaData, navigate) => {
       if (data.entregaRopa.id) {
         dispatch(getLineasPorEntrega(data.entregaRopa.id));
       }
+      dispatch(getPrendas());
       await Swal.fire({
         icon: "success",
         title: "¡Éxito!",
@@ -136,6 +138,7 @@ export const updateEntregaRopa = (entregaId, entregaData, navigate) => {
         dispatch(getLineasPorEntrega(data.entregaRopa.id));
         console.log(data.entregaRopa.id)
       }
+      dispatch(getPrendas());
       await Swal.fire({
         icon: "success",
         title: "¡Éxito!",

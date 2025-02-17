@@ -88,3 +88,12 @@ export const makeSelectServicioById = (servicioId) =>
           });
         }
       );
+
+      export const selectSortedLineasPlanEnriquecidas = createSelector(
+        [selectAllLineasServicioEnriquecidas],
+        (lineas) => {
+          return lineas
+            .filter((l) => l.is_planificado)
+            .sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+        }
+      );
