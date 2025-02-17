@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Prenda extends Model
 {
+
     protected $fillable = ['stock', 'tipo_prenda_id', 'talle_id'];
 
 
