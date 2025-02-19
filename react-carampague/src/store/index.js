@@ -20,6 +20,7 @@ import {
   ObjetivosSlice,
   PrendasSlice,
   RecibosSlice,
+  RolesSlice,
   ServiciosSlice,
   TiposAjustesSlice,
   TiposDocumentacionSlice,
@@ -27,6 +28,7 @@ import {
   TiposTelefonosSlice,
   UbicacionesSlice,
   UiSlice,
+  UserSlice,
   valoresSlice,
 } from "./slices/zslices";
 
@@ -53,6 +55,7 @@ export const store = configureStore({
     objetivos: ObjetivosSlice.reducer,
     prendas: PrendasSlice.reducer,
     recibos: RecibosSlice.reducer,
+    roles: RolesSlice.reducer,
     servicios: ServiciosSlice.reducer,
     tiposAjustes: TiposAjustesSlice.reducer,
     tiposDocumentacion: TiposDocumentacionSlice.reducer,
@@ -60,6 +63,7 @@ export const store = configureStore({
     tiposTelefonos: TiposTelefonosSlice.reducer,
     ubicaciones: UbicacionesSlice.reducer,
     ui: UiSlice.reducer,
+    users: UserSlice.reducer,
     valores: valoresSlice.reducer,
   },
 });
