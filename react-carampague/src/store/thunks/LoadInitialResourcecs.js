@@ -22,6 +22,7 @@ import {
     getPrendas,
     getProvincias,
     getRecibos,
+    getRoles,
     getServicios,
     getTalles,
     getTiposAjustes,
@@ -29,6 +30,7 @@ import {
     getTiposMotivos,
     getTiposPrendas,
     getTiposTelefonos,
+    getUsers,
     getValores,
   } from "./zthunks"; 
   
@@ -56,6 +58,7 @@ import {
       getPrendas,
       getProvincias,
       getRecibos,
+      getRoles,
       getServicios,
       getTalles,
       getTiposAjustes,
@@ -63,6 +66,7 @@ import {
       getTiposMotivos,
       getTiposPrendas,
       getTiposTelefonos,
+      getUsers,
       getValores,
     ];
   
