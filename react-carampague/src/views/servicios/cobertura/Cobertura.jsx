@@ -1,13 +1,13 @@
 // src/views/servicios/Cobertura.js
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { LineasList } from "../../../components/servicios/cobertura/LineasList";
 import { AddLineaModal } from "../../../components/servicios/AddLineaModal";
-import { makeSelectLineasServicioByServicioId, makeSelectServicioById, selectSortedLineasPlanEnriquecidas } from "../../../store/selectors/ServiciosSelectors";
+import {  makeSelectServicioById, selectSortedLineasPlanEnriquecidas } from "../../../store/selectors/ServiciosSelectors";
 
 export const Cobertura = () => {
-  const { id } = useParams(); // id del servicio
+  const { id } = useParams(); 
   const navigate = useNavigate();
 
   const selectedServicio = useSelector(makeSelectServicioById(id));
@@ -49,13 +49,16 @@ export const Cobertura = () => {
   };
 
   return (
-    <div>
+    <div className="p-4">
+      <div className="flex justify-center md:justify-start">
+        
       <button
         className="bg-sky-600 text-white px-4 py-2 rounded hover:bg-sky-700"
         onClick={handleCrearLinea}
       >
         Agregar Línea
       </button>
+      </div>
       {showModal && (
         <AddLineaModal
           onClose={handleCloseModal}

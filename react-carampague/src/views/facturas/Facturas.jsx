@@ -120,11 +120,11 @@ export const Facturas = () => {
 
 
   return (
-    <div>
+    <div className="p-2">
       <h1 className="text-3xl underline underline-offset-8 text-sky-700 font-semibold text-center mb-5">
         Diagramas facturación
       </h1>
-      <div className="flex flex-col md:flex-row justify-between items-center">
+      <div className="flex flex-col gap-2 md:flex-row justify-between md:items-center">
         <div className="relative w-full md:w-1/3">
           <label className="font-bold text-md">Objetivo:</label>
           <ObjetivoDropdown
@@ -171,15 +171,13 @@ export const Facturas = () => {
                     Total Neto: ${calculos.totalBruto.toLocaleString()}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <div className="flex justify-center my-10">
+                <div className="flex justify-center md:justify-between">
                     <button
                       onClick={handleGenerarFactura}
                       className="bg-sky-600 hover:bg-sky-800 text-white px-6 py-3 rounded uppercase font-bold"
                     >
                       Generar factura
                     </button>
-                  </div>
                 </div>
               </>
             ) : (

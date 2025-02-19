@@ -4,9 +4,9 @@ import { EntregaRopaForm } from "../../../components/asociados/entregaRopa/Entre
 export const RegistrarEntregaRopa = () => {
   const navigate = useNavigate();
   return (
-    <div className="w-full md:w-3/5 m-auto">
+    <div className="w-full md:w-3/5 m-auto p-2">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl underline-offset-8 text-sky-700 font-semibold text-center">
+        <h1 className="md:text-2xl text-xl underline-offset-8 text-sky-700 font-semibold text-center">
           Registrar entrega de ropa
         </h1>
         <button

@@ -1,15 +1,11 @@
 import { Link } from "react-router-dom";
 import { AsociadoForm } from "../../components/asociados/AsociadoForm";
-import { useDispatch } from "react-redux";
-import { clearSelectedAsociado } from "../../store/slices/AsociadosSlice";
 
 export const CrearAsociado = () => {
 
-  const dispatch = useDispatch();
-  dispatch(clearSelectedAsociado())
 
   return (
-    <div className="w-full md:w-3/5 m-auto">
+    <div className="w-full md:w-3/5 m-auto p-2">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl underline-offset-8 text-sky-700 font-semibold text-center">
           Crear nuevo asociado

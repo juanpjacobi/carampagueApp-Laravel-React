@@ -4,7 +4,7 @@ import { ClienteForm } from "../../components/clientes/ClienteForm";
 export const CrearCliente = () => {
 
   return (
-    <div className="max-w-2xl w-full m-auto">
+    <div className="max-w-2xl w-full m-auto p-2">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl underline-offset-8 text-sky-700 font-semibold text-center">
           Crear nuevo cliente

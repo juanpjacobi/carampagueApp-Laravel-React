@@ -228,11 +228,11 @@ export const Computos = () => {
   };
 
   return (
-    <div>
+    <div className="p-2">
       <h1 className="text-3xl underline underline-offset-8 text-sky-700 font-semibold text-center mb-5">
         Cómputos
       </h1>
-      <div className="flex flex-col md:flex-row justify-between items-center">
+      <div className="flex flex-col gap-2 md:flex-row justify-between md:items-center">
         <div className="relative w-full md:w-1/3">
           <span className="font-bold text-md">Asociado:</span>
           <AsociadoDropdown
@@ -337,8 +337,8 @@ export const Computos = () => {
               {(calculos.totalBruto + totalAjustes).toLocaleString()}
             </span>
           </div>
-          <div className="flex justify-between">
-            <div className="flex justify-center my-10">
+          <div className="flex flex-col md:flex-row gap-2 justify-center md:justify-between ">
+            <div className="flex justify-center md:my-10">
               <button
                 onClick={handleGenerarRecibo}
                 className="bg-sky-600 hover:bg-sky-800 text-white px-6 py-3 rounded uppercase font-bold"
@@ -348,7 +348,7 @@ export const Computos = () => {
             </div>
             {/* Botón para generar carpeta médica (solo se muestra si hay ausentismo) */}
             {filteredJustifiedLineas.length > 0 && (
-              <div className="flex justify-center my-10">
+              <div className="flex justify-center md:my-10">
                 <button
                   onClick={handleGenerarCarpetaMedica}
                   className="bg-red-600 hover:bg-red-800 text-white px-6 py-3 rounded uppercase font-bold"

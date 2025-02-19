@@ -20,7 +20,7 @@ export const ActualizarCliente = () => {
     return <NotFound message={"No se encuentra un cliente con ese id"} />;
   }
   return (
-    <div className="max-w-2xl w-full m-auto">
+    <div className="max-w-2xl w-full m-auto p-2">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl underline-offset-8 text-sky-700 font-semibold text-center">
           Actualizar cliente

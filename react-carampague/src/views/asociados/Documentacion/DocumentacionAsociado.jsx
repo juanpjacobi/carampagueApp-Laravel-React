@@ -43,18 +43,21 @@ export const DocumentacionAsociado = () => {
         <h1 className="text-2xl text-sky-700 font-semibold text-center mb-5">
           {documentacion.descripcion}
         </h1>
+        <div className="flex gap-5 items-center text-center">
         <Link
           to={`/asociados/${id}/documentacion/crear`}
           className="p-2 text-sm text-center font-bold bg-teal-600 hover:bg-teal-800 text-white rounded"
         >
           Solicitar documentación
         </Link>
+
         <Link
           to={`/asociados/${id}`}
-          className="p-2 w-28 text-center bg-sky-800 hover:bg-sky-950 text-white rounded"
+          className="p-2 w-28 text-sm  text-center font-bold bg-sky-800 hover:bg-sky-950 text-white rounded"
         >
           Atrás
         </Link>
+        </div>
       </div>
       <DocumentacionList documentacion={documentacion} />
     </>

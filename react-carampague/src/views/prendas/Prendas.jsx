@@ -124,7 +124,9 @@ export const Prendas = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Gestión de Stock de Prendas</h1>
+      <h1           className="text-2xl underline underline-offset-8
+       text-sky-700 font-semibold text-center mb-5">
+        Gestión de Stock de Prendas</h1>
 
       {/* Formulario para agregar nueva prenda */}
       <div className="border p-4 rounded mb-8 shadow">

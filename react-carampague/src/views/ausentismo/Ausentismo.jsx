@@ -60,11 +60,11 @@ export const Ausentismo = () => {
   };
 
   return (
-    <div>
+    <div className="p-2">
       <h1 className="text-3xl underline underline-offset-8 text-sky-700 font-semibold text-center mb-5">
         Ausentismo
       </h1>
-      <div className="flex flex-col md:flex-row justify-between items-center">
+      <div className="flex flex-col gap-2 md:flex-row justify-between md:items-center">
         <div className="relative w-full md:w-1/3">
           <span className="font-bold text-md">Asociado:</span>
 

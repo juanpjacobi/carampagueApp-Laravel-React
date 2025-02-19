@@ -58,7 +58,7 @@ export const AllFacturas = () => {
   };
 
   return (
-    <div>
+    <div className="p-2">
       <h1 className="text-3xl underline underline-offset-8 text-sky-700 font-semibold text-center mb-5">
         Facturas
       </h1>
@@ -93,7 +93,7 @@ export const AllFacturas = () => {
           ) : (
             <div className="flex justify-center mt-2">
               <Alerta
-                error={"No hay recibos para el periodo/cliente seleccionado."}
+                error={"No hay facturas para el periodo/cliente seleccionado."}
               />
             </div>
           )}

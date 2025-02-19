@@ -123,12 +123,12 @@ export const Ajustes = () => {
   }, [filteredAjustes]);
 
   return (
-    <div>
+    <div className="p-2">
       <h1 className="text-3xl underline underline-offset-8 text-sky-700 font-semibold text-center mb-5">
         Gestión de Ajustes
       </h1>
 
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+      <div className="flex flex-col gap-2 md:flex-row justify-between md:items-center">
         <div className="relative w-full md:w-1/3">
           <span className="font-bold text-md">Asociado:</span>
           <AsociadoDropdown
@@ -142,14 +142,12 @@ export const Ajustes = () => {
             inputRef={inputRef}
           />
         </div>
-        <div className="w-full md:w-1/3">
           <MonthYearSelector
             month={month}
             year={year}
             setMonth={setMonth}
             setYear={setYear}
           />
-        </div>
 
         <div className="w-full md:w-1/3">
           <span className="font-bold text-md">Concepto:</span>

@@ -29,6 +29,8 @@ export const EntregaRopa = () => {
         >
           Ropa entregada
         </h1>
+        <div className="flex gap-5 items-center text-center">
+
         <Link
           to={`/asociados/${id}/entrega-ropa/crear`}   
           className="p-2 text-sm text-center font-bold bg-rose-600 hover:bg-rose-950 text-white rounded"
@@ -38,10 +40,11 @@ export const EntregaRopa = () => {
         </Link>
         <Link
           onClick={() =>navigate(-1)}
-          className="p-2 w-28 text-center bg-sky-800 hover:bg-sky-950 text-white rounded"
+          className="p-2 w-28 text-sm text-center font-bold bg-sky-800 hover:bg-sky-950 text-white rounded"
         >
           Atras
         </Link>
+        </div>
       </div>
       <EntregaRopaList entregaRopa={entregaRopa} />
  
