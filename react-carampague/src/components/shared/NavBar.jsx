@@ -14,7 +14,7 @@ export const NavBar = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 1024) {
+      if (window.innerWidth >= 1280) {
         setHiddeNavbar(true);
       }
     };
@@ -32,6 +32,13 @@ export const NavBar = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // Función para cerrar el menú móvil si se hace click en algún enlace
+  const closeMobileMenu = () => {
+    if (window.innerWidth < 1280) {
+      setHiddeNavbar(true);
+    }
+  };
 
   const toggleDropdown = (groupName) => {
     setOpenDropdown((prev) => (prev === groupName ? null : groupName));
@@ -73,7 +80,6 @@ export const NavBar = () => {
       items: [
         { to: "/facturas/diagramas", label: "Diagramas" },
         { to: "/facturas/all", label: "Facturas" },
-
       ],
     },
     {
@@ -87,7 +93,7 @@ export const NavBar = () => {
 
   return (
     <nav ref={navRef} className="uppercase text-sm xl:text-sm text-slate-800 p-10">
-      <div className={clsx(hiddeNavbar && "lg:hidden", "flex justify-center")}>
+      <div className={clsx(hiddeNavbar && "xl:hidden", "flex justify-center")}>
         <GiHamburgerMenu
           className="cursor-pointer"
           size={30}
@@ -97,12 +103,13 @@ export const NavBar = () => {
       <div
         className={clsx(
           hiddeNavbar
-            ? "hidden lg:flex flex-row justify-around items-center gap-5"
+            ? "hidden xl:flex flex-row justify-around items-center gap-5"
             : "flex flex-col justify-between gap-6 items-center"
         )}
       >
         <NavLink
           to="/"
+          onClick={closeMobileMenu}
           className={({ isActive }) =>
             clsx(
               "hover:bg-sky-800 hover:text-white p-2 rounded-lg",
@@ -133,7 +140,10 @@ export const NavBar = () => {
                     <NavLink
                       key={item.to}
                       to={item.to}
-                      onClick={() => setOpenDropdown(null)} 
+                      onClick={() => {
+                        setOpenDropdown(null);
+                        closeMobileMenu();
+                      }}
                       className={({ isActive }) =>
                         clsx(
                           "block px-4 py-2 hover:bg-sky-800 hover:text-white rounded-md",
@@ -150,7 +160,10 @@ export const NavBar = () => {
           );
         })}
         <button
-          onClick={() => dispatch(logout())}
+          onClick={() => {
+            dispatch(logout());
+            closeMobileMenu();
+          }}
           className="bg-gray-600 hover:bg-gray-700 uppercase text-white p-2 cursor-pointer rounded-lg ml-1"
         >
           Cerrar Sesión

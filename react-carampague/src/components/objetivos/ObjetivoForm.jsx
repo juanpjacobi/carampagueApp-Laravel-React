@@ -46,7 +46,7 @@ export const ObjetivoForm = ({ editMode, initialData }) => {
   });
 
   return (
-    <form onSubmit={formik.handleSubmit} noValidate>
+    <form onSubmit={formik.handleSubmit} noValidate> 
       <div className="text-gray-700 text-sm text-center">
         <span>Los campos marcados con * son obligatorios</span>
       </div>
@@ -98,7 +98,7 @@ export const ObjetivoForm = ({ editMode, initialData }) => {
         type="submit"
         value={editMode ? "Actualizar objetivo" : "Crear objetivo"}
         className="bg-sky-800 hover:bg-sky-950 text-white w-full mt-5 p-3
-        uppercase font-bold cursor-pointer"
+        uppercase font-bold cursor-pointer rounded-md"
       />
     </form>
   );

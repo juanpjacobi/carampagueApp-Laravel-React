@@ -34,13 +34,13 @@ export const ComputosList = ({ lineas }) => {
                 scope="col"
                 className="p-2 font-bold md:border md:border-grey-500 block md:table-cell"
               >
-                Hora Real Inicio
+                Hora Inicio
               </th>
               <th
                 scope="col"
                 className="p-2 font-bold md:border md:border-grey-500 block md:table-cell"
               >
-                Hora Real Fin
+                Hora Fin
               </th>
               <th
                 scope="col"

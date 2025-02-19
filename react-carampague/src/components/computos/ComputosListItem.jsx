@@ -44,12 +44,12 @@ export const ComputosListItem = ({ linea }) => {
         <span className="inline-block w-1/3 md:hidden font-bold">
           Hora Inicio
         </span>
-        {linea.hora_inicio}
+        {linea.hora_real_inicio}
       </td>
 
       <td className="p-2 border-b flex justify-between border-slate-300 md:border-none text-left md:table-cell">
         <span className="inline-block w-1/3 md:hidden font-bold">Hora Fin</span>
-        {linea.hora_fin}
+        {linea.hora_real_fin}
       </td>
       <td className="p-2 border-b flex justify-between border-slate-300 md:border-none text-left md:table-cell">
         <span className="inline-block w-1/3 md:hidden font-bold">
@@ -67,7 +67,7 @@ export const ComputosListItem = ({ linea }) => {
       </td>
       <td className="p-2 border-b flex justify-between border-slate-300 md:border-none text-left md:table-cell">
         <span className="inline-block w-1/3 md:hidden font-bold">
-          Valor hora
+          Subtotal
         </span>
         {valorHora && linea.horas_reales
           ? `$ ${(valorHora * linea.horas_reales).toLocaleString()}`

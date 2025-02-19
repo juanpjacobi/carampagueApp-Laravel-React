@@ -172,7 +172,7 @@ export const ClienteForm = ({ editMode, initialData }) => {
         type="submit"
         value={editMode ? "Actualizar cliente" : "Crear cliente"}
         className="bg-sky-800 hover:bg-sky-950 text-white w-full mt-5 p-3
-        uppercase font-bold cursor-pointer"
+        uppercase font-bold cursor-pointer rounded-md"
       />
     </form>
   );

@@ -1,5 +1,7 @@
 import { AiFillEdit, AiOutlineDelete } from "react-icons/ai";
 import clsx from "clsx";
+import Swal from "sweetalert2";
+
 import { makeSelectMotivosByLineaId } from "../../../store/selectors/MotivosSelectors";
 import { useSelector } from "react-redux";
 

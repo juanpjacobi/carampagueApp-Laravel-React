@@ -6,7 +6,7 @@ export const Empty = ({message, link}) => {
         <span className='text-sky-700 font-bold text-2xl'>{message}</span>
         <Link
           to={link}
-          className="bg-sky-800 hover:bg-sky-950 text-sm text-white p-2 w-1/4 uppercase font-bold cursor-pointer rounded"
+          className="bg-sky-800 hover:bg-sky-950 text-sm text-white p-2 md:w-1/4 uppercase font-bold cursor-pointer rounded"
         >
           Toca aqui para crear
         </Link>

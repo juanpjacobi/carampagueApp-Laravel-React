@@ -108,13 +108,11 @@ export const LineasList = ({
             Cobertura (Servicio)
           </h1>
           <div className="flex justify-center">
-
-          {dateError && <Alerta error={dateError} />}
+            {dateError && <Alerta error={dateError} />}
           </div>
 
           <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-3">
-            
-            <div className="flex items-end  gap-2">
+            <div className="flex items-end gap-2">
               <div className="flex flex-col">
                 <label
                   htmlFor="fechaDesde"
@@ -132,7 +130,6 @@ export const LineasList = ({
               </div>
 
               <div className="flex flex-col">
-                
                 <label
                   htmlFor="fechaHasta"
                   className="text-sm font-medium text-slate-700"
@@ -155,12 +152,8 @@ export const LineasList = ({
                 Filtrar
               </button>
             </div>
-            <div>
-              
-            </div>
-            <div className="flex items-end  gap-2">
+            <div className="grid grid-cols-2 gap-4  items-end lg:flex">
               <div className="flex flex-col">
-                
                 <label
                   htmlFor="fechaInicioServicio"
                   className="text-sm font-medium text-slate-700"
@@ -175,7 +168,6 @@ export const LineasList = ({
                   className="border border-slate-950 rounded p-2 text-sm bg-gray-200 text-center"
                 />
               </div>
-
               <div className="flex flex-col">
                 <label
                   htmlFor="fechaFinServicio"
@@ -191,13 +183,14 @@ export const LineasList = ({
                   className="border border-slate-950 rounded p-2 text-sm bg-gray-200 text-center"
                 />
               </div>
-
+              {/* Botón: Generar */}
               <button
                 onClick={handleGenerarLineas}
                 className="bg-teal-600 text-white text-sm font-semibold px-3 py-2.5 rounded hover:bg-teal-700"
               >
                 Generar
               </button>
+              {/* Botón: Generar plan diario */}
               <button
                 onClick={handleGenerarPlanDiario}
                 className="bg-sky-600 text-white text-sm font-semibold px-3 py-2.5 rounded hover:bg-sky-700"

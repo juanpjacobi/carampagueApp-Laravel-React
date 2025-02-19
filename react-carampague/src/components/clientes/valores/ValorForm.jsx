@@ -67,7 +67,7 @@ export const ValorForm = ({ selectedCliente, editMode }) => {
   };
 
   return (
-    <form onSubmit={formik.handleSubmit} noValidate>
+    <form onSubmit={formik.handleSubmit} noValidate className="p-1">
       <div className="text-gray-700 text-sm text-center">
         <span>Los campos marcados con * son obligatorios</span>
       </div>
@@ -168,7 +168,7 @@ export const ValorForm = ({ selectedCliente, editMode }) => {
       <input
         type="submit"
         value={editMode ? "Actualizar valor" : "Crear valor"}
-        className="bg-sky-800 hover:bg-sky-950 text-white w-full mt-5 p-3 uppercase font-bold cursor-pointer"
+        className="bg-sky-800 hover:bg-sky-950 text-white w-full mt-5 p-3 uppercase font-bold cursor-pointer rounded-md"
       />
     </form>
   );

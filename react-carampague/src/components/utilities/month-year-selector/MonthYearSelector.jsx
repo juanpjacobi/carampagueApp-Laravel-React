@@ -17,7 +17,7 @@ const MonthYearSelector = ({ month, year, setMonth, setYear }) => {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full md:w-1/5">
           <span className="font-bold text-md">Periodo:</span>
 
       <input

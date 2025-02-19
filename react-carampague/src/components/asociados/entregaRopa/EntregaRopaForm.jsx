@@ -1,4 +1,3 @@
-
 import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -11,34 +10,38 @@ import { entregaRopaAsociadoSchema } from "../../utilities/validator/asociado/en
 import { makeSelectEntregaRopaById } from "../../../store/selectors/EntregaRopaSelectors";
 import { makeSelectLineasEnriquecidasByEntregaRopaId } from "../../../store/selectors/LineasEntregaRopaSelectors";
 import { mapLineaEntregaRopa } from "../../utilities/mappers/mapLineaEntregaRopa";
-import { createEntregaRopa, updateEntregaRopa } from "../../../store/thunks/EntregaRopathunks";
+import {
+  createEntregaRopa,
+  updateEntregaRopa,
+} from "../../../store/thunks/EntregaRopathunks";
 import isEqual from "lodash.isequal";
 
-
 export const EntregaRopaForm = ({ editMode }) => {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const entregaRopaId = editMode ? parseInt(id, 10) : null;
-  
-  const entregaRopa = editMode 
+
+  const entregaRopa = editMode
     ? useSelector(makeSelectEntregaRopaById(entregaRopaId))
     : null;
-  
-    const selectLineasEnriquecidas = useMemo(
-      () =>
-        entregaRopaId
-          ? makeSelectLineasEnriquecidasByEntregaRopaId(entregaRopaId)
-          : () => [],
-      [entregaRopaId]
-    );
-    // Usamos isEqual para evitar que se genere un nuevo array si no hay cambios
-    const enrichedLineas = useSelector(selectLineasEnriquecidas, isEqual);
-  
+
+  const selectLineasEnriquecidas = useMemo(
+    () =>
+      entregaRopaId
+        ? makeSelectLineasEnriquecidasByEntregaRopaId(entregaRopaId)
+        : () => [],
+    [entregaRopaId]
+  );
+  // Usamos isEqual para evitar que se genere un nuevo array si no hay cambios
+  const enrichedLineas = useSelector(selectLineasEnriquecidas, isEqual);
+
   // Obtenemos las listas de prendas, tipos de prendas y talles de una sola vez
-  const { prendas, tiposPrendas, talles } = useSelector((state) => state.prendas);
-  
+  const { prendas, tiposPrendas, talles } = useSelector(
+    (state) => state.prendas
+  );
+
   // Construir el initialValues usando useMemo para que se reevalúe cuando cambien los datos
   const initialValues = useMemo(() => {
     return {
@@ -49,16 +52,23 @@ export const EntregaRopaForm = ({ editMode }) => {
         editMode && entregaRopa && enrichedLineas && enrichedLineas.length > 0
           ? enrichedLineas.map((linea) => {
               // Usamos el helper para "enriquecer" la línea y luego extraer los campos necesarios
-              const enriched = mapLineaEntregaRopa(linea, prendas, tiposPrendas, talles);
+              const enriched = mapLineaEntregaRopa(
+                linea,
+                prendas,
+                tiposPrendas,
+                talles
+              );
               return {
                 prenda_id: enriched.prenda.id ? String(enriched.prenda.id) : "",
                 cantidad: enriched.cantidad || "",
-                tipo_prenda_id: enriched.prenda.tipo_prenda && enriched.prenda.tipo_prenda.id 
-                  ? String(enriched.prenda.tipo_prenda.id) 
-                  : "",
-                talle_id: enriched.prenda.talle && enriched.prenda.talle.id 
-                  ? String(enriched.prenda.talle.id) 
-                  : "",
+                tipo_prenda_id:
+                  enriched.prenda.tipo_prenda && enriched.prenda.tipo_prenda.id
+                    ? String(enriched.prenda.tipo_prenda.id)
+                    : "",
+                talle_id:
+                  enriched.prenda.talle && enriched.prenda.talle.id
+                    ? String(enriched.prenda.talle.id)
+                    : "",
               };
             })
           : [
@@ -77,6 +87,8 @@ export const EntregaRopaForm = ({ editMode }) => {
       lineas: Yup.array().of(
         Yup.object().shape({
           prenda_id: Yup.number().required("Prenda es obligatoria"),
+          tipo_prenda_id: Yup.number().required("Tipo prenda es obligatorio"),
+          talle_id: Yup.number().required("Talle es obligatoria"),
           cantidad: Yup.number()
             .required("Cantidad es obligatoria")
             .min(1, "La cantidad debe ser al menos 1")
@@ -96,32 +108,30 @@ export const EntregaRopaForm = ({ editMode }) => {
 
   const handleSubmit = () => {
     if (editMode) {
-      dispatch(
-        updateEntregaRopa(entregaRopa.id, formik.values, navigate)
-      );
+      dispatch(updateEntregaRopa(entregaRopa.id, formik.values, navigate));
     } else {
-      dispatch(createEntregaRopa(formik.values, navigate ));
+      dispatch(createEntregaRopa(formik.values, navigate));
     }
   };
 
   const formik = useFormik({
     initialValues,
     validationSchema,
-    enableReinitialize: true, // Permite reinyectar valores cuando editMode es true y los datos están disponibles
+    enableReinitialize: true, 
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: handleSubmit,
   });
 
-  // Helper para obtener las opciones de talles disponibles para un tipo de prenda
+ 
   const getAvailableTallesOptions = (tipoPrendaId) => {
     if (!tipoPrendaId) return [];
-    // Filtrar las prendas que tengan el tipo seleccionado
     const filteredPrendas = prendas.filter(
       (prenda) => prenda.tipo_prenda_id === parseInt(tipoPrendaId, 10)
     );
-    // Extraer y deduplicar los talles disponibles
-    const availableTallesIds = Array.from(new Set(filteredPrendas.map((p) => p.talle_id)));
+    const availableTallesIds = Array.from(
+      new Set(filteredPrendas.map((p) => p.talle_id))
+    );
     return availableTallesIds
       .map((id) => talles.find((t) => t.id === id))
       .filter(Boolean);
@@ -141,7 +151,12 @@ export const EntregaRopaForm = ({ editMode }) => {
     const updatedLineas = [...formik.values.lineas];
     updatedLineas.splice(index, 1);
     if (updatedLineas.length === 0) {
-      updatedLineas.push({ prenda_id: "", cantidad: "", tipo_prenda_id: "", talle_id: "" });
+      updatedLineas.push({
+        prenda_id: "",
+        cantidad: "",
+        tipo_prenda_id: "",
+        talle_id: "",
+      });
     }
     formik.setValues({
       ...formik.values,
@@ -175,7 +190,7 @@ export const EntregaRopaForm = ({ editMode }) => {
 
   return (
     <form onSubmit={formik.handleSubmit} noValidate>
-      <div className="text-gray-700 text-sm text-center">
+      <div className="text-gray-700 text-sm text-center mb-2">
         <span>Los campos marcados con * son obligatorios</span>
       </div>
       <div className="mb-4">
@@ -197,9 +212,15 @@ export const EntregaRopaForm = ({ editMode }) => {
       </div>
 
       {formik.values.lineas.map((linea, index) => (
-        <div key={index} className="flex justify-between gap-5 items-center mb-4">
-          <div className="w-2/4">
-            <label className="text-slate-800" htmlFor={`lineas[${index}].tipo_prenda_id`}>
+        <div
+          key={index}
+          className="flex flex-col md:flex-row justify-between gap-5 items-center mb-4 border-b-2 md:border-none"
+        >
+          <div className="w-full md:w-2/4">
+            <label
+              className="text-slate-800"
+              htmlFor={`lineas[${index}].tipo_prenda_id`}
+            >
               Tipo de prenda*
             </label>
             <select
@@ -221,8 +242,11 @@ export const EntregaRopaForm = ({ editMode }) => {
                 <Alerta error={formik.errors.lineas[index].tipo_prenda_id} />
               )}
           </div>
-          <div className="w-2/4">
-            <label className="text-slate-800" htmlFor={`lineas[${index}].talle_id`}>
+          <div className="w-full md:w-2/4">
+            <label
+              className="text-slate-800"
+              htmlFor={`lineas[${index}].talle_id`}
+            >
               Talle*
             </label>
             <select
@@ -234,21 +258,26 @@ export const EntregaRopaForm = ({ editMode }) => {
               disabled={!formik.values.lineas[index].tipo_prenda_id}
             >
               <option value="">Seleccione un talle</option>
-              {formik.values.lineas[index].tipo_prenda_id && 
-                getAvailableTallesOptions(formik.values.lineas[index].tipo_prenda_id, prendas, talles)
-                  .map((talle) => (
-                    <option key={talle.id} value={talle.id}>
-                      {talle.nombre_talle}
-                    </option>
-                  ))
-              }
+              {formik.values.lineas[index].tipo_prenda_id &&
+                getAvailableTallesOptions(
+                  formik.values.lineas[index].tipo_prenda_id,
+                  prendas,
+                  talles
+                ).map((talle) => (
+                  <option key={talle.id} value={talle.id}>
+                    {talle.nombre_talle}
+                  </option>
+                ))}
             </select>
             {formik.errors.lineas && formik.errors.lineas[index]?.talle_id && (
               <Alerta error={formik.errors.lineas[index].talle_id} />
             )}
           </div>
-          <div className="w-1/4">
-            <label className="text-slate-800" htmlFor={`lineas[${index}].cantidad`}>
+          <div className="w-full md:w-2/4">
+            <label
+              className="text-slate-800"
+              htmlFor={`lineas[${index}].cantidad`}
+            >
               Cantidad*
             </label>
             <input
@@ -260,7 +289,6 @@ export const EntregaRopaForm = ({ editMode }) => {
               onChange={formik.handleChange}
               value={formik.values.lineas[index].cantidad}
               disabled={!formik.values.lineas[index].talle_id}
-
             />
             {formik.errors.lineas && formik.errors.lineas[index]?.cantidad && (
               <Alerta error={formik.errors.lineas[index].cantidad} />
@@ -275,7 +303,11 @@ export const EntregaRopaForm = ({ editMode }) => {
           </button>
         </div>
       ))}
-      <button type="button" onClick={addLine} className="mt-2 p-3 text-2xl text-sky-800">
+      <button
+        type="button"
+        onClick={addLine}
+        className="mt-2 p-3 text-2xl text-sky-800"
+      >
         <IoAdd />
       </button>
       {formik.errors.lineas && typeof formik.errors.lineas === "string" && (
@@ -284,9 +316,8 @@ export const EntregaRopaForm = ({ editMode }) => {
       <input
         type="submit"
         value={editMode ? "Actualizar entrega" : "Registrar entrega"}
-        className="bg-sky-800 hover:bg-sky-950 text-white w-full mt-5 p-3 uppercase font-bold cursor-pointer"
+        className="bg-sky-800 hover:bg-sky-950 text-white w-full mt-5 p-3 uppercase font-bold cursor-pointer rounded-md"
       />
     </form>
   );
 };
-

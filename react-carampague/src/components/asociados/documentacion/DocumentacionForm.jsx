@@ -222,7 +222,7 @@ export const DocumentacionForm = ({ editMode }) => {
         type="submit"
         value={editMode ? "Editar documentación" : "Registrar documentación"}
         className="bg-sky-800 hover:bg-sky-950 text-white w-full mt-5 p-3
-          uppercase font-bold cursor-pointer"
+          uppercase font-bold cursor-pointer rounded-md"
       />
     </form>
   );

@@ -20,9 +20,9 @@ export const DocumentacionCard = ({ linea }) => {
   );
 
   return (
-    <div className="w-full max-w-2xl m-auto">
+    <div className="w-full max-w-2xl m-auto p-2">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl underline-offset-8 uppercase text-sky-700 font-semibold text-center">
+        <h1 className="md:text-2xl text-lg underline-offset-8 uppercase text-sky-700 font-semibold text-center">
           {tipoDoc ? tipoDoc.nombre_tipo_documentacion : "Sin tipo"}
         </h1>
         <button
@@ -33,8 +33,8 @@ export const DocumentacionCard = ({ linea }) => {
         </button>
       </div>
       <div className="bg-white flex flex-col md:flex-row justify-between shadow-2xl shadow-gray-700 rounded-md mt-5 px-5 py-10">
-        <div className="w-3/4 border-r">
-          <p className="text-sm mb-2 text-slate-800">
+      <div className="w-full md:w-3/4 md:border-r">
+      <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase">Fecha de solicitud:</span>
             {linea.fecha_solicitud ? DateTime.fromISO(linea.fecha_solicitud).toLocaleString() : "---"}
           </p>

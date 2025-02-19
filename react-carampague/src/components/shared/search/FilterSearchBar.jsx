@@ -9,7 +9,7 @@ export const FilterSearchBar = ({
   onInactiveChange,
 }) => {
   return (
-    <div className="flex flex-col md:flex-row items-center gap-4 mb-4 w-1/3">
+    <div className="flex flex-col md:flex-row items-center gap-4 mb-4 w-full p-2 md:w-1/3">
       <div className="flex items-center gap-4">
         <label className="flex items-center gap-1">
           <input

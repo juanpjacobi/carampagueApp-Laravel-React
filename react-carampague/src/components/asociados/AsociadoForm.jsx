@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
@@ -232,7 +231,7 @@ export const AsociadoForm = ({ editMode, initialData }) => {
         type="submit"
         value={editMode ? "Actualizar asociado" : "Crear asociado"}
         className="bg-sky-800 hover:bg-sky-950 text-white w-full mt-5 p-3
-        uppercase font-bold cursor-pointer"
+        uppercase font-bold cursor-pointer rounded-md"
       />
     </form>
   );
