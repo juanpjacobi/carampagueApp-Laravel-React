@@ -46,7 +46,7 @@ class AsociadoSeeder extends Seeder
         $telefonos = collect(range(1, 10))->map(function ($i) use ($currentTimestamp) {
             return [
                 'tipo_telefono_id' => 1, // Suponiendo que el tipo 1 existe
-                'numero_telefono'  => "555-010$i", // Ejemplo de número de teléfono
+                'numero_telefono'  => "5554010$i", // Ejemplo de número de teléfono
                 'created_at'       => $currentTimestamp,
                 'updated_at'       => $currentTimestamp,
             ];
