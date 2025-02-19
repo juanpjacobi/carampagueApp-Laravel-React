@@ -28,7 +28,7 @@ export const Layout = () => {
 
   return (
     <main className="m-auto w-full overflow-auto flex flex-col items-center pattern">
-      <div className="w-full border-b border-slate-300 shadow-lg items-center flex flex-col lg:flex-row justify-between">
+      <div className="w-full border-b border-slate-300 shadow-lg items-center flex flex-col xl:flex-row justify-between">
         <img src="/img/logo.jpg" alt="imagen logotipo" className="max-w-2xl" />
         <NavBar />
       </div>
