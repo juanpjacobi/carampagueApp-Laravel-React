@@ -129,7 +129,7 @@ export const Prendas = () => {
         Gestión de Stock de Prendas</h1>
 
       {/* Formulario para agregar nueva prenda */}
-      <div className="border p-4 rounded mb-8 shadow">
+      <div className="border p-4 rounded mb-8 bg-white shadow-md shadow-gray-700">
         <h2 className="text-xl font-semibold mb-2">Agregar Nueva Prenda</h2>
         {error && <Alerta error={error} />}
         <form onSubmit={handleCreatePrenda} className="space-y-4">
@@ -176,7 +176,7 @@ export const Prendas = () => {
       </div>
 
       {/* Lista de prendas para actualizar stock */}
-      <div className="border p-4 rounded shadow">
+      <div className="border p-4 rounded bg-white shadow-md shadow-gray-700">
         <h2 className="text-xl font-semibold mb-2">
           Actualizar Stock de Prendas
         </h2>

@@ -19,18 +19,11 @@ export const PlanDiario = () => {
 
   return (
     <div className="p-4">
-      <div className="flex justify-center md:justify-start">
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-sky-600 text-white px-4 py-2  rounded hover:bg-sky-700 mb-4"
-        >
-          Agregar Línea Manual
-        </button>
-      </div>
+     
       <h1 className="text-3xl text-sky-700 font-semibold text-center mb-5">
         Plan Diario
       </h1>
-
+     
       <div className="flex justify-center mb-4">
         <input
           type="date"
@@ -38,6 +31,14 @@ export const PlanDiario = () => {
           onChange={(e) => setFechaSeleccionada(e.target.value)}
           className="border p-2"
         />
+      </div>
+      <div className="flex justify-center md:justify-start">
+        <button
+          onClick={() => setShowModal(true)}
+          className="bg-sky-600 text-white px-4 py-2  rounded hover:bg-sky-700 mb-4"
+        >
+          Agregar Línea Manual
+        </button>
       </div>
 
       {showModal && (

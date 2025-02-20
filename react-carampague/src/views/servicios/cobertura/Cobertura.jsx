@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { LineasList } from "../../../components/servicios/cobertura/LineasList";
 import { AddLineaModal } from "../../../components/servicios/AddLineaModal";
-import {  makeSelectServicioById, selectSortedLineasPlanEnriquecidas } from "../../../store/selectors/ServiciosSelectors";
+import {  makeSelectServicioById, makeSelectSortedLineasPlanEnriquecidasByServicioId } from "../../../store/selectors/ServiciosSelectors";
 
 export const Cobertura = () => {
   const { id } = useParams(); 
@@ -12,7 +12,7 @@ export const Cobertura = () => {
 
   const selectedServicio = useSelector(makeSelectServicioById(id));
 
-  const lineasServicio = useSelector(selectSortedLineasPlanEnriquecidas);
+  const lineasServicio = useSelector(makeSelectSortedLineasPlanEnriquecidasByServicioId(id));
 
   useEffect(() => {
     if (!selectedServicio) {
@@ -50,15 +50,7 @@ export const Cobertura = () => {
 
   return (
     <div className="p-4">
-      <div className="flex justify-center md:justify-start">
-        
-      <button
-        className="bg-sky-600 text-white px-4 py-2 rounded hover:bg-sky-700"
-        onClick={handleCrearLinea}
-      >
-        Agregar Línea
-      </button>
-      </div>
+
       {showModal && (
         <AddLineaModal
           onClose={handleCloseModal}
@@ -68,7 +60,7 @@ export const Cobertura = () => {
           lineaData={lineaData}
         />
       )}
-      <LineasList lineas={lineasPlan} isPlanDiario={false} onEditLinea={handleEditLinea} />
+      <LineasList lineas={lineasPlan} isPlanDiario={false} onEditLinea={handleEditLinea} handleCrearLinea={handleCrearLinea}/>
     </div>
   );
 };
