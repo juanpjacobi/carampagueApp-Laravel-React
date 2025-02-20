@@ -19,7 +19,7 @@ export const ValorForm = ({ selectedCliente, editMode }) => {
   const valores = useSelector(selectValoresConRelaciones);
 
   const objetivosFiltrados = objetivosConRelaciones.filter(
-    (obj) => obj.cliente_id === selectedCliente.id
+    (obj) => Number(obj.cliente_id) === Number(selectedCliente.id)
   );
 
   const valor = valores.find((valor) => Number(valor.id) === Number(valrId));

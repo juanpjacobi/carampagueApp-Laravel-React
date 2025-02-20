@@ -52,15 +52,13 @@ export const ObjetivoCard = ({ selectedObjetivo }) => {
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Piso
             </span>
-
-            {selectedObjetivo?.direccion.piso}
+            {selectedObjetivo.piso ? selectedObjetivo?.direccion?.piso : '-'}
           </p>
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Departamento
             </span>
-
-            {selectedObjetivo?.direccion.departamento}
+            {selectedObjetivo.departamento ? selectedObjetivo?.direccion?.departamento : '-'}
           </p>
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">

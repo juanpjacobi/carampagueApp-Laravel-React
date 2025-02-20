@@ -71,13 +71,13 @@ export const ClienteCard = ({ selectedCliente }) => {
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Piso
             </span>
-            {selectedCliente?.direccion?.piso}
+            {selectedCliente.piso ? selectedCliente?.direccion?.piso : '-'}
           </p>
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Departamento
             </span>
-            {selectedCliente?.direccion?.departamento}
+            {selectedCliente.departamento ? selectedCliente?.direccion?.departamento : '-'}
           </p>
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">

@@ -20,7 +20,7 @@ export const ObjetivoForm = ({ editMode, initialData }) => {
   const initialState = {
     nombre_objetivo: initialData ? initialData.nombre: "",
     cliente_id: initialData ? initialData.cliente_id : "",
-    activo: initialData ? initialData.activo : false,
+    activo: initialData ? initialData.activo : "",
     calle: initialData ? initialData.direccion.calle : "",
     numeracion: initialData ? initialData.direccion.numeracion : "",
     piso: initialData ? initialData.direccion.piso : "",

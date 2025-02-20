@@ -85,13 +85,13 @@ export const AsociadoCard = ({ selectedAsociado }) => {
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Piso
             </span>
-            {selectedAsociado?.direccion?.piso}
+            {selectedAsociado.piso ? selectedAsociado?.direccion?.piso : '-'}
           </p>
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">
               Departamento
             </span>
-            {selectedAsociado?.direccion?.departamento}
+            {selectedAsociado.departamento ? selectedAsociado?.direccion?.departamento : '-'}
           </p>
           <p className="text-sm mb-2 text-slate-800">
             <span className="text-md mr-2 font-bold text-sky-800 uppercase ">

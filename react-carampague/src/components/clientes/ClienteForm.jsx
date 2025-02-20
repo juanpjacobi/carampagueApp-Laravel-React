@@ -25,7 +25,7 @@ export const ClienteForm = ({ editMode, initialData }) => {
     condicion_iva_id: initialData ? initialData.condicion_iva_id : "",
     numero_telefono: initialData ? initialData.telefono.numero_telefono : "",
     tipo_telefono_id: initialData ? initialData.telefono.tipo_telefono_id : "",
-    activo: initialData ? initialData.activo : false,
+    activo: initialData ? initialData.activo : "",
     calle: initialData ? initialData.direccion.calle : "",
     numeracion: initialData ? initialData.direccion.numeracion : "",
     piso: initialData ? initialData.direccion.piso : "",

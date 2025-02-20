@@ -16,7 +16,7 @@ export const UserForm = ({ editMode, initialData }) => {
     nombre_usuario: initialData ? initialData.nombre_usuario : "",
     password: "",
     rol_id: initialData ? initialData.rol_id : "",
-    activo: initialData ? initialData.activo : false,
+    activo: initialData ? initialData.activo : "",
   };
 
   const formik = useFormik({
@@ -104,15 +104,15 @@ export const UserForm = ({ editMode, initialData }) => {
       </div>
 
       <div className="mb-4">
-      <ActivoToggle formik={formik}/>
-
+        <ActivoToggle formik={formik} />
       </div>
 
       <input
         type="submit"
         value={editMode ? "Actualizar usuario" : "Crear usuario"}
         className="bg-sky-800 hover:bg-sky-950 text-white w-full mt-5 p-3
-        uppercase font-bold cursor-pointer rounded-md"      />
+        uppercase font-bold cursor-pointer rounded-md"
+      />
     </form>
   );
 };

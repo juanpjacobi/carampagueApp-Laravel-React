@@ -29,7 +29,7 @@ export const AsociadoForm = ({ editMode, initialData }) => {
     fecha_nacimiento: initialData ? initialData.fecha_nacimiento : "",
     numero_telefono: initialData ? initialData.telefono.numero_telefono : "",
     tipo_telefono_id: initialData ? initialData.telefono.tipo_telefono_id : "",
-    activo: initialData ? initialData.activo : false,
+    activo: initialData ? initialData.activo : "",
     calle: initialData ? initialData.direccion.calle : "",
     numeracion: initialData ? initialData.direccion.numeracion : "",
     piso: initialData ? initialData.direccion.piso : "",
