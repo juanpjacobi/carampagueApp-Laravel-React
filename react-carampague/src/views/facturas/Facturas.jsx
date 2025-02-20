@@ -44,6 +44,7 @@ export const Facturas = () => {
   const objetivos = useSelector(selectObjetivos);
 
   const allLineas = useSelector(selectAllLineasServicioEnriquecidas);
+  
 
   const formattedMonth = (month || "").padStart(2, "0");
   const targetPeriod = `${year}-${formattedMonth}`;
@@ -67,6 +68,10 @@ export const Facturas = () => {
       if (linea.servicio_id) ids.add(linea.servicio_id);
     });
     return Array.from(ids);
+  }, [filteredLineas]);
+
+  const sortedFilteredLineas = useMemo(() => {
+    return filteredLineas.slice().sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
   }, [filteredLineas]);
 
   const periodo = `${year}-${month.padStart(2, "0")}`;
@@ -154,7 +159,7 @@ export const Facturas = () => {
               <>
                 <div className="flex flex-col mt-2">
                   <FacturasList
-                    lineas={filteredLineas}
+                    lineas={sortedFilteredLineas}
                     valoresMapping={valoresMapping}
                   />
 

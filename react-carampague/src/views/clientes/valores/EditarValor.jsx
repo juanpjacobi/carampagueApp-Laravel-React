@@ -26,8 +26,18 @@ export const EditarValor = () => {
 
   return (
     <div>
+            <div className="flex justify-between items-center">
+
             <h1 className="text-2xl underline-offset-8 text-sky-700 font-semibold text-center">
-            Editar valor</h1>      <ValorForm selectedCliente={cliente} editMode={true}/>
+            Editar valor</h1> 
+            <button
+          onClick={() => navigate(-1)}
+          className="p-2 w-28 text-center bg-sky-800 hover:bg-sky-950 text-white rounded"
+        >
+          Atras
+        </button>
+        </div>
+                 <ValorForm selectedCliente={cliente} editMode={true}/>
     </div>
   );
 };
