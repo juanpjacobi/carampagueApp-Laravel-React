@@ -1,4 +1,3 @@
-// src/components/ajustes/AjustesResumenUnificado.jsx
 import React from "react";
 
 export const AjustesResumen = ({ title, ajustes, totalNeto }) => {
