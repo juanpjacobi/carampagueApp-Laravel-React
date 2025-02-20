@@ -52,9 +52,12 @@ export const createValor = (valorData, navigate) => {
       navigate(-1)
 
     } catch (error) {
-      const errors = error.response?.data?.errors
-        ? Object.values(error.response.data.errors).map((err) => err)
-        : ["Ocurrió un error inesperado."];
+      // Si existe error.response.data.message, usarlo; si no, buscar en errors.
+      const errors = error.response?.data?.message 
+        ? [error.response.data.message]
+        : error.response?.data?.errors
+          ? Object.values(error.response.data.errors).flat()
+          : ["Ocurrió un error inesperado."];
       dispatch(setError(errors));
 
       Swal.fire({
