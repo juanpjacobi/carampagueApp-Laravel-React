@@ -48,7 +48,7 @@ class AsociadosController extends Controller
 
             // Crear una nueva documentación
             $documentacion = Documentacion::create([
-                'descripcion' => 'Documentacion del ascociado:' . $request->input('nombre_asociado') . $request->input('apellido_asociado'),
+                'descripcion' => 'Documentacion del ascociado:' . $request->input('nombre_asociado') . " " . $request->input('apellido_asociado'),
             ]);
 
             // Crear un nuevo asociado
