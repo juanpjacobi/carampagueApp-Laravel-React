@@ -5,7 +5,7 @@ export const ClienteListItems = ({ cliente }) => {
     <tr className="bg-gray-100 p-5 border-b border-slate-300 md:bg-white mb-2 shadow-md shadow-gray-700  flex flex-col md:table-row">
       <td className="p-2 border-b flex justify-between border-slate-300 md:border-none text-left md:table-cell ">
         <span className="inline-block w-1/3 md:hidden font-bold">Razón social</span>
-        {cliente.razon_social}
+        {cliente.razon_social.toUpperCase()}
       </td>
       <td className="p-2 border-b flex justify-between border-slate-300 md:border-none text-left md:table-cell ">
         <span className="inline-block w-1/3 md:hidden font-bold">Estado</span>

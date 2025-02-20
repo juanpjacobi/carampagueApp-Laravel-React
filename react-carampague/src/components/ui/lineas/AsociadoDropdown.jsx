@@ -16,7 +16,7 @@ export const AsociadoDropdown = ({
       <div className="flex relative">
         <input
           type="text"
-          value={asociadoQuery}
+          value={asociadoQuery.toUpperCase()}
           onChange={(e) => setAsociadoQuery(e.target.value)}
           onFocus={handleFocus}
           onBlur={handleBlur}
@@ -40,7 +40,7 @@ export const AsociadoDropdown = ({
                     e.preventDefault();
                     handleSelectAsociado(asociado.id, fullName);
                   }}
-                  className="px-2 py-1 hover:bg-gray-200 cursor-pointer"
+                  className="px-2 py-1 hover:bg-gray-200 cursor-pointer uppercase"
                 >
                   {fullName}
                 </li>

@@ -14,6 +14,7 @@ export const LineasList = ({
   isPlanDiario,
   servicioId,
   onEditLinea,
+  handleCrearLinea
 }) => {
   const hoy = new Date();
   const primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
@@ -104,12 +105,21 @@ export const LineasList = ({
     <div className="flex flex-col mt-2 space-y-4">
       {!isPlanDiario && (
         <>
-          <h1 className="text-3xl text-sky-700 font-semibold text-center mb-5">
+          <h1 className="text-3xl text-sky-700 font-semibold text-center">
             Cobertura (Servicio)
           </h1>
           <div className="flex justify-center">
             {dateError && <Alerta error={dateError} />}
           </div>
+          <div className="flex justify-center md:justify-start">
+        
+        <button
+          className="bg-sky-600 text-white px-4 py-2 rounded hover:bg-sky-700"
+          onClick={handleCrearLinea}
+        >
+          Agregar Línea manual
+        </button>
+        </div>
 
           <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-3">
             <div className="flex items-end gap-2">
@@ -147,7 +157,7 @@ export const LineasList = ({
 
               <button
                 onClick={handleFiltrar}
-                className="bg-sky-600 text-white text-sm font-semibold px-3 py-2.5 rounded hover:bg-sky-700"
+                className="bg-teal-600 text-white text-sm font-semibold px-3 py-2.5 rounded hover:bg-teal-700"
               >
                 Filtrar
               </button>
