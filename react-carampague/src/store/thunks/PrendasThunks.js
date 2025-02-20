@@ -76,12 +76,12 @@ export const getTiposPrendas = () => async (dispatch) => {
     try {
       const { data: response } = await carampagueApi.post("/api/tipos-prenda", data);
       dispatch(addTipoPrenda(response.tipo_prenda));
-      Swal.fire({
-        icon: "success",
-        title: "Tipo de prenda creado correctamente",
-        showConfirmButton: false,
-        timer: 1500,
-      });
+      // Swal.fire({
+      //   icon: "success",
+      //   title: "Tipo de prenda creado correctamente",
+      //   showConfirmButton: false,
+      //   timer: 1500,
+      // });
       return response.tipo_prenda;
     } catch (error) {
       console.error("Error creating tipo prenda:", error);
@@ -97,12 +97,12 @@ export const getTiposPrendas = () => async (dispatch) => {
     try {
       const { data: response } = await carampagueApi.post("/api/talles", data);
       dispatch(addTalle(response.talle));
-      Swal.fire({
-        icon: "success",
-        title: "Talle creado correctamente",
-        showConfirmButton: false,
-        timer: 1500,
-      });
+      // Swal.fire({
+      //   icon: "success",
+      //   title: "Talle creado correctamente",
+      //   showConfirmButton: false,
+      //   timer: 1500,
+      // });
       return response.talle;
     } catch (error) {
       console.error("Error creating talle:", error);

@@ -5,7 +5,6 @@ import Swal from "sweetalert2";
 import { setUser, setToken, clearAuth } from "../slices/AuthSlice";
 import { endLoading, setError, startLoading } from "../slices/UiSlice";
 
-// Thunk para obtener la información del usuario autenticado
 export const getUser = () => {
   return async (dispatch) => {
     dispatch(startLoading());
