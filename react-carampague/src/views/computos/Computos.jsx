@@ -311,12 +311,12 @@ export const Computos = () => {
           {/* Sección de Descuentos */}
           <hr className="my-8 border-t-2 border-dashed border-gray-400" />
           <h2 className="text-2xl underline underline-offset-8 text-sky-700 font-semibold text-center mb-5 mt-5">
-            Descuentos
+            Ajustes
           </h2>
           {discountAdjustments.length > 0 ? (
             <div className="mt-5">
               <AjustesResumen
-                title={"Resumen de descuentos"}
+                title={"Resumen de ajustes"}
                 ajustes={filteredAjustesForDiscounts}
                 totalNeto={totalAjustes}
               />

@@ -11,6 +11,8 @@ import { useClientes } from "../../hooks";
 export const AllFacturas = () => {
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
+  const [selectedCliente, setSelectedCliente] = useState(null);
+
 
   const { clientes } = useSelector((state) => state.clientes);
   const {
@@ -19,16 +21,18 @@ export const AllFacturas = () => {
     filteredClientes,
     showDropdown,
     setShowDropdown,
-    inputRef,
-    clienteSeleccionado,
+
   } = useClientes(null);
 
   const handleSelectCliente = (id, razon_social) => {
+    setSelectedCliente({ id, razon_social });
+
     setClienteQuery(razon_social);
     setShowDropdown(false);
   };
 
   const handleDesasignarCliente = () => {
+    setSelectedCliente(null);
     setClienteQuery("");
   };
 
@@ -41,21 +45,17 @@ export const AllFacturas = () => {
     if (!month || !year) return [];
     return allFacturas.filter((factura) => {
       const matchPeriodo = factura.periodo === targetPeriod;
-      if (clienteSeleccionado) {
+      if (selectedCliente) {
         return (
           matchPeriodo &&
-          Number(factura.cliente_id) === Number(clienteSeleccionado.id)
+          Number(factura.cliente_id) === Number(selectedCliente.id)
         );
       }
       return matchPeriodo;
     });
-  }, [allFacturas, clienteSeleccionado, month, year]);
+  }, [allFacturas, selectedCliente, month, year]);
 
-  const handleClienteChange = (e) => {
-    const id = e.target.value;
-    const cli = clientes.find((c) => Number(c.id) === Number(id));
-    setclienteSeleccionado(cli || null);
-  };
+
 
   return (
     <div className="p-2">
