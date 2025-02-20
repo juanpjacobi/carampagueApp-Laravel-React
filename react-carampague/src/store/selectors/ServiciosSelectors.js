@@ -97,3 +97,16 @@ export const makeSelectServicioById = (servicioId) =>
             .sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
         }
       );
+
+      export const makeSelectSortedLineasPlanEnriquecidasByServicioId = (servicioId) =>
+        createSelector(
+          [selectAllLineasServicioEnriquecidas],
+          (lineas) =>
+            lineas
+              .filter(
+                (l) =>
+                  Number(l.servicio_id) === Number(servicioId) &&
+                  l.is_planificado === true
+              )
+              .sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
+        );
