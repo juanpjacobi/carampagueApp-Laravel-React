@@ -1,12 +1,14 @@
-@tailwind base;
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+
 .pattern {
     min-height: 100vh;
-    background: radial-gradient(circle, #e4e3f7 10%, transparent 11%);
-    background-size: 1em 1em;
-    background-color: #ffffff;
+background-image: repeating-linear-gradient(45deg, #e4e3f7 0, #e4e3f7 0.5px, transparent 0, transparent 50%);
+background-size: 12px 12px;
+background-color: #ffffff;
     opacity: 1
 }
 
