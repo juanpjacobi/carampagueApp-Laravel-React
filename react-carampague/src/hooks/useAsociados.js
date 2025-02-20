@@ -3,10 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 
 export const useAsociados = (asociadoId) => {
-  // Obtenemos todos los asociados del store
   const allAsociados = useSelector((state) => state.asociados.asociados);
 
-  // Buscamos el asociado completo usando el ID recibido
   const asociadoSeleccionado = allAsociados.find(
     (a) => Number(a.id) === Number(asociadoId)
   );
@@ -48,6 +46,6 @@ export const useAsociados = (asociadoId) => {
     showDropdown,
     setShowDropdown,
     inputRef,
-    asociadoSeleccionado, // Se devuelve el asociado encontrado, si lo necesitas
+    asociadoSeleccionado,
   };
 };
