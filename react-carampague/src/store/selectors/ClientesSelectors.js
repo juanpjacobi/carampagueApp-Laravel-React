@@ -11,18 +11,15 @@ const selectCondicionesIva = state => state.condicionesIva.condicionesIva;
 
 
 export const selectClientesConRelaciones = createSelector(
-  [
-    selectClientes,
-    selectBarrios,
-    selectLocalidades,
-    selectProvincias,
-    selectTiposTelefonos,
-    selectCondicionesIva
-  ],
+  [selectClientes, selectBarrios, selectLocalidades, selectProvincias, selectTiposTelefonos, selectCondicionesIva],
   (clientes, barrios, localidades, provincias, tiposTelefonos, condicionesIva) => {
-    return clientes.map((cliente) =>
-      mapClienteRelations(cliente, barrios, localidades, provincias, tiposTelefonos, condicionesIva)
-    );
+    return clientes
+      .map(cliente =>
+        mapClienteRelations(cliente, barrios, localidades, provincias, tiposTelefonos, condicionesIva)
+      )
+      .sort((a, b) =>
+        a.razon_social.toLowerCase().localeCompare(b.razon_social.toLowerCase())
+      );
   }
 );
 

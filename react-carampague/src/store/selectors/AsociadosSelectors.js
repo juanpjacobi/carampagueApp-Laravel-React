@@ -1,5 +1,3 @@
-// src/redux/selectors/AsociadosSelectors.js
-
 import { createSelector } from '@reduxjs/toolkit';
 import { mapAsociadoRelations } from '../../components/utilities/mappers/mapAsociadoRelations';
 
@@ -25,9 +23,31 @@ export const selectAsociadosConRelaciones = createSelector(
     selectDocumentaciones,
   ],
   (asociados, barrios, localidades, provincias, tiposTelefonos, estadosCiviles, entregasRopa, documentaciones) => {
-    return asociados.map((asociado) =>
-      mapAsociadoRelations(asociado, barrios, localidades, provincias, tiposTelefonos, estadosCiviles, entregasRopa, documentaciones)
-    );
+    return asociados
+      .map((asociado) =>
+        mapAsociadoRelations(
+          asociado,
+          barrios,
+          localidades,
+          provincias,
+          tiposTelefonos,
+          estadosCiviles,
+          entregasRopa,
+          documentaciones
+        )
+      )
+      .sort((a, b) => {
+        const nombreA = a.nombre.toLowerCase();
+        const nombreB = b.nombre.toLowerCase();
+        if (nombreA > nombreB) return 1;
+        if (nombreA < nombreB) return -1;
+        // Si los nombres son iguales, ordenamos por apellido
+        const apellidoA = a.apellido.toLowerCase();
+        const apellidoB = b.apellido.toLowerCase();
+        if (apellidoA > apellidoB) return 1;
+        if (apellidoA < apellidoB) return -1;
+        return 0;
+      });
   }
 );
 
@@ -37,6 +57,3 @@ export const makeSelectAsociadoById = (asociadoId) => createSelector(
   (asociadosConRelaciones) =>
     asociadosConRelaciones.find(asociado => Number(asociado.id) === Number(asociadoId))
 );
-
-
-

@@ -10,7 +10,13 @@ const selectProvincias = state => state.ubicaciones.provincias;
 export const selectObjetivosConRelaciones = createSelector(
   [selectObjetivos, selectClientes, selectBarrios, selectLocalidades, selectProvincias],
   (objetivos, clientes, barrios, localidades, provincias) => {
-    return objetivos.map(objetivo => mapObjetivoRealations(objetivo, barrios, localidades, provincias, clientes));
+    return objetivos
+      .map(objetivo =>
+        mapObjetivoRealations(objetivo, barrios, localidades, provincias, clientes)
+      )
+      .sort((a, b) =>
+        a.nombre.toLowerCase().localeCompare(b.nombre.toLowerCase())
+      );
   }
 );
 
