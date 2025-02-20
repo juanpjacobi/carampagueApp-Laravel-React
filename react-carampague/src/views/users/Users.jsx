@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { AsociadoList } from "../../components/asociados/AsociadosList";
 import { Empty } from "../../components/shared/Empty";
 import { Spinner } from "../../components/utilities/spinners/Spinner";
 import { useEffect, useState } from "react";
