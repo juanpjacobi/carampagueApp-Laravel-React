@@ -28,7 +28,6 @@ class ReciboController extends Controller
      */
     public function store(Request $request)
     {
-        // Validamos la data mínima
         $data = $request->validate([
             'asociado_id' => 'required|exists:asociados,id',
             'periodo'     => 'required|string',
@@ -41,7 +40,7 @@ class ReciboController extends Controller
         DB::beginTransaction();
 
         try {
-            // Creamos el recibo base
+            // Creacion el recibo base
             $recibo = Recibo::create([
                 'asociado_id' => $data['asociado_id'],
                 'periodo'     => $data['periodo'],
@@ -51,7 +50,6 @@ class ReciboController extends Controller
 
             $totalServicios = 0;
 
-            // Recuperamos las líneas de servicio válidas (is_validado true)
             $lineasServicio = LineaServicio::whereIn('id', $data['linea_ids'])
                 ->where('is_validado', true)
                 ->get();
@@ -69,7 +67,6 @@ class ReciboController extends Controller
                 ->first();
 
             if (!$valorRecord) {
-                // Si no se encontró un registro especial, se utiliza el valor general
                 $valorRecord = Valor::where('cliente_id', $cliente_id)
                     ->where('periodo', $data['periodo'])
                     ->whereNull('objetivo_id')
@@ -79,22 +76,21 @@ class ReciboController extends Controller
                 throw new \Exception("No se encontró el valor de hora para el cliente {$cliente_id} en el período {$data['periodo']} y objetivo {$objetivo_id}.");
             }
 
-                // Usamos el valor correcto (valor_vigilador)
                 $valorHora = $valorRecord->valor_vigilador;
 
-                // Definimos la clave de agrupación (podrías combinar con otra información si es necesario)
+                // Definicion de la clave de agrupación
                 $key = $valorHora;
                 if (!isset($grouped[$key])) {
                     $grouped[$key] = [
                         'horas' => 0,
                         'valor_hora' => $valorHora,
-                        'descripcion' => "Horas trabajadas a $valorHora", // O genera una descripción más detallada
+                        'descripcion' => "Horas trabajadas a $valorHora",
                     ];
                 }
                 $grouped[$key]['horas'] += $linea->horas_reales;
             }
 
-            // Creamos una línea de recibo por cada grupo
+            // Creacion una línea de recibo por cada grupo
             foreach ($grouped as $g) {
                 $subtotal = $g['horas'] * $g['valor_hora'];
                 $lineaRecibo = new LineaRecibo([
@@ -185,11 +181,9 @@ class ReciboController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // La lógica de actualización dependerá de si permites modificar recibos generados.
-        // Aquí se muestra un ejemplo básico.
+
         $data = $request->validate([
             'periodo' => 'sometimes|string',
-            // Puedes permitir actualizar otros campos si es necesario.
         ]);
 
         $recibo = Recibo::findOrFail($id);

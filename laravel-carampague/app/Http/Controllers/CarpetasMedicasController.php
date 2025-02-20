@@ -51,18 +51,25 @@ class CarpetasMedicasController extends Controller
 
                 $servicio = $linea->servicio;
                 $cliente_id = $servicio->objetivo->cliente_id;
+                $objetivo_id = $servicio->objetivo->id;
 
                 $valorRecord = Valor::where('cliente_id', $cliente_id)
+                ->where('periodo', $data['periodo'])
+                ->where('objetivo_id', $objetivo_id)
+                ->first();
+
+            if (!$valorRecord) {
+                $valorRecord = Valor::where('cliente_id', $cliente_id)
                     ->where('periodo', $data['periodo'])
+                    ->whereNull('objetivo_id')
                     ->first();
+            }
+            if (!$valorRecord) {
+                throw new \Exception("No se encontró el valor de hora para el cliente {$cliente_id} en el período {$data['periodo']} y objetivo {$objetivo_id}.");
+            }
 
-                if (!$valorRecord) {
-                    throw new \Exception("No se encontró el valor de hora para el cliente {$cliente_id} en el periodo {$data['periodo']}.");
-                }
-
-
-                $valorBase = $valorRecord->valor_vigilador;
-                $valorJustificado = $valorBase * 0.67;
+                $valorHora = $valorRecord->valor_vigilador;
+                $valorJustificado = $valorHora * 0.67;
 
                 $horas = $linea->horas_reales;
                 $subtotal = $valorJustificado * $horas;

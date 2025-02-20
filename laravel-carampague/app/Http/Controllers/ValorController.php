@@ -49,7 +49,7 @@ class ValorController extends Controller
             ->exists();
 
         if ($existeValor) {
-            return response()->json(['message' => 'Ya existe un valor para este cliente y periodo con el objetivo especificado.'], 400);
+            return response()->json(['message' => 'Ya existe un valor para el cliente y periodo especificado.'], 400);
         }
 
         // Si la validación pasa, guardamos el nuevo valor
