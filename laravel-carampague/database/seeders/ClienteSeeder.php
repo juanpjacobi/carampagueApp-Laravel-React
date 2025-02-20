@@ -24,12 +24,11 @@ class ClienteSeeder extends Seeder
 
         $clientes = collect(range(1, 10))->map(function ($i) use ($currentTimestamp) {
             return [
-                'razon_social'     => "Cliente $i",
+                'razon_social'     => "Cliente " . sprintf("%02d", $i), // Agrega ceros a la izquierda
                 'cuit_cliente'     => 20349000000 + $i, // ejemplo de cuit
                 'email'            => "cliente{$i}@ejemplo.com",
                 'condicion_iva_id' => 1, // asumiendo que la condición 1 existe
                 'activo'           => 1,
-                // Se asignan los IDs según el orden en que se insertaron las direcciones y teléfonos
                 'telefono_id'      => $i,
                 'direccion_id'     => $i,
                 'created_at'       => $currentTimestamp,

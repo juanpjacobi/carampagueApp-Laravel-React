@@ -57,21 +57,19 @@ class AsociadoSeeder extends Seeder
         // Crear 10 asociados, relacionando cada uno con la dirección y teléfono correspondiente
         $asociados = collect(range(1, 10))->map(function ($i) use ($currentTimestamp) {
             return [
-                'nombre_asociado'  => "asociado$i",
-                'apellido_asociado'=> "apellido$i",
+                'nombre_asociado'  => sprintf("asociado%02d", $i), // Usa %02d para dos dígitos
+                'apellido_asociado'=> sprintf("apellido%02d", $i),
                 'image_url'        => "url/uirl$i",
                 'fecha_alta'       => $currentTimestamp,
                 'fecha_baja'       => $currentTimestamp,
                 'numero_asociado'  => 2400 + $i,
                 'cuit_asociado'    => 20349094399 + $i,
-                // Para la fecha de nacimiento, por ejemplo restamos 20 + $i años a la fecha actual
                 'fecha_nacimiento' => $currentTimestamp->copy()->subYears(20 + $i),
                 'activo'           => 1,
-                'estado_civil_id'  => 1, // Suponiendo que el estado civil 1 existe
-                'direccion_id'     => $i, // Asumimos que la dirección insertada tiene ID = $i
-                'documentacion_id'     => $i, // Asumimos que la dirección insertada tiene ID = $i
-
-                'telefono_id'      => $i, // Asumimos que el teléfono insertado tiene ID = $i
+                'estado_civil_id'  => 1,
+                'direccion_id'     => $i,
+                'documentacion_id' => $i,
+                'telefono_id'      => $i,
                 'created_at'       => $currentTimestamp,
                 'updated_at'       => $currentTimestamp,
             ];
