@@ -31,7 +31,7 @@ class LoginRequest extends FormRequest
         return [
             'nombre_usuario.required' => 'El nombre es requerido',
             'nombre_usuario.exists' => 'Credenciales inválidas',
-            'password' => 'La contraseña es obligatoria'
+            'password' => 'La contraseña es requerida'
         ];
     }
 }
