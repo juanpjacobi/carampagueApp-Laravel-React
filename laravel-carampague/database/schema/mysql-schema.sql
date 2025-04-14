@@ -4,6 +4,26 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+DROP TABLE IF EXISTS `ajustes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ajustes` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `asociado_id` bigint unsigned DEFAULT NULL,
+  `global` tinyint(1) NOT NULL DEFAULT '0',
+  `tipo_ajuste_id` bigint unsigned NOT NULL,
+  `monto` decimal(8,2) DEFAULT NULL,
+  `periodo_inicio` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `duracion_meses` int unsigned DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `ajustes_asociado_id_foreign` (`asociado_id`),
+  KEY `ajustes_tipo_ajuste_id_foreign` (`tipo_ajuste_id`),
+  CONSTRAINT `ajustes_asociado_id_foreign` FOREIGN KEY (`asociado_id`) REFERENCES `asociados` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `ajustes_tipo_ajuste_id_foreign` FOREIGN KEY (`tipo_ajuste_id`) REFERENCES `tipos_ajustes` (`id`) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `asociados`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -49,6 +69,22 @@ CREATE TABLE `barrios` (
   CONSTRAINT `barrios_localidad_id_foreign` FOREIGN KEY (`localidad_id`) REFERENCES `localidades` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `carpetas_medicas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `carpetas_medicas` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `asociado_id` bigint unsigned NOT NULL,
+  `periodo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `monto` decimal(10,2) NOT NULL,
+  `pdf_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `carpetas_medicas_asociado_id_foreign` (`asociado_id`),
+  CONSTRAINT `carpetas_medicas_asociado_id_foreign` FOREIGN KEY (`asociado_id`) REFERENCES `asociados` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `clientes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -91,8 +127,8 @@ CREATE TABLE `direcciones` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `calle` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `numeracion` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `piso` smallint NOT NULL,
-  `departamento` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `piso` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `departamento` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `barrio_id` bigint unsigned NOT NULL,
@@ -147,6 +183,25 @@ CREATE TABLE `estados_documentacion` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `facturas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `facturas` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `cliente_id` bigint unsigned NOT NULL,
+  `objetivo_id` bigint unsigned NOT NULL,
+  `periodo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `total` decimal(10,2) NOT NULL,
+  `pdf_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `facturas_cliente_id_foreign` (`cliente_id`),
+  KEY `facturas_objetivo_id_foreign` (`objetivo_id`),
+  CONSTRAINT `facturas_cliente_id_foreign` FOREIGN KEY (`cliente_id`) REFERENCES `clientes` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `facturas_objetivo_id_foreign` FOREIGN KEY (`objetivo_id`) REFERENCES `objetivos` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `failed_jobs`;
@@ -215,6 +270,41 @@ CREATE TABLE `lineas_documentacion` (
   CONSTRAINT `lineas_documentacion_documentacion_id_foreign` FOREIGN KEY (`documentacion_id`) REFERENCES `documentaciones` (`id`) ON DELETE CASCADE,
   CONSTRAINT `lineas_documentacion_estado_documentacion_id_foreign` FOREIGN KEY (`estado_documentacion_id`) REFERENCES `estados_documentacion` (`id`) ON DELETE CASCADE,
   CONSTRAINT `lineas_documentacion_tipo_documentacion_id_foreign` FOREIGN KEY (`tipo_documentacion_id`) REFERENCES `tipos_documentacion` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `lineas_factura`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `lineas_factura` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `factura_id` bigint unsigned NOT NULL,
+  `descripcion` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `horas` int NOT NULL DEFAULT '0',
+  `valor_hora` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `subtotal` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `lineas_factura_factura_id_foreign` (`factura_id`),
+  CONSTRAINT `lineas_factura_factura_id_foreign` FOREIGN KEY (`factura_id`) REFERENCES `facturas` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `lineas_recibo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `lineas_recibo` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `recibo_id` bigint unsigned NOT NULL,
+  `descripcion` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `horas` int NOT NULL DEFAULT '0',
+  `valor_hora` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `subtotal` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `es_ajuste` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `lineas_recibo_recibo_id_foreign` (`recibo_id`),
+  CONSTRAINT `lineas_recibo_recibo_id_foreign` FOREIGN KEY (`recibo_id`) REFERENCES `recibos` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `lineas_servicio`;
@@ -312,7 +402,7 @@ CREATE TABLE `motivos` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `linea_servicio_id` bigint unsigned NOT NULL,
   `tipo_motivo_id` bigint unsigned NOT NULL,
-  `observaciones` text COLLATE utf8mb4_unicode_ci,
+  `observaciones` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -397,6 +487,22 @@ CREATE TABLE `provincias` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `recibos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `recibos` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `asociado_id` bigint unsigned NOT NULL,
+  `periodo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `total` decimal(10,2) NOT NULL,
+  `pdf_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `recibos_asociado_id_foreign` (`asociado_id`),
+  CONSTRAINT `recibos_asociado_id_foreign` FOREIGN KEY (`asociado_id`) REFERENCES `asociados` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `rols`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -459,6 +565,19 @@ CREATE TABLE `tipo_telefono` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tipos_ajustes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tipos_ajustes` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `concepto` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `add` tinyint(1) NOT NULL,
+  `monto` decimal(8,2) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `tipos_documentacion`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -475,7 +594,7 @@ DROP TABLE IF EXISTS `tipos_motivos`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tipos_motivos` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `nombre_tipo_motivo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nombre_tipo_motivo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `is_pagable` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -521,7 +640,7 @@ CREATE TABLE `valores` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `cliente_id` bigint unsigned DEFAULT NULL,
-  `periodo` varchar(7) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `periodo` varchar(7) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `objetivo_id` bigint unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `valores_cliente_id_foreign` (`cliente_id`),
@@ -748,3 +867,11 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (46,'2025_01_14_002
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (47,'2025_01_25_075540_remove_valor_id_from_objetivos',47);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (48,'2025_01_25_082112_update_valores_table',48);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (49,'2025_01_27_212547_add_linea_original_id_to_linea_servicios_table',49);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (50,'2025_02_05_212555_create_tipos_ajustes_table',50);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (51,'2025_02_05_213956_create_ajustes_table',51);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (52,'2025_02_08_142524_create_recibos_table',52);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (53,'2025_02_08_142602_create_lineas_recibo_table',53);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (54,'2025_02_09_181241_create_carpeta_medica_table',54);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (55,'2025_02_11_064129_create_facturas_table',55);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (56,'2025_02_11_064252_create_linea_factura_table',56);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (57,'2025_02_20_153455_alter_direcciones_table',57);
